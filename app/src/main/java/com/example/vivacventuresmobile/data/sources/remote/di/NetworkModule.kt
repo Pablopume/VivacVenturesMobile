@@ -1,8 +1,9 @@
 package com.example.vivacventuresmobile.data.sources.remote.di
 
-import com.example.apollo_davidroldan.utils.Constants.BASE_URL
+import com.example.vivacventuresmobile.utils.Constants.BASE_URL
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.ServiceInterceptor
+import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
@@ -15,9 +16,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -66,6 +65,11 @@ object NetworkModule {
     @Provides
     fun provideLoginService(retrofit: Retrofit): LoginService =
         retrofit.create(LoginService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideVivacPlacesService(retrofit: Retrofit): VivacPlacesService =
+        retrofit.create(VivacPlacesService::class.java)
 
 }
 
