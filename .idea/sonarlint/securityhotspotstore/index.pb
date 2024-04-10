@@ -177,3 +177,5 @@ Bapp/src/main/java/com/example/vivacventuresmobile/ui/theme/Type.kt,4\8\48c930d
 bapp/src/main/java/com/example/vivacventuresmobile/ui/screens/detalleplace/DetallePlaceViewModel.kt,a\5\a5ccb5b1d7c513183dccf65ba5bd5fdb09037c4a
 â
 Yapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlaceUseCase.kt,3\c\3cc0db2702b510d941d9773a7872d666d8d734a7
+è
+_app/src/main/java/com/example/vivacventuresmobile/ui/screens/detalleplace/DetallePlaceScreen.kt,d\9\d98d169c3f7dea2f4562f8aac6baed9ff470ba73

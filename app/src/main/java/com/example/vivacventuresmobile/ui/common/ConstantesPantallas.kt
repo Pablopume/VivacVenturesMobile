@@ -8,9 +8,9 @@ object ConstantesPantallas {
     const val LUGARES = "Lugares"
     const val CUENTA = "Cuenta"
 
-    const val DETALLEPELICULAS_PELICULA_ID_ = "detallepeliculas/{peliculaId}"
-
     const val DETALLELUGAR = "detallelugar/"
+    const val DETALLELUGAR_LUGARID = "detallelugar/{lugarId}"
+    const val LUGAR_ID = "lugarId"
 
     const val PELICULA_ID = "peliculaId"
 

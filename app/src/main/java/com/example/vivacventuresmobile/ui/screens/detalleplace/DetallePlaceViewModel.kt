@@ -63,7 +63,7 @@ class DetallePlaceViewModel @Inject constructor(
                             result.data?.let { places ->
                                 _uiState.update {
                                     it.copy(
-                                        vivacPlaces = places,
+                                        vivacPlace = places,
                                         loading = false
                                     )
                                 }

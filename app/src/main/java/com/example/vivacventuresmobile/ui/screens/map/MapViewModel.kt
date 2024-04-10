@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.apollo_davidroldan.utils.NetworkResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +23,17 @@ class MapViewModel @Inject constructor(
         MutableStateFlow(MapState())
     }
     val uiState: MutableStateFlow<MapState> = _uiState
-
     init {
+        val cameraPosition = CameraPositionState(
+            position = CameraPosition.fromLatLngZoom(
+                LatLng(40.42966863252524, -3.6797065289867783),
+                5.5f
+            )
+        )
         _uiState.value = MapState(
             error = null,
-            loading = false
+            loading = false,
+            cameraPositionState = cameraPosition,
         )
         getVivacPlaces()
     }
