@@ -8,9 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyAxX0YhXbwWXJWf2LfB-nDpSZcIBrOZyfg"/>
 
     <application
         android:name=".VivacVenturesApp"
@@ -22,7 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VivacVenturesMobile"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDcuxEy_4dgFwX_vVM6pgE3UTaWOxvTZWg" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

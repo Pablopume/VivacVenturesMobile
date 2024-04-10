@@ -12,6 +12,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -70,6 +72,11 @@ object NetworkModule {
     @Provides
     fun provideVivacPlacesService(retrofit: Retrofit): VivacPlacesService =
         retrofit.create(VivacPlacesService::class.java)
+
+
+    @Singleton
+    @Provides
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
 }
 

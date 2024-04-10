@@ -1,12 +1,9 @@
-package com.example.vivacventuresmobile.ui.screens.map
+package com.example.vivacventuresmobile.ui.screens.listplaces
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apollo_davidroldan.utils.NetworkResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -15,59 +12,34 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
-    private val getVivacPlacesRepository: GetVivacPlacesUseCase
-) : ViewModel() {
-    private val _uiState: MutableStateFlow<MapState> by lazy {
-        MutableStateFlow(MapState())
+class ListPlacesViewModel @Inject constructor(
+    private val getVivacPlacesUseCase: GetVivacPlacesUseCase
+): ViewModel(){
+    private val _uiState: MutableStateFlow<ListPlacesState> by lazy {
+        MutableStateFlow(ListPlacesState())
     }
-    val uiState: MutableStateFlow<MapState> = _uiState
+
+    val uiState: MutableStateFlow<ListPlacesState> = _uiState
 
     init {
-        _uiState.value = MapState(
+        _uiState.value = ListPlacesState(
             error = null,
             loading = false
         )
         getVivacPlaces()
     }
 
-    fun handleEvent(event: MapEvent) {
+    fun handleEvent(event: ListPlacesEvent) {
         when (event) {
-            MapEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
-            is MapEvent.HandleLocationUpdate -> TODO()
-            MapEvent.LocationOff -> TODO()
-            is MapEvent.OnMapLongClick -> TODO()
-            MapEvent.ToggleDarkMap -> {
-                _uiState.value = _uiState.value.copy(
-                    properties = _uiState.value.properties.copy(
-                        mapStyleOptions = if (_uiState.value.isDarkMap) {
-                            null
-                        } else MapStyleOptions(MapStyle.json),
-                    ),
-                    isDarkMap = !_uiState.value.isDarkMap
-                )
-
-            }
-
-            is MapEvent.UpdateCameraPosition -> {
-                val cameraPosition = CameraPositionState(
-                    position = CameraPosition.fromLatLngZoom(
-                        event.latLng,
-                        10f
-                    )
-                )
-//                val cameraPosition = CameraUpdateFactory.newLatLngZoom(LatLng(event.latLng.latitude, event.latLng.longitude), 10f)
-                _uiState.value = _uiState.value.copy(
-                    cameraPositionState = cameraPosition
-                )
-            }
+            ListPlacesEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
+            is ListPlacesEvent.GetVivacPlaces -> getVivacPlaces()
         }
     }
 
     private fun getVivacPlaces() {
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
-            getVivacPlacesRepository()
+            getVivacPlacesUseCase()
                 .catch(action = { cause ->
                     _uiState.update {
                         it.copy(

@@ -11,7 +11,7 @@ data class VivacPlaceResponse (
     @SerializedName("name")
     val name: String,
     @SerializedName("description")
-    val description: String?,
+    val description: String,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
@@ -25,7 +25,7 @@ data class VivacPlaceResponse (
     @SerializedName("valorations")
     val valorations: List<ValorationResponse>? = null,
     @SerializedName("type")
-    val type: String?
+    val type: String
 )
 
 fun VivacPlaceResponse.toVivacPlace() : VivacPlace = VivacPlace(id, name, description, latitude, longitude, username, capacity, date, valorations?.map { it.toValoration() }, type)

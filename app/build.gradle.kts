@@ -1,10 +1,8 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -34,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
@@ -61,35 +59,38 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.runtime:runtime")
+
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-
-    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
 
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    // Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+//    // Navigation
+//    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+//    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     // Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    // Lifecycle libraries
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+//    // Lifecycle libraries
+//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+//    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     //maps
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.maps.android:maps-compose:1.0.0")
+    implementation("com.google.maps.android:maps-compose:2.12.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Dagger - Hilt
     implementation ("com.google.dagger:hilt-android:2.50")
     kapt ("com.google.dagger:hilt-android-compiler:2.50")
+    kapt ("androidx.hilt:hilt-compiler:1.1.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
