@@ -179,3 +179,13 @@ bapp/src/main/java/com/example/vivacventuresmobile/ui/screens/detalleplace/Detal
 Yapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlaceUseCase.kt,3\c\3cc0db2702b510d941d9773a7872d666d8d734a7
 è
 _app/src/main/java/com/example/vivacventuresmobile/ui/screens/detalleplace/DetallePlaceScreen.kt,d\9\d98d169c3f7dea2f4562f8aac6baed9ff470ba73
+A
+gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+X
+(gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
+C
+settings.gradle.kts,7\4\749edfcc96398253e5b3416184e95c46621da850
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+è
+_app/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlaceByTypeUseCase.kt,9\d\9da81cbb0921a0d1f1f27844435cc4594920f40c

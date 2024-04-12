@@ -3,6 +3,7 @@ package com.example.vivacventuresmobile.ui.screens.listplaces
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apollo_davidroldan.utils.NetworkResult
+import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceByTypeUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListPlacesViewModel @Inject constructor(
-    private val getVivacPlacesUseCase: GetVivacPlacesUseCase
+    private val getVivacPlacesUseCase: GetVivacPlacesUseCase,
+    private val getVivacPlacesByTypeUseCase: GetVivacPlaceByTypeUseCase
 ): ViewModel(){
     private val _uiState: MutableStateFlow<ListPlacesState> by lazy {
         MutableStateFlow(ListPlacesState())
@@ -33,7 +35,59 @@ class ListPlacesViewModel @Inject constructor(
         when (event) {
             ListPlacesEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
             is ListPlacesEvent.GetVivacPlaces -> getVivacPlaces()
+            is ListPlacesEvent.GetVivacPlacesByType -> getVivacPlacesByType(event.type)
         }
+    }
+
+    private fun getVivacPlacesByType(type: String) {
+        _uiState.update { it.copy(loading = true) }
+        if(type.equals("")){
+            getVivacPlaces()
+        } else {
+            viewModelScope.launch {
+                getVivacPlacesByTypeUseCase(type)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                result.data?.let { places ->
+                                    _uiState.update {
+                                        it.copy(
+                                            vivacPlaces = places,
+                                            loading = false
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+
     }
 
     private fun getVivacPlaces() {

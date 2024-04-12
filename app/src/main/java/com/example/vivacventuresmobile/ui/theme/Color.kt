@@ -14,3 +14,12 @@ val GreenP = Color(0xFF36802D)
 val GreenS = Color(0xFF77AB59)
 val GreenT = Color(0xFFC9DF8A)
 val LightGreen = Color(0xFFF0F7DA)
+
+
+val GreenVivac = Color(0xFF409935)
+val BlueRefugee = Color(0xFF318DE7)
+val RedAlbergue = Color(0xFFB9574D)
+val YellowRefugee = Color(0xFFFCDA52)
+
+
+

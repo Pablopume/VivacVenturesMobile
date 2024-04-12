@@ -30,4 +30,12 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    fun getVivacPlaceByType(type: String): Flow<NetworkResult<List<VivacPlace>>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.getVivacPlaceByType(type)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
 }
