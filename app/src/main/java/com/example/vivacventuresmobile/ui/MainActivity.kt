@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,9 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.dataStore
+import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
 import com.example.vivacventuresmobile.ui.navigation.Navigation
 import com.example.vivacventuresmobile.ui.theme.VivacVenturesMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
+
+val Context.dataStore by dataStore("app.settings.json", AppPreferencesSerialize)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -23,7 +28,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation()
+                    Navigation(dataStore)
                 }
             }
         }

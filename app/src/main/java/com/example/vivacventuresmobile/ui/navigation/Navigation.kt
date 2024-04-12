@@ -1,36 +1,52 @@
 package com.example.vivacventuresmobile.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.datastore.core.DataStore
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.ui.common.BottomBar
 import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.ui.screens.account.AccountScreen
 import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceScreen
 import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesScreen
+import com.example.vivacventuresmobile.ui.screens.login.LoginScreen
+import com.example.vivacventuresmobile.ui.screens.logout.LogoutScreen
 import com.example.vivacventuresmobile.ui.screens.map.MapScreen
 
 @Composable
-fun Navigation() {
+fun Navigation(
+    dataStore: DataStore<AppPreferences>
+) {
     val navController = rememberNavController()
+
+    val appPreferences = dataStore.data.collectAsState(
+        initial = AppPreferences()
+    ).value
+
+    val userName = appPreferences.username
 
     NavHost(
         navController = navController,
-        startDestination = ConstantesPantallas.MAP,
+        startDestination = if (userName.isNotBlank() && !userName.equals("")) ConstantesPantallas.MAP else ConstantesPantallas.LOGIN,
     ) {
         composable(
             ConstantesPantallas.LOGIN
         ) {
-//            LoginScreen(onLoginDone = {
-//                navController.navigate(ConstantesPantallas.PELICULAS) {
-//                    popUpTo(ConstantesPantallas.LOGIN) {
-//                        inclusive = true
-//                    }
-//                }
-//            })
+            LoginScreen(
+                onViewDetalle = {
+                    navController.navigate(ConstantesPantallas.MAP) {
+                        popUpTo(ConstantesPantallas.LOGIN) {
+                            inclusive = true
+                            }
+                        }
+                },
+                dataStore = dataStore
+            )
         }
         composable(
             ConstantesPantallas.MAP
@@ -76,6 +92,21 @@ fun Navigation() {
                         navController = navController, screens = screensBottomBar
                     )
                 })
+        }
+        composable(
+            ConstantesPantallas.LOGOUT
+        ) {
+            LogoutScreen(
+                onViewDetalle = {
+                    navController.navigate(ConstantesPantallas.LOGIN)
+                },
+                dataStore = dataStore,
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
+            )
         }
     }
 }

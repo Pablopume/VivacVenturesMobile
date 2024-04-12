@@ -3,6 +3,7 @@ package com.example.vivacventuresmobile.ui.common
 object ConstantesPantallas {
     const val USER_OR_PASS_EMPTY = "Usuario o contraseña vacíos"
     const val LOGIN = "login"
+    const val LOGOUT = "logout"
 
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"

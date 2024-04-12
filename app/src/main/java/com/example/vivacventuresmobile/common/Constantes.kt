@@ -19,4 +19,11 @@ object Constantes {
     const val REFRESH_PATH = "/refresh"
     const val TOKEN = "token"
     const val FORBIDDEN = "Forbidden"
+
+    const val EMAIL = "email"
+    const val PASSWORD = "password"
+    const val USER = "user"
+    const val USERNAME = "username"
+    const val REGISTER = "register"
+    const val LOGIN = "login"
 }
