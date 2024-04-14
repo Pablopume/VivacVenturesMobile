@@ -32,7 +32,6 @@ import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 fun DetallePlaceScreen(
     viewModel: DetallePlaceViewModel = hiltViewModel(),
     placeId: Int,
-//    onBack: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
@@ -80,7 +79,7 @@ fun DetallePlace(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.medium_padding))
             ) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                state.vivacPlace?.let { Text(text = it.id.toString()) }
+                state.vivacPlace?.let { Text(text = it.name.toString()) }
 
             }
         }

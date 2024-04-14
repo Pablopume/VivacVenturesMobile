@@ -209,3 +209,13 @@ Rapp/src/main/java/com/example/vivacventuresmobile/ui/screens/logout/LogoutState
 Sapp/src/main/java/com/example/vivacventuresmobile/ui/screens/logout/LogoutScreen.kt,d\0\d05e6a4a92807ed912ddaed3b93bab9cc7ff03e8
 †
 Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/logout/LogoutViewModel.kt,f\3\f3c97c844d64d04c5e24fe90a39f9205d960feaf
+‡
+Wapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceScreen.kt,8\9\894df1c0960a0536c33edd03c8613d2ae73069e4
+Š
+Zapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceViewModel.kt,a\2\a28badaa5eb63694d939ca53b4e68a74d46828bb
+†
+Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceState.kt,f\c\fc17d81213fa881362dd2331ada74bd99df44c86
+†
+Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceEvent.kt,3\0\30aa75b001a28a75b4b600b26180a4c2a1378892
+„
+Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddPlaceUseCase.kt,f\c\fcacc2da023710999fd5612357ffda6990f6b9ee

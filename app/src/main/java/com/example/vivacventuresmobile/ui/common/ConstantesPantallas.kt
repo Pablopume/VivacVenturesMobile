@@ -15,7 +15,7 @@ object ConstantesPantallas {
 
     const val PELICULA_ID = "peliculaId"
 
-    const val ADDPREMIO = "addpremio"
+    const val ADDLUGAR = "addlugar"
 
     const val ELIMINADO = "Eliminado"
     const val ERRORCAMPOSVACIOS = "Rellene todos los campos"

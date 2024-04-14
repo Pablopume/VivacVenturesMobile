@@ -16,3 +16,4 @@ data class ValorationResponse(
     val review: String,
 )
 fun ValorationResponse.toValoration() : Valoration = Valoration(id, user, vivacPlaceId, score, review)
+fun Valoration.toValorationResponse() : ValorationResponse = ValorationResponse(id, user, vivacPlaceId, score, review)

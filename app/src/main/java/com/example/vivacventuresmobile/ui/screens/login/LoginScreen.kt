@@ -119,18 +119,15 @@ fun PantallaLogin(
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
                         Password(state.password ?: "", onPasswordChanged)
-                    }
-                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
-                        BotonLogin(
-                            Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(), onLogin, dataStore)
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                        BotonLogin(onLogin, dataStore)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
-                        BotonRegister(
-                            Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(), onRegister)
+                        BotonRegister(onRegister)
+
+                    }
+                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                        //forgot password
                     }
 
                 }
@@ -142,21 +139,21 @@ fun PantallaLogin(
 }
 
 @Composable
-fun BotonRegister(modifier: Modifier, onRegister: () -> Unit) {
+fun BotonRegister(onRegister: () -> Unit) {
     Button(
         onClick = onRegister,
-        modifier = modifier
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(Constantes.REGISTER)
     }
 }
 
 @Composable
-fun BotonLogin(modifier: Modifier, onLogin: () -> Unit, dataStore: DataStore<AppPreferences>) {
+fun BotonLogin(onLogin: () -> Unit, dataStore: DataStore<AppPreferences>) {
 
     Button(
         onClick = onLogin,
-        modifier = modifier
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(Constantes.LOGIN)
     }

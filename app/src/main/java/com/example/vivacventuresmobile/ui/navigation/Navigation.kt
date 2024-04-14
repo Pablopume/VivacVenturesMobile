@@ -12,6 +12,7 @@ import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.ui.common.BottomBar
 import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.ui.screens.account.AccountScreen
+import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceScreen
 import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceScreen
 import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.login.LoginScreen
@@ -42,8 +43,8 @@ fun Navigation(
                     navController.navigate(ConstantesPantallas.MAP) {
                         popUpTo(ConstantesPantallas.LOGIN) {
                             inclusive = true
-                            }
                         }
+                    }
                 },
                 dataStore = dataStore
             )
@@ -68,7 +69,10 @@ fun Navigation(
                 BottomBar(
                     navController = navController, screens = screensBottomBar
                 )
-            })
+            },
+                onAddPlace = {
+                    navController.navigate(ConstantesPantallas.ADDLUGAR)
+                })
         }
         composable(
             ConstantesPantallas.CUENTA
@@ -108,5 +112,24 @@ fun Navigation(
                 }
             )
         }
+        composable(
+            ConstantesPantallas.ADDLUGAR
+        ) {
+            AddPlaceScreen(
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                },
+                onAddDone = {
+                    navController.navigate(ConstantesPantallas.LUGARES) {
+                        popUpTo(ConstantesPantallas.ADDLUGAR) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
     }
 }

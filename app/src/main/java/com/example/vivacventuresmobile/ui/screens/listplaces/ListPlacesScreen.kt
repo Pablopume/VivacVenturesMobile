@@ -59,6 +59,7 @@ fun ListPlacesScreen(
     viewModel: ListPlacesViewModel = hiltViewModel(),
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
+    onAddPlace: () -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
     ListPlaces(
@@ -66,7 +67,8 @@ fun ListPlacesScreen(
         { viewModel.handleEvent(ListPlacesEvent.ErrorVisto) },
         onViewDetalle,
         { viewModel.handleEvent(ListPlacesEvent.GetVivacPlacesByType(it)) },
-        bottomNavigationBar
+        bottomNavigationBar,
+        onAddPlace
     )
 }
 
@@ -78,6 +80,7 @@ fun ListPlaces(
     onViewDetalle: (Int) -> Unit,
     onGetVivacPlacesByType: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
+    onAddPlace: () -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var typeSelect by remember {
@@ -88,7 +91,7 @@ fun ListPlaces(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar,
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(onClick = { onAddPlace() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add"
@@ -313,6 +316,7 @@ fun previewLista() {
         errorVisto = {},
         onViewDetalle = {},
         onGetVivacPlacesByType = {},
-        bottomNavigationBar = {}
+        bottomNavigationBar = {},
+        onAddPlace = {}
     )
 }

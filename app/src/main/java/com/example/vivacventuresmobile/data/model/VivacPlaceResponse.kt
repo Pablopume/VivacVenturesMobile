@@ -5,27 +5,51 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 
-data class VivacPlaceResponse (
+data class VivacPlaceResponse(
     @SerializedName("id")
-    val id : Int,
+    val id: Int = 0,
     @SerializedName("name")
-    val name: String,
+    val name: String = "",
     @SerializedName("description")
-    val description: String,
+    val description: String = "",
     @SerializedName("latitude")
-    val latitude: Double,
+    val latitude: Double = 0.0,
     @SerializedName("longitude")
-    val longitude: Double,
+    val longitude: Double = 0.0,
     @SerializedName("username")
-    val username: String?,
+    val username: String = "",
     @SerializedName("capacity")
-    val capacity : Int,
+    val capacity: Int = 0,
     @SerializedName("date")
-    val date: LocalDate?,
+    val date: LocalDate = LocalDate.now(),
     @SerializedName("valorations")
-    val valorations: List<ValorationResponse>? = null,
+    val valorations: List<ValorationResponse> = emptyList(),
     @SerializedName("type")
-    val type: String
+    val type: String = "",
 )
 
-fun VivacPlaceResponse.toVivacPlace() : VivacPlace = VivacPlace(id, name, description, latitude, longitude, username, capacity, date, valorations?.map { it.toValoration() }, type)
+fun VivacPlaceResponse.toVivacPlace(): VivacPlace = VivacPlace(
+    id,
+    name,
+    description,
+    latitude,
+    longitude,
+    username,
+    capacity,
+    date,
+    valorations.map { it.toValoration() },
+    type
+)
+
+fun VivacPlace.toVivacPlaceResponse(): VivacPlaceResponse = VivacPlaceResponse(
+    id,
+    name,
+    description,
+    lat,
+    lon,
+    username,
+    capacity,
+    date,
+    valorations.map { it.toValorationResponse() },
+    type
+)
