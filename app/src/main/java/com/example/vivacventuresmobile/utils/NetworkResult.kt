@@ -1,4 +1,4 @@
-package com.example.apollo_davidroldan.utils
+package com.example.vivacventuresmobile.utils
 
 
 sealed class NetworkResult<T>(

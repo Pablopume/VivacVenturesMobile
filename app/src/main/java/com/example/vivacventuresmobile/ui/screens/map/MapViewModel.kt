@@ -1,9 +1,18 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
+import android.annotation.SuppressLint
+import android.os.Looper
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apollo_davidroldan.utils.NetworkResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
+import com.example.vivacventuresmobile.utils.NetworkResult
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -23,6 +32,15 @@ class MapViewModel @Inject constructor(
         MutableStateFlow(MapState())
     }
     val uiState: MutableStateFlow<MapState> = _uiState
+
+
+    private val permissions = arrayOf(
+        android.Manifest.permission.ACCESS_FINE_LOCATION,
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+    )
+    private lateinit var fusedLocationCLient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+
     init {
         val cameraPosition = CameraPositionState(
             position = CameraPosition.fromLatLngZoom(
@@ -34,6 +52,7 @@ class MapViewModel @Inject constructor(
             error = null,
             loading = false,
             cameraPositionState = cameraPosition,
+            currentLocation = LatLng(0.toDouble(), 0.toDouble()),
         )
         getVivacPlaces()
     }
@@ -41,9 +60,28 @@ class MapViewModel @Inject constructor(
     fun handleEvent(event: MapEvent) {
         when (event) {
             MapEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
-            is MapEvent.HandleLocationUpdate -> TODO()
-            MapEvent.LocationOff -> TODO()
+            MapEvent.LocationOn -> locationOn()
+            MapEvent.LocationOff -> locationOff()
             is MapEvent.OnMapLongClick -> TODO()
+            is MapEvent.StartLocationUpdates -> {
+                fusedLocationCLient = event.fusedLocationClient
+                locationCallback = object : LocationCallback() {
+                    override fun onLocationResult(p0: LocationResult) {
+                        super.onLocationResult(p0)
+                        for (location in p0.locations) {
+                            _uiState.value = _uiState.value.copy(
+                                currentLocation = LatLng(location.latitude, location.longitude),
+                                cameraPositionState = CameraPositionState(
+                                    position = CameraPosition.fromLatLngZoom(
+                                        LatLng(location.latitude, location.longitude),
+                                        10f
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
             MapEvent.ToggleDarkMap -> {
                 _uiState.value = _uiState.value.copy(
                     properties = _uiState.value.properties.copy(
@@ -55,6 +93,9 @@ class MapViewModel @Inject constructor(
                 )
 
             }
+            is MapEvent.SendError -> {
+                _uiState.value = _uiState.value.copy(error = event.error)
+            }
 
             is MapEvent.UpdateCameraPosition -> {
                 val cameraPosition = CameraPositionState(
@@ -63,7 +104,6 @@ class MapViewModel @Inject constructor(
                         10f
                     )
                 )
-//                val cameraPosition = CameraUpdateFactory.newLatLngZoom(LatLng(event.latLng.latitude, event.latLng.longitude), 10f)
                 _uiState.value = _uiState.value.copy(
                     cameraPositionState = cameraPosition
                 )
@@ -114,6 +154,59 @@ class MapViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun locationOn() {
+        //get location
+        startLocationUpdates()
+        _uiState.value = _uiState.value.copy(
+            error = "Location is on",
+            isLocationEnabled = true,
+//            cameraPositionState = CameraPositionState(
+//                position = CameraPosition.fromLatLngZoom(
+//                    _uiState.value.currentLocation!!,
+//                    10f
+//                )
+//            )
+        )
+
+    }
+
+    private fun locationOff() {
+        _uiState.value = _uiState.value.copy(
+            isLocationEnabled = false,
+//            cameraPositionState = CameraPositionState(
+//                position = CameraPosition.fromLatLngZoom(
+//                    LatLng(40.42966863252524, -3.6797065289867783),
+//                    5.5f
+//                )),
+            currentLocation = LatLng(0.toDouble(), 0.toDouble()),
+            error = "Location is off"
+        )
+
+        //stop location updates
+        locationCallback?.let {
+            fusedLocationCLient.removeLocationUpdates(it)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        locationCallback?.let {
+            val locationRequest = LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY, 100
+            )
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(3000)
+                .setMaxUpdateDelayMillis(100)
+                .build()
+
+            fusedLocationCLient?.requestLocationUpdates(
+                locationRequest,
+                it,
+                Looper.getMainLooper()
+            )
         }
     }
 }

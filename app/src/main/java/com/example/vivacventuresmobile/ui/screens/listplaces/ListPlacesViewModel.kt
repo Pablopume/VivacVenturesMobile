@@ -2,7 +2,7 @@ package com.example.vivacventuresmobile.ui.screens.listplaces
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apollo_davidroldan.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceByTypeUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -165,7 +165,7 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
             onExpandedChange = { isExpanded = !isExpanded }
         ) {
             TextField(
-                value = typeSelect,
+                value = "",
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {

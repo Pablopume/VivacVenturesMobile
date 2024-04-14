@@ -1,5 +1,9 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -12,11 +16,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ToggleOff
-import androidx.compose.material.icons.filled.ToggleOn
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.ModeNight
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -30,17 +37,44 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
+import com.example.vivacventuresmobile.ui.MainActivity
+import com.example.vivacventuresmobile.ui.theme.GreenS
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+
+private var locationRequired: Boolean = false
+private val permissions = arrayOf(
+    android.Manifest.permission.ACCESS_FINE_LOCATION,
+    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+)
+//
+//@Composable
+//private fun checkPermissions(): Boolean {
+//    var permissionGranted = false
+//    if (permissions.all {
+//            ContextCompat.checkSelfPermission(
+//                LocalContext.current,
+//                it
+//            ) == PackageManager.PERMISSION_GRANTED
+//        }) {
+//        locationRequired = true
+//        permissionGranted = true
+//    }
+//    return permissionGranted
+//}
 
 @Composable
 fun MapScreen(
@@ -49,13 +83,18 @@ fun MapScreen(
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    viewModel.handleEvent(MapEvent.StartLocationUpdates(LocationServices.getFusedLocationProviderClient(LocalContext.current)))
     Maps(
         state.value,
         { viewModel.handleEvent(MapEvent.ErrorVisto) },
         onViewDetalle,
         bottomNavigationBar,
         { viewModel.handleEvent(MapEvent.ToggleDarkMap) },
-        { viewModel.handleEvent(MapEvent.UpdateCameraPosition(it)) }
+        { viewModel.handleEvent(MapEvent.UpdateCameraPosition(it)) },
+        { viewModel.handleEvent(MapEvent.LocationOff) },
+        { viewModel.handleEvent(MapEvent.LocationOn) },
+        { viewModel.handleEvent(MapEvent.SendError(it)) },
     )
 
 }
@@ -67,26 +106,91 @@ fun Maps(
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
     toggleDarkMap: () -> Unit,
-    updateCameraPosition: (LatLng) -> Unit
+    updateCameraPosition: (LatLng) -> Unit,
+    stopLocationUpdates: () -> Unit,
+    startLocationUpdates: () -> Unit,
+    sendError: (String) -> Unit,
+    permissionsGranted: Boolean = MainActivity.checkPermissions(LocalContext.current),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiSettings = remember {
-        MapUiSettings(zoomControlsEnabled = false)
+        MapUiSettings(
+            myLocationButtonEnabled = true,
+            zoomControlsEnabled = false,
+            compassEnabled = true
+        )
     }
+
+    val launcherMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionMaps ->
+        val areGranted = permissionMaps.values.reduce { acc, next -> acc && next }
+        if (areGranted) {
+            locationRequired = true
+            startLocationUpdates()
+            sendError("Location permission granted")
+        } else {
+            sendError("Location permission denied")
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar,
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                toggleDarkMap()
-            }) {
-                Icon(
-                    imageVector = if (state.isDarkMap) Icons.Default.ToggleOff else Icons.Default.ToggleOn,
-                    contentDescription = "Toggle Dark map"
-                )
+            Box(
+                Modifier.fillMaxWidth()
+            ) {
+                if (state.isLocationEnabled) {
+                    FloatingActionButton(
+                        onClick = {
+                            stopLocationUpdates()
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
+                        containerColor = GreenS
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MyLocation,
+                            contentDescription = "Toggle location"
+                        )
+                    }
+                } else {
+                    FloatingActionButton(
+                        onClick = {
+                            if (permissionsGranted) {
+                                locationRequired = true
+                                startLocationUpdates()
+                            } else {
+                                launcherMultiplePermissions.launch(permissions)
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MyLocation,
+                            contentDescription = "Toggle location"
+                        )
+                    }
+                }
+                FloatingActionButton(
+                    onClick = { toggleDarkMap() },
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = if (state.isDarkMap) Icons.Default.ModeNight else Icons.Default.LightMode,
+                        contentDescription = "Toggle Dark map"
+                    )
+                }
             }
         }
     ) { innerPadding ->
+
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
@@ -124,6 +228,15 @@ fun Maps(
                 uiSettings = uiSettings,
             ) {
                 state.vivacPlaces.forEach { place ->
+
+                    if (state.isLocationEnabled && state.currentLocation != null) {
+                        Marker(
+                            state = MarkerState(position = state.currentLocation),
+                            title = "Current location",
+                            snippet = "This is your current location",
+                            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                        )
+                    }
                     Marker(
                         state = MarkerState(position = LatLng(place.lat, place.lon)),
                         title = place.name,
@@ -137,7 +250,10 @@ fun Maps(
                             true
                         },
                         icon = when (place.type) {
-                            "Vivac" -> BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                            "Vivac" -> BitmapDescriptorFactory.defaultMarker(
+                                BitmapDescriptorFactory.HUE_GREEN
+                            )
+
                             "Refugio" -> BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_BLUE
                             )
@@ -146,11 +262,14 @@ fun Maps(
                                 BitmapDescriptorFactory.HUE_MAGENTA
                             )
 
-                            else -> BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW) // default color
+                            else -> BitmapDescriptorFactory.defaultMarker(
+                                BitmapDescriptorFactory.HUE_YELLOW
+                            ) // default color
                         }
                     )
                 }
             }
+
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
-import com.example.apollo_davidroldan.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.model.toVivacPlace
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import javax.inject.Inject

@@ -1,16 +1,13 @@
 package com.example.vivacventuresmobile.ui
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.datastore.dataStore
 import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
 import com.example.vivacventuresmobile.ui.navigation.Navigation
@@ -30,6 +27,22 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Navigation(dataStore)
                 }
+            }
+        }
+    }
+
+    companion object {
+        fun checkPermissions(context: Context): Boolean {
+            val permissions = arrayOf(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            )
+
+            return permissions.all {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
             }
         }
     }

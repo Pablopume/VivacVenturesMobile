@@ -1,6 +1,6 @@
 package com.example.vivacventuresmobile.data.repositories
 
-import com.example.apollo_davidroldan.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import kotlinx.coroutines.CoroutineDispatcher

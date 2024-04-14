@@ -2,9 +2,8 @@ package com.example.vivacventuresmobile.ui.screens.detalleplace
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apollo_davidroldan.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
-import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
