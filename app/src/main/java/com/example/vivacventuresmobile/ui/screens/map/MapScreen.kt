@@ -137,6 +137,7 @@ fun Maps(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar,
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             Box(
                 Modifier.fillMaxWidth()

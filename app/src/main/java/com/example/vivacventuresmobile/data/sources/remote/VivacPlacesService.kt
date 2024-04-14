@@ -4,6 +4,7 @@ import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -19,6 +20,7 @@ interface VivacPlacesService {
     suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<VivacPlaceResponse>>
 
     @POST("/vivacplace")
+    @Headers("Content-Type: application/json")
     suspend fun postVivacPlace(@Body vivacPlaceResponse: VivacPlaceResponse): Response<VivacPlaceResponse>
 
 
