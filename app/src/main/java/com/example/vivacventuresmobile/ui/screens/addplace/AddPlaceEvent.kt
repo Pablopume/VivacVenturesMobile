@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
+import android.net.Uri
 import java.time.LocalDate
 
 sealed class AddPlaceEvent {
@@ -7,7 +8,7 @@ sealed class AddPlaceEvent {
     object ErrorVisto : AddPlaceEvent()
     class OnNameChange(val placeName: String) : AddPlaceEvent()
     class OnDescriptionChange(val placeDescription: String) : AddPlaceEvent()
-    class OnPicturesChange(val pictures: List<String>) : AddPlaceEvent()
+    class OnPicturesChange(val pictures: List<Uri>) : AddPlaceEvent()
     class OnTypeChange(val type: String) : AddPlaceEvent()
     class OnDateChange(val date: LocalDate) : AddPlaceEvent()
     class OnCapacityChange(val capacity: Int) : AddPlaceEvent()

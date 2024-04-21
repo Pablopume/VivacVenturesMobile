@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1048567089042",
+    "project_id": "vivacventures-b3fae",
+    "storage_bucket": "vivacventures-b3fae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048567089042:android:1d49b1ee2cfa442ab4634b",
+        "android_client_info": {
+          "package_name": "com.example.vivacventuresmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2AU1DVcSeknFCUjsQ2vZUCsLzcloVOtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

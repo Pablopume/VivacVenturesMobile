@@ -219,3 +219,5 @@ Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceS
 Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceEvent.kt,3\0\30aa75b001a28a75b4b600b26180a4c2a1378892
 „
 Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddPlaceUseCase.kt,f\c\fcacc2da023710999fd5612357ffda6990f6b9ee
+H
+app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9

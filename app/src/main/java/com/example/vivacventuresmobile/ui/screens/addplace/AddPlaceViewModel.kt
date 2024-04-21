@@ -1,9 +1,12 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -40,7 +43,9 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.OnPicturesChange -> {
-                _uiState.update { it.copy(place = it.place.copy(images = event.pictures)) }
+                val imageUrls = uploadImages(event.pictures)
+
+                _uiState.update { it.copy(place = it.place.copy(images = imageUrls)) }
             }
 
             is AddPlaceEvent.OnTypeChange -> {
@@ -56,6 +61,26 @@ class AddPlaceViewModel @Inject constructor(
         }
     }
 
+    private fun uploadImages(imageUris: List<Uri>): List<String> {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.getReference()
+        val imageUrls = mutableListOf<String>()
+
+        for (uri in imageUris) {
+            val imageRef = storageRef.child("imagenes/" + uri.getLastPathSegment())
+            val uploadTask = imageRef.putFile(uri)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                imageRef.getDownloadUrl().addOnSuccessListener { uri ->
+                    imageUrls.add(uri.toString())
+                }
+            }.addOnFailureListener {
+                // Aquí puedes manejar el error
+            }
+        }
+
+        return imageUrls
+    }
     private fun addPlace() {
         if (_uiState.value.place.name.isEmpty() || _uiState.value.place.description.isEmpty() || _uiState.value.place.type.isEmpty()) {
             _uiState.value = _uiState.value.copy(error = "Please fill all fields")

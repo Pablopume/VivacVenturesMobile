@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -97,7 +98,7 @@ fun AddPlace(
     onAddPlaceClick: () -> Unit,
     onNameChange: (String) -> Unit,
     onDesciptionChange: (String) -> Unit,
-    onPicturesChange: (List<String>) -> Unit,
+    onPicturesChange: (List<Uri>) -> Unit,
     onTypeChange: (String) -> Unit,
     onDateChange: (LocalDate) -> Unit,
     onCapacityChange: (Int) -> Unit,
@@ -263,14 +264,14 @@ fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
 }
 
 @Composable
-fun PicturePicker(images: List<String>, onPicturesChange: (List<String>) -> Unit) {
+fun PicturePicker(images: List<String>, onPicturesChange: (List<Uri>) -> Unit) {
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> onPicturesChange(listOf(uri.toString())) }
+        onResult = { uri -> onPicturesChange(listOf(uri) as List<Uri>) }
     )
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> onPicturesChange(uris.map { it.toString() }) }
+        onResult = { uris -> onPicturesChange(uris)}
     )
 
     LazyColumn(
