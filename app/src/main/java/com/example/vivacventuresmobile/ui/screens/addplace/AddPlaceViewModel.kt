@@ -38,6 +38,21 @@ class AddPlaceViewModel @Inject constructor(
             is AddPlaceEvent.OnDescriptionChange -> {
                 _uiState.update { it.copy(place = it.place.copy(description = event.placeDescription)) }
             }
+
+            is AddPlaceEvent.OnPicturesChange -> {
+                _uiState.update { it.copy(place = it.place.copy(images = event.pictures)) }
+            }
+
+            is AddPlaceEvent.OnTypeChange -> {
+                _uiState.update { it.copy(place = it.place.copy(type = event.type)) }
+            }
+
+            is AddPlaceEvent.OnCapacityChange -> {
+                _uiState.update { it.copy(place = it.place.copy(capacity = event.capacity)) }
+            }
+            is AddPlaceEvent.OnDateChange -> {
+                _uiState.update { it.copy(place = it.place.copy(date = event.date)) }
+            }
         }
     }
 

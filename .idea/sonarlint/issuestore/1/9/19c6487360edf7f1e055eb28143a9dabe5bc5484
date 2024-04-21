@@ -1,8 +1,4 @@
 
-bkotlin:S125?"Remove this commented out code.(è»»_8±ğäí1J$3d0cc714-84b7-4849-b610-4fb80e686f27
-Œkotlin:S107g"HThis function has 10 parameters, which is greater than the 7 authorized.(ÎËÌÀ8”±ğäí1J$c0d0deea-881f-45cf-95ed-e1e664671130
-xkotlin:S1135Ò"2Complete the task associated to this TODO comment.(Æ¡Ü8—±ğäí1J$63684f5c-1fce-45b3-91d7-cc51b31bfe00
-dkotlin:S1128"Remove this unused import.(¼„÷ãûÿÿÿÿ8œ±ğäí1J$1fdd2b40-5363-4ec0-a623-eaef7f0db312
-_kotlin:S1128"Remove this unused import.(´Ùí8œ±ğäí1J$6e7b4de8-3924-40ba-a368-5d89c1456acc
-^kotlin:S1128+"Remove this unused import.(±ÿu8œ±ğäí1J$851fbb6e-e09d-4697-8b56-8d23cfdf1932
-—kotlin:S3776g"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(ÎËÌÀ8Ÿ±ğäí1J$54b3f577-900f-4d2e-9161-3174d846bd0a
+Œkotlin:S107U"HThis function has 10 parameters, which is greater than the 7 authorized.(ÎËÌÀ8À€Úğ1J$afc082ed-e5dd-4119-919f-41604a0994fa
+xkotlin:S1135À"2Complete the task associated to this TODO comment.(Æ¡Ü8Ã€Úğ1J$75c67b7e-5d97-4b82-9e7e-ccf397b44a9f
+—kotlin:S3776U"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(ÎËÌÀ8Ê€Úğ1J$4084ed21-e066-4564-8bff-078d5f20dc80

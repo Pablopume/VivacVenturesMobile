@@ -70,9 +70,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-//    // Navigation
-//    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-//    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    // Coil (picture loading)
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
     // Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")

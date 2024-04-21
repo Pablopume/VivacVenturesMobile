@@ -159,7 +159,6 @@ fun BotonLogin(onLogin: () -> Unit, dataStore: DataStore<AppPreferences>) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Password(password: String, onPasswordChanged: (String) -> Unit) {
     OutlinedTextField(
@@ -174,7 +173,6 @@ fun Password(password: String, onPasswordChanged: (String) -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Nombre(username: String, onNombreChanged: (String) -> Unit) {
     OutlinedTextField(

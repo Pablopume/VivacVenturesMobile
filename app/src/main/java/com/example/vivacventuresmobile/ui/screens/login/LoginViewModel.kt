@@ -47,7 +47,7 @@ class LoginViewModel  @Inject constructor(
 
 
 
-    fun doLogin() {
+    private fun doLogin() {
         viewModelScope.launch {
                if (state.value.user == "" || state.value.password == "") {
                     _state.value = _state.value.copy(error = "CAMPOS INCOMPLETOS", isLoading = false)

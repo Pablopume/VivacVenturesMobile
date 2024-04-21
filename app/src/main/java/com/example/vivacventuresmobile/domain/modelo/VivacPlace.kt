@@ -10,7 +10,8 @@ data class VivacPlace(
     val lon: Double = 0.0,
     val username: String = "",
     val capacity: Int = 0,
-    val date: LocalDate = LocalDate.now(),
+    val date: LocalDate = LocalDate.MIN,
     val valorations: List<Valoration> = emptyList(),
     val type: String = "",
+    val images: List<String> = emptyList()
 )

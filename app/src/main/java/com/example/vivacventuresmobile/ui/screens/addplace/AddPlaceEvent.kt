@@ -1,9 +1,14 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
+import java.time.LocalDate
+
 sealed class AddPlaceEvent {
-    class AddPlace(): AddPlaceEvent()
+    class AddPlace() : AddPlaceEvent()
     object ErrorVisto : AddPlaceEvent()
     class OnNameChange(val placeName: String) : AddPlaceEvent()
     class OnDescriptionChange(val placeDescription: String) : AddPlaceEvent()
-
+    class OnPicturesChange(val pictures: List<String>) : AddPlaceEvent()
+    class OnTypeChange(val type: String) : AddPlaceEvent()
+    class OnDateChange(val date: LocalDate) : AddPlaceEvent()
+    class OnCapacityChange(val capacity: Int) : AddPlaceEvent()
 }

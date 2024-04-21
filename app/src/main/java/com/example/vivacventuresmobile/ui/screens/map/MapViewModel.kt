@@ -2,7 +2,6 @@ package com.example.vivacventuresmobile.ui.screens.map
 
 import android.annotation.SuppressLint
 import android.os.Looper
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
@@ -11,7 +10,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -28,6 +26,7 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val getVivacPlacesRepository: GetVivacPlacesUseCase
 ) : ViewModel() {
+
     private val _uiState: MutableStateFlow<MapState> by lazy {
         MutableStateFlow(MapState())
     }
@@ -82,6 +81,7 @@ class MapViewModel @Inject constructor(
                     }
                 }
             }
+
             MapEvent.ToggleDarkMap -> {
                 _uiState.value = _uiState.value.copy(
                     properties = _uiState.value.properties.copy(
@@ -93,6 +93,7 @@ class MapViewModel @Inject constructor(
                 )
 
             }
+
             is MapEvent.SendError -> {
                 _uiState.value = _uiState.value.copy(error = event.error)
             }
@@ -158,19 +159,12 @@ class MapViewModel @Inject constructor(
     }
 
     private fun locationOn() {
-        //get location
-        startLocationUpdates()
         _uiState.value = _uiState.value.copy(
             error = "Location is on",
-            isLocationEnabled = true,
-//            cameraPositionState = CameraPositionState(
-//                position = CameraPosition.fromLatLngZoom(
-//                    _uiState.value.currentLocation!!,
-//                    10f
-//                )
-//            )
+            isLocationEnabled = true
         )
-
+        //get location
+        startLocationUpdates()
     }
 
     private fun locationOff() {
@@ -182,7 +176,7 @@ class MapViewModel @Inject constructor(
 //                    5.5f
 //                )),
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
-            error = "Location is off"
+            error = "Location is off",
         )
 
         //stop location updates
@@ -193,20 +187,27 @@ class MapViewModel @Inject constructor(
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
-        locationCallback?.let {
-            val locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY, 100
-            )
-                .setWaitForAccurateLocation(false)
-                .setMinUpdateIntervalMillis(3000)
-                .setMaxUpdateDelayMillis(100)
-                .build()
+        if (_uiState.value.isLocationEnabled) {
+            locationCallback?.let {
+                val locationRequest = LocationRequest.Builder(
+                    Priority.PRIORITY_HIGH_ACCURACY, 100
+                )
+                    .setWaitForAccurateLocation(false)
+                    .setMinUpdateIntervalMillis(3000)
+                    .setMaxUpdateDelayMillis(100)
+                    .build()
 
-            fusedLocationCLient?.requestLocationUpdates(
-                locationRequest,
-                it,
-                Looper.getMainLooper()
-            )
+                fusedLocationCLient?.requestLocationUpdates(
+                    locationRequest,
+                    it,
+                    Looper.getMainLooper()
+                )
+            }
+        } else {
+            locationCallback?.let {
+                fusedLocationCLient.removeLocationUpdates(it)
+            }
         }
     }
 }
+

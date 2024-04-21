@@ -8,4 +8,15 @@
     <string name="addplace">Add place</string>
     <string name="nombre">NOMBRE</string>
     <string name="nombre_">Nombre</string>
+    <string name="descripcion">DESCRIPCIÓN DEL LUGAR</string>
+    <string name="descripcion_">Descripción</string>
+    <string name="fotos">FOTOS DEL LUGAR</string>
+    <string name="tipo">TIPO</string>
+    <string name="tipo_">Tipo</string>
+    <string name="capacidad">CAPACIDAD</string>
+    <string name="capacidad_">Capacidad</string>
+    <string name="precio">PRECIO</string>
+    <string name="precio_">Precio</string>
+    <string name="fecha">FECHA</string>
+    <string name="select_date">Selecciona una fecha</string>
 </resources>

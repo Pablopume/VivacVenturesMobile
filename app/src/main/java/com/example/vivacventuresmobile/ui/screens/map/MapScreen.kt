@@ -1,7 +1,5 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
-import android.content.pm.PackageManager
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -40,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
@@ -60,21 +57,6 @@ private val permissions = arrayOf(
     android.Manifest.permission.ACCESS_FINE_LOCATION,
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
 )
-//
-//@Composable
-//private fun checkPermissions(): Boolean {
-//    var permissionGranted = false
-//    if (permissions.all {
-//            ContextCompat.checkSelfPermission(
-//                LocalContext.current,
-//                it
-//            ) == PackageManager.PERMISSION_GRANTED
-//        }) {
-//        locationRequired = true
-//        permissionGranted = true
-//    }
-//    return permissionGranted
-//}
 
 @Composable
 fun MapScreen(
