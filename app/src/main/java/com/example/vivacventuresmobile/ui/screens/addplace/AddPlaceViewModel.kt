@@ -76,6 +76,7 @@ class AddPlaceViewModel @Inject constructor(
                 }
             }.addOnFailureListener {
                 // Aquí puedes manejar el error
+
             }
         }
 
