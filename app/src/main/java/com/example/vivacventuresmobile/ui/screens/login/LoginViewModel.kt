@@ -41,7 +41,6 @@ class LoginViewModel @Inject constructor(
     fun handleEvent(loginEvent: LoginEvent) {
         when (loginEvent) {
             is LoginEvent.OnLoginEvent -> doLogin()
-            is LoginEvent.OnRegisterEvent -> doRegister()
             LoginEvent.ErrorVisto -> viewModelScope.launch { _state.update { it.copy(error = null) } }
 
             is LoginEvent.NameChanged -> _state.update { it.copy(user = loginEvent.name) }
@@ -60,7 +59,7 @@ class LoginViewModel @Inject constructor(
             }
         } else {
             viewModelScope.launch {
-                loginUseCase(Credentials(_state.value.user, _state.value.password))
+                loginUseCase(Credentials("", _state.value.user, _state.value.password))
                     .catch(action = { cause ->
                         _state.update { it.copy(error = cause.message, isLoading = false) }
                     })
@@ -101,22 +100,5 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun doRegister() {
-//        viewModelScope.launch {
-//            if (state.value.correoElectronico == "" || state.value.user == ""|| state.value.password == "") {
-//                _state.value = _state.value.copy(error = Constants.CAMPOS_INCOMPLETOS, isLoading = false)
-//            } else {
-//                val result = registerUseCase(state.value.user!!, state.value.password!!,state.value.correoElectronico!!)
-//                when (result) {
-//                    is NetworkResult.Success -> {
-//                        _state.value = _state.value.copy(error = Constants.USUARIOREGISTER, isLoading = false)
-//                    }
-//                    is NetworkResult.Error -> {
-//                        _state.value = _state.value.copy(error = result.message, isLoading = false)
-//                    }
-//                }
-//            }
-//        }
-    }
 
 }

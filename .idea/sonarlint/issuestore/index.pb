@@ -243,8 +243,6 @@ Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/register/RegisterE
 Zapp/src/main/java/com/example/vivacventuresmobile/ui/screens/register/RegisterViewModel.kt,f\a\fa8680301b980f13a8ea517c46a0b77b0c8c9cf6
 ‡
 Wapp/src/main/java/com/example/vivacventuresmobile/ui/screens/register/RegisterScreen.kt,c\b\cbd97181752508f5db8bc3a20dbd3c4c2b1238fc
-„
-Tapp/src/main/java/com/example/vivacventuresmobile/ui/screens/ForgotPasswordScreen.kt,5\1\512a76dad6c5979e9dccffa7085c3562fb391217
 “
 capp/src/main/java/com/example/vivacventuresmobile/ui/screens/forgotpassword/ForgotPasswordScreen.kt,5\1\513707971bc481b31e9f150ff6e7a52af24e08cd
 –

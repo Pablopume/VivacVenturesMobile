@@ -5,6 +5,8 @@
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="temppassword">Temporal password</string>
+    <string name="newpassword">New password</string>
     <string name="add">Add</string>
     <string name="addplace">Add place</string>
     <string name="nombre">NOMBRE</string>
@@ -25,5 +27,6 @@
     <string name="forgot_password">Forgot password</string>
     <string name="change_password">Change password</string>
     <string name="send_password">Send new password</string>
+    <string name="password_visibility_toggle">Password visibility toggle</string>
 
 </resources>

@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.ForgotPasswordUseCase
 import com.example.vivacventuresmobile.domain.usecases.ResetPasswordUseCase
+import com.example.vivacventuresmobile.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,11 +58,47 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     private fun sendEmail() {
-        _uiState.update { it.copy(emailsend = true) }
         if (_uiState.value.correoElectronico.isNotEmpty()) {
-            forgotPasswordUseCase.invoke(_uiState.value.correoElectronico)
             viewModelScope.launch {
+                forgotPasswordUseCase(_uiState.value.correoElectronico)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = "Email sent with temporary password",
+                                        loading = false,
+                                        emailsend = true
+                                    )
+                                }
+                            }
 
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
             }
         } else {
             _uiState.update { it.copy(error = "Please enter an email") }
@@ -68,7 +106,52 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     private fun changePassword() {
-        _uiState.update { it.copy(passwordchanged = true) }
+        if (_uiState.value.correoElectronico.isNotEmpty() && _uiState.value.password.isNotEmpty() && _uiState.value.temppassword.isNotEmpty()) {
+            viewModelScope.launch {
+                resetPasswordUseCase(_uiState.value.correoElectronico, _uiState.value.password, _uiState.value.temppassword)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = "Password changed",
+                                        loading = false,
+                                        passwordchanged = true
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        } else {
+            _uiState.update { it.copy(error = "Please fill all fields") }
+        }
+
     }
 
 

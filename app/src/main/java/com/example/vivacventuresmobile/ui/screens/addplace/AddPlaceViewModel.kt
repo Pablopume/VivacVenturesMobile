@@ -104,7 +104,7 @@ class AddPlaceViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = null,
+                                        error = "Password changed",
                                         loading = false,
                                         addPlaceDone = true
                                     )

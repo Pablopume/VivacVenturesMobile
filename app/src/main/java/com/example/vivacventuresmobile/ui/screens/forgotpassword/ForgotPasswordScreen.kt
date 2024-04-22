@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -19,14 +24,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,6 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ForgotPasswordScreen(
     viewModel: ForgotPasswordViewModel = hiltViewModel(),
+    onPasswordReset: () -> Unit
 ) {
     PantallaForgotPassword(
         state = viewModel.uiState.collectAsStateWithLifecycle().value,
@@ -48,6 +58,7 @@ fun ForgotPasswordScreen(
         { viewModel.handleEvent(ForgotPasswordEvent.OnEmailChange(it)) },
         { viewModel.handleEvent(ForgotPasswordEvent.SendEmail()) },
         { viewModel.handleEvent(ForgotPasswordEvent.ForgotPassword()) },
+        onPasswordReset
     )
 }
 
@@ -59,6 +70,7 @@ fun PantallaForgotPassword(
     OnEmailChange: (String) -> Unit,
     onSendEmail: () -> Unit,
     onChangePassword: () -> Unit,
+    onPasswordReset: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -71,6 +83,12 @@ fun PantallaForgotPassword(
                     message = state.error.toString(),
                     duration = SnackbarDuration.Short,
                 )
+            }
+        }
+
+        LaunchedEffect(state.passwordchanged) {
+            if (state.passwordchanged) {
+                onPasswordReset()
             }
         }
 
@@ -95,7 +113,7 @@ fun PantallaForgotPassword(
                         } else {
                             TempPasswordField(state.temppassword ?: "", onTempPasswordChanged)
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                            PasswordField(state.password, onPasswordChanged)
+                            NewPasswordField(state.password, onPasswordChanged)
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                             BotonChangePassword(onChangePassword)
                         }
@@ -125,23 +143,54 @@ fun BotonChangePassword(onChangePassword: () -> Unit) {
         onClick = onChangePassword,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = stringResource(id = R.string.register))
+        Text(text = stringResource(id = R.string.change_password))
     }
 }
 
 
 @Composable
 fun TempPasswordField(password: String, onPasswordChanged: (String) -> Unit) {
+    var passwordVisibility by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.password)) },
+        placeholder = { Text(stringResource(id = R.string.temppassword)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         singleLine = true,
         maxLines = 1,
-        visualTransformation = PasswordVisualTransformation(),
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(
+                    imageVector = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                    contentDescription = stringResource(id = R.string.password_visibility_toggle)
+                )
+            }
+        },
     )
 }
 
+@Composable
+fun NewPasswordField(password: String, onPasswordChanged: (String) -> Unit) {
+    var passwordVisibility by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = password,
+        onValueChange = onPasswordChanged,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(stringResource(id = R.string.newpassword)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        singleLine = true,
+        maxLines = 1,
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(
+                    imageVector = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                    contentDescription = stringResource(id = R.string.password_visibility_toggle)
+                )
+            }
+        },
+    )
+}
 

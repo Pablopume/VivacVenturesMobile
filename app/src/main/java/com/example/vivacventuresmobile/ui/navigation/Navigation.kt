@@ -73,7 +73,15 @@ fun Navigation(
         composable(
             ConstantesPantallas.FORGOTPASSWORD
         ) {
-            ForgotPasswordScreen()
+            ForgotPasswordScreen(
+                onPasswordReset = {
+                    navController.navigate(ConstantesPantallas.LOGIN) {
+                        popUpTo(ConstantesPantallas.FORGOTPASSWORD) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
         composable(
             ConstantesPantallas.MAP
