@@ -28,7 +28,6 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    correoElectronico = "",
                     user = "",
                     password = "",
                     error = null,
@@ -44,8 +43,6 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.OnLoginEvent -> doLogin()
             is LoginEvent.OnRegisterEvent -> doRegister()
             LoginEvent.ErrorVisto -> viewModelScope.launch { _state.update { it.copy(error = null) } }
-            is LoginEvent.EmailChanged -> _state.value =
-                _state.value.copy(correoElectronico = loginEvent.email)
 
             is LoginEvent.NameChanged -> _state.update { it.copy(user = loginEvent.name) }
             is LoginEvent.PasswordChange -> _state.update { it.copy(password = loginEvent.password) }

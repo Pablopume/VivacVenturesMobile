@@ -81,9 +81,9 @@ class AddPlaceViewModel @Inject constructor(
 
             }
         }
-
         return imageUrls
     }
+
     private fun addPlace() {
         if (_uiState.value.place.name.isEmpty() || _uiState.value.place.description.isEmpty() || _uiState.value.place.type.isEmpty()) {
             _uiState.value = _uiState.value.copy(error = "Please fill all fields")

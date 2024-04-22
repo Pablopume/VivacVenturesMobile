@@ -4,6 +4,8 @@ object ConstantesPantallas {
     const val USER_OR_PASS_EMPTY = "Usuario o contraseña vacíos"
     const val LOGIN = "login"
     const val LOGOUT = "logout"
+    const val REGISTER = "register"
+    const val FORGOTPASSWORD = "forgotpassword"
 
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"
@@ -19,4 +21,5 @@ object ConstantesPantallas {
 
     const val ELIMINADO = "Eliminado"
     const val ERRORCAMPOSVACIOS = "Rellene todos los campos"
+    const val USER_REGISTRADO = "Usuario registrado."
 }

@@ -14,10 +14,12 @@ import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.ui.screens.account.AccountScreen
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceScreen
 import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceScreen
+import com.example.vivacventuresmobile.ui.screens.forgotpassword.ForgotPasswordScreen
 import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.login.LoginScreen
 import com.example.vivacventuresmobile.ui.screens.logout.LogoutScreen
 import com.example.vivacventuresmobile.ui.screens.map.MapScreen
+import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
 
 @Composable
 fun Navigation(
@@ -39,15 +41,39 @@ fun Navigation(
             ConstantesPantallas.LOGIN
         ) {
             LoginScreen(
-                onViewDetalle = {
+                onLoginDone = {
                     navController.navigate(ConstantesPantallas.MAP) {
                         popUpTo(ConstantesPantallas.LOGIN) {
                             inclusive = true
                         }
                     }
                 },
+                onRegisterClick = {
+                    navController.navigate(ConstantesPantallas.REGISTER)
+                },
+                onForgotPassword = {
+                    navController.navigate(ConstantesPantallas.FORGOTPASSWORD)
+                },
                 dataStore = dataStore
             )
+        }
+        composable(
+            ConstantesPantallas.REGISTER
+        ) {
+            RegisterScreen(
+                onRegisterDone = {
+                    navController.navigate(ConstantesPantallas.LOGIN) {
+                        popUpTo(ConstantesPantallas.REGISTER) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+        composable(
+            ConstantesPantallas.FORGOTPASSWORD
+        ) {
+            ForgotPasswordScreen()
         }
         composable(
             ConstantesPantallas.MAP

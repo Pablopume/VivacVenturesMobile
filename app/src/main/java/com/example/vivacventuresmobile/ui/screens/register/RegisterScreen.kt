@@ -1,4 +1,4 @@
-package com.example.vivacventuresmobile.ui.screens.login
+package com.example.vivacventuresmobile.ui.screens.register
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,64 +9,52 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.preferences.AppPreferences
-import kotlinx.coroutines.launch
+import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
-    onLoginDone: (String) -> Unit,
-    onRegisterClick: () -> Unit,
-    onForgotPassword: () -> Unit,
-    dataStore: DataStore<AppPreferences>
+fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
+    onRegisterDone: () -> Unit,
 ) {
-    PantallaLogin(
-        state = viewModel.state.collectAsStateWithLifecycle().value,
-        onLoginDone = onLoginDone,
-        { viewModel.handleEvent(LoginEvent.PasswordChange(it)) },
-        { viewModel.handleEvent(LoginEvent.NameChanged(it)) },
-        { viewModel.handleEvent(LoginEvent.OnLoginEvent()) },
-        onRegisterClick,
-        onForgotPassword,
-        dataStore
+    PantallaRegister(
+        state = viewModel.uiState.collectAsStateWithLifecycle().value,
+        onRegisterDone = onRegisterDone,
+        { viewModel.handleEvent(RegisterEvent.OnEmailChange(it)) },
+        { viewModel.handleEvent(RegisterEvent.OnPasswordChange(it)) },
+        { viewModel.handleEvent(RegisterEvent.OnUserNameChange(it)) },
+        { viewModel.handleEvent(RegisterEvent.Register()) },
     )
 }
 
 @Composable
-fun PantallaLogin(
-    state: LoginState,
-    onLoginDone: (String) -> Unit,
+fun PantallaRegister(
+    state: RegisterState,
+    onRegisterDone: () -> Unit,
+    onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onNombreChanged: (String) -> Unit,
-    onLogin: () -> Unit,
     onRegister: () -> Unit,
-    onForgotPassword: () -> Unit,
-    dataStore: DataStore<AppPreferences>
+    ) {
 
-) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -80,29 +68,15 @@ fun PantallaLogin(
                 )
             }
         }
-
-        val coroutineScope = rememberCoroutineScope()
-
-        LaunchedEffect(state.loginSuccess) {
-            if (state.loginSuccess) {
-                coroutineScope.launch {
-                    dataStore.updateData {
-                        it.copy(
-                            username = state.user ?: "",
-                            password = state.password ?: ""
-                        )
-                    }
-                }
-                onLoginDone(state.user ?: "")
+        LaunchedEffect(state.registered) {
+            if (state.registered) {
+                onRegisterDone()
             }
         }
 
-
         Box(modifier = Modifier.fillMaxSize()) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
+            if (state.loading) {
+                LoadingAnimation(visible = state.loading)
             } else {
                 Box(
                     modifier = Modifier
@@ -111,37 +85,20 @@ fun PantallaLogin(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
-                        Nombre(state.user ?: "", onNombreChanged)
+                        EmailField(state.correoElectronico, onEmailChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-
-                        Password(state.password ?: "", onPasswordChanged)
+                        NombreField(state.user, onNombreChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                        BotonLogin(onLogin)
+                        PasswordField(state.password, onPasswordChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                         BotonRegister(onRegister)
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                        BotonForgotPassword(onForgotPassword)
 
                     }
-                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
-                        //forgot password
-                    }
-
                 }
             }
         }
 
 
-    }
-}
-
-@Composable
-fun BotonForgotPassword(onForgotPassword: () -> Unit) {
-    TextButton(
-        onClick = onForgotPassword,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = stringResource(id = R.string.forgot_password))
     }
 }
 
@@ -151,23 +108,12 @@ fun BotonRegister(onRegister: () -> Unit) {
         onClick = onRegister,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = stringResource(id = R.string.register))
+        Text(Constantes.REGISTER)
     }
 }
 
 @Composable
-fun BotonLogin(onLogin: () -> Unit) {
-
-    Button(
-        onClick = onLogin,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = stringResource(id = R.string.login))
-    }
-}
-
-@Composable
-fun Password(password: String, onPasswordChanged: (String) -> Unit) {
+fun PasswordField(password: String, onPasswordChanged: (String) -> Unit) {
     OutlinedTextField(
         value = password,
         onValueChange = onPasswordChanged,
@@ -181,12 +127,25 @@ fun Password(password: String, onPasswordChanged: (String) -> Unit) {
 }
 
 @Composable
-fun Nombre(username: String, onNombreChanged: (String) -> Unit) {
+fun NombreField(username: String, onNombreChanged: (String) -> Unit) {
     OutlinedTextField(
         value = username,
         onValueChange = onNombreChanged,
         modifier = Modifier.fillMaxWidth(),
         label = { Text(stringResource(id = R.string.username)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        singleLine = true,
+        maxLines = 1,
+    )
+}
+
+@Composable
+fun EmailField(username: String, onNombreChanged: (String) -> Unit) {
+    OutlinedTextField(
+        value = username,
+        onValueChange = onNombreChanged,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(stringResource(id = R.string.email)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         singleLine = true,
         maxLines = 1,
