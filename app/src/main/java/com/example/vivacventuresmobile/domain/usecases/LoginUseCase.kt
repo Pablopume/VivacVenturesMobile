@@ -1,6 +1,6 @@
 package com.example.vivacventuresmobile.domain.usecases
 
-import com.example.vivacventuresmobile.data.model.LoginTokens
+import com.example.vivacventuresmobile.data.model.LoginToken
 import com.example.vivacventuresmobile.data.repositories.LoginRepository
 import com.example.vivacventuresmobile.data.sources.remote.TokenManager
 import com.example.vivacventuresmobile.domain.modelo.Credentials
@@ -12,7 +12,7 @@ class LoginUseCase @Inject constructor(
     var repository: LoginRepository,
     private val tokenManager: TokenManager,
 ){
-    suspend operator fun invoke(credentials : Credentials): Flow<NetworkResult<LoginTokens>> {
+    suspend operator fun invoke(credentials : Credentials): Flow<NetworkResult<LoginToken>> {
         val loginResult = repository.login(credentials)
 
         loginResult.collect{ result ->

@@ -255,3 +255,5 @@ bapp/src/main/java/com/example/vivacventuresmobile/ui/screens/forgotpassword/For
 Yapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/ResetPasswordUseCase.kt,1\c\1c4d7b925d2811d9d9e87c6c62d0baf0688d0c31
 Š
 Zapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/ForgotPasswordUseCase.kt,5\0\50d7e318ceedb2911c48e14bd1af11497b0871df
+z
+Japp/src/main/java/com/example/vivacventuresmobile/data/model/LoginToken.kt,9\1\9107ec320b68a796a5da1484fcc14d5083e5df4a

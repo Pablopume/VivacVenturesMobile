@@ -1,6 +1,6 @@
 package com.example.vivacventuresmobile.data.model
 
-data class LoginTokens(
+data class LoginToken(
     val accessToken: String?,
     val refreshToken: String?
 )

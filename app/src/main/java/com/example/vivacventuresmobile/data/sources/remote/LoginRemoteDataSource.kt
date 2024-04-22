@@ -1,7 +1,7 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.model.LoginTokens
+import com.example.vivacventuresmobile.data.model.LoginToken
 import com.example.vivacventuresmobile.domain.modelo.Credentials
 import com.example.vivacventuresmobile.utils.NetworkResult
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class LoginRemoteDataSource @Inject constructor(
         }
     }
 
-    suspend fun login(credentials: Credentials): NetworkResult<LoginTokens> {
+    suspend fun login(credentials: Credentials): NetworkResult<LoginToken> {
         return try {
             val response = loginService.login(credentials.username, credentials.password)
             if (response.isSuccessful) {

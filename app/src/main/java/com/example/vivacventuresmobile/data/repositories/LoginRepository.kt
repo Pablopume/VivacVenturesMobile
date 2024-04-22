@@ -1,6 +1,6 @@
 package com.example.vivacventuresmobile.data.repositories
 
-import com.example.vivacventuresmobile.data.model.LoginTokens
+import com.example.vivacventuresmobile.data.model.LoginToken
 import com.example.vivacventuresmobile.data.sources.remote.LoginRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.Credentials
 import com.example.vivacventuresmobile.utils.NetworkResult
@@ -25,7 +25,7 @@ class LoginRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun login(credentials: Credentials): Flow<NetworkResult<LoginTokens>> {
+    fun login(credentials: Credentials): Flow<NetworkResult<LoginToken>> {
         return flow {
             emit(NetworkResult.Loading())
             val result = remoteDataSource.login(credentials)

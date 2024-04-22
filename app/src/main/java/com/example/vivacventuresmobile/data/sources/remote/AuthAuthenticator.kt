@@ -2,7 +2,7 @@ package com.example.vivacventuresmobile.data.sources.remote
 
 
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.model.LoginTokens
+import com.example.vivacventuresmobile.data.model.LoginToken
 import com.example.vivacventuresmobile.utils.Constants
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -39,7 +39,7 @@ class AuthAuthenticator @Inject constructor(
         }
     }
 
-    private suspend fun getNewToken(refreshToken: String?): retrofit2.Response<LoginTokens> {
+    private suspend fun getNewToken(refreshToken: String?): retrofit2.Response<LoginToken> {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()

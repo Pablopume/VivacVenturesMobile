@@ -1,7 +1,7 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.model.LoginTokens
+import com.example.vivacventuresmobile.data.model.LoginToken
 import com.example.vivacventuresmobile.domain.modelo.Credentials
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,10 +15,10 @@ interface LoginService {
     suspend fun register(@Body credentials: Credentials): Response<Credentials>
 
     @GET(Constantes.LOGIN_PATH)
-    suspend fun login(@Query(Constantes.USERNAME) username: String, @Query(Constantes.PASSWORD)password: String): Response<LoginTokens>
+    suspend fun login(@Query(Constantes.USERNAME) username: String, @Query(Constantes.PASSWORD)password: String): Response<LoginToken>
 
     @GET(Constantes.REFRESH_PATH)
-    suspend fun refreshToken(@Query(Constantes.TOKEN) token: String): Response<LoginTokens>
+    suspend fun refreshToken(@Query(Constantes.TOKEN) token: String): Response<LoginToken>
 
     @PUT(Constantes.FORGOTPASSWORDPATH)
     suspend fun forgotPassword(@Query(Constantes.EMAIL) email: String): Response<Unit>

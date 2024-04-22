@@ -9,12 +9,20 @@ import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
     private val tokenManager: TokenManager,
-): Interceptor {
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+
+        val originalRequest = chain.request()
+        val url = originalRequest.url.toString()
+        if (url.contains("/auth")) {
+            return chain.proceed(originalRequest)
+        }
         val token = runBlocking {
             tokenManager.getAccessToken().first()
         }
-        val request = chain.request().newBuilder().header(Constantes.AUTHORIZATION, Constantes.BEARER+"$token").build()
+
+        val request = chain.request().newBuilder()
+            .header(Constantes.AUTHORIZATION, Constantes.BEARER + "$token").build()
         return chain.proceed(request)
     }
 }
