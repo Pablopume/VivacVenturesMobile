@@ -16,11 +16,9 @@ class LoginRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                if (response.code() == 400) {
-                    NetworkResult.Error(Constantes.USER_EXISTS)
-                } else {
-                    NetworkResult.Error("${response.code()} ${response.message()}")
-                }
+
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
