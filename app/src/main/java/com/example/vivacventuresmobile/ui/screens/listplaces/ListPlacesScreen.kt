@@ -34,10 +34,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +54,12 @@ import com.example.vivacventuresmobile.ui.theme.BlueRefugee
 import com.example.vivacventuresmobile.ui.theme.GreenVivac
 import com.example.vivacventuresmobile.ui.theme.RedAlbergue
 import com.example.vivacventuresmobile.ui.theme.YellowRefugee
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 
 @Composable
@@ -62,13 +70,18 @@ fun ListPlacesScreen(
     onAddPlace: () -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+    if (!Places.isInitialized()) {
+        Places.initialize(LocalContext.current, "AIzaSyAJhTuHWdTmBCIsJkZ-_QrwxmfPvw3Qx5I")
+    }
+    val placesClient = Places.createClient(LocalContext.current)
     ListPlaces(
         state.value,
         { viewModel.handleEvent(ListPlacesEvent.ErrorVisto) },
         onViewDetalle,
         { viewModel.handleEvent(ListPlacesEvent.GetVivacPlacesByType(it)) },
         bottomNavigationBar,
-        onAddPlace
+        onAddPlace,
+        placesClient
     )
 }
 
@@ -80,12 +93,9 @@ fun ListPlaces(
     onViewDetalle: (Int) -> Unit,
     onGetVivacPlacesByType: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
-    onAddPlace: () -> Unit
+    onAddPlace: () -> Unit,
+    placesClient: PlacesClient,
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var typeSelect by remember {
-        mutableStateOf("")
-    }
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -116,8 +126,22 @@ fun ListPlaces(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 // Barra de búsqueda
-                Text(
-                    text = "Buscador",
+                val coroutineScope = rememberCoroutineScope()
+
+                var searchText by remember { mutableStateOf("") }
+
+                TextField(
+                    value = searchText,
+                    onValueChange = { value ->
+                        searchText = value
+                        // Buscar lugares con Google Places
+                        coroutineScope.launch {
+                            val places = searchPlaces(placesClient, searchText)
+                            // Aquí puedes actualizar tu estado con los lugares encontrados
+                        }
+
+                    },
+                    label = { Text("Buscador") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterStart)
@@ -128,9 +152,13 @@ fun ListPlaces(
                     DropDown(onGetVivacPlacesByType = onGetVivacPlacesByType)
                 }
             }
-//            DropDown(onGetVivacPlacesByType)
             if (state.loading) {
-                Box(modifier =  Modifier.fillMaxWidth().weight(0.8f), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.8f),
+                    contentAlignment = Alignment.Center
+                ) {
                     LoadingAnimation(state.loading)
                 }
             } else {
@@ -189,7 +217,9 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
 //                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier.width(100.dp).menuAnchor()
+                modifier = Modifier
+                    .width(100.dp)
+                    .menuAnchor()
 //                modifier = Modifier
 //                    .width(200.dp)
 //                    .align(AbsoluteAlignment.Right)
@@ -265,6 +295,16 @@ fun VivacPlaceItem(
     }
 }
 
+suspend fun searchPlaces(placesClient: PlacesClient, query: String): List<AutocompletePrediction> {
+    val request = FindAutocompletePredictionsRequest.builder()
+        .setQuery(query)
+        .build()
+
+    val response = placesClient.findAutocompletePredictions(request).await()
+
+    return response.autocompletePredictions
+}
+
 @Preview
 @Composable
 fun PreviewVivacPlaceItem() {
@@ -317,6 +357,7 @@ fun previewLista() {
         onViewDetalle = {},
         onGetVivacPlacesByType = {},
         bottomNavigationBar = {},
-        onAddPlace = {}
+        onAddPlace = {},
+        placesClient = Places.createClient(LocalContext.current)
     )
 }

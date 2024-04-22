@@ -221,3 +221,17 @@ Vapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addplace/AddPlaceE
 Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddPlaceUseCase.kt,f\c\fcacc2da023710999fd5612357ffda6990f6b9ee
 H
 app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9
+ä
+Zapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/AuthAuthenticator.kt,e\6\e6d574a554788c5b6339b51add974ad494a448a3
+à
+Xapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/AuthInterceptor.kt,2\1\21bbf3918a726e366b07037e738623729f00fb8b
+Ö
+Uapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/TokenManager.kt,e\3\e350621eba5046369a33657e67a55f8fb9b73a37
+Ü
+Vapp/src/main/java/com/example/vivacventuresmobile/data/repositories/LoginRepository.kt,2\0\208097143e4366a34c162272088dc88e45433c20
+é
+^app/src/main/java/com/example/vivacventuresmobile/data/sources/remote/LoginRemoteDataSource.kt,3\4\346dfe101ccf84db5906571e32bc2efe7bd139dc
+Å
+Qapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/LoginUseCase.kt,b\4\b49884aabcfc7c86213d2aef31f6a73d08d45195
+Ñ
+Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/RegisterUseCase.kt,d\0\d09075d2a9d65399dcb0fd67d801cc18e543f420

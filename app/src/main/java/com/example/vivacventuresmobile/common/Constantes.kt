@@ -14,9 +14,9 @@ object Constantes {
     const val ACCESS_TOKEN = "access_token"
     const val DISMISS = "Dismiss"
     const val NO_PERMISSION = "You need admin permission"
-    const val REGISTER_PATH = "/register"
-    const val LOGIN_PATH = "/login"
-    const val REFRESH_PATH = "/refresh"
+    const val REGISTER_PATH = "/auth/register"
+    const val LOGIN_PATH = "/auth/login"
+    const val REFRESH_PATH = "/auth/refresh"
     const val TOKEN = "token"
     const val FORBIDDEN = "Forbidden"
 

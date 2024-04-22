@@ -52,6 +52,11 @@ android {
         }
     }
 }
+configurations.all {
+    resolutionStrategy {
+        force ("androidx.appcompat:appcompat:1.3.1")
+    }
+}
 
 dependencies {
 
@@ -85,8 +90,9 @@ dependencies {
 
     //maps
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.maps.android:maps-compose:2.12.0")
+    implementation("com.google.maps.android:maps-compose:3.0.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.libraries.places:places:3.4.0")
 
     // Dagger - Hilt
     implementation ("com.google.dagger:hilt-android:2.50")

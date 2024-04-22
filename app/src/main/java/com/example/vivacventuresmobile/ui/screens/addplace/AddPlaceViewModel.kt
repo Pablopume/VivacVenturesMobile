@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.google.firebase.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.storage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -62,7 +64,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     private fun uploadImages(imageUris: List<Uri>): List<String> {
-        val storage = FirebaseStorage.getInstance()
+        val storage = Firebase.storage
         val storageRef = storage.getReference()
         val imageUrls = mutableListOf<String>()
 

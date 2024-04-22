@@ -1,13 +1,18 @@
 package com.example.vivacventuresmobile.data.sources.remote.di
 
-import com.example.vivacventuresmobile.utils.Constants.BASE_URL
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.example.vivacventuresmobile.common.Constantes
+import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
+import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
-import com.example.vivacventuresmobile.data.sources.remote.ServiceInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
+import com.example.vivacventuresmobile.utils.Constants.BASE_URL
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,18 +30,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-
     @Singleton
     @Provides
-    fun provideServiceInterceptor(): ServiceInterceptor = ServiceInterceptor()
-
-
-    @Singleton
-    @Provides
-    fun provideHttpClient(serviceInterceptor: ServiceInterceptor): OkHttpClient {
+    fun provideHttpClient(
+        authInterceptor: AuthInterceptor,
+        authAuthenticator: AuthAuthenticator
+    ): OkHttpClient {
         return OkHttpClient
             .Builder()
-            .addInterceptor(serviceInterceptor)
+            .addInterceptor(authInterceptor)
+            .authenticator(authAuthenticator)
             .build()
     }
 
@@ -49,6 +52,7 @@ object NetworkModule {
         return MoshiConverterFactory.create(moshi)
     }
 
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constantes.DATA_STORE)
 
     @Singleton
     @Provides
@@ -82,7 +86,6 @@ object NetworkModule {
 
 
 class LocalDateAdapter {
-
     @ToJson
     fun toJson(value: LocalDate): String {
         return value.format(DateTimeFormatter.ISO_LOCAL_DATE)
