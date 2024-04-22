@@ -4,7 +4,7 @@ object Constantes {
     const val AUTHORIZATION = "Authorization"
     const val BEARER = "Bearer "
     const val USERORPASS_INCORRECT = "Usuario o contraseña incorrectos"
-    const val USER_EXISTS = "El usuario ya existe"
+    const val USER_EXISTS = "El usuario o el email ya existe"
     const val ERROR_DESCONOCIDO = "Error desconocido"
     const val REFRESH_TOKEN = "RefreshToken"
     const val APP_DB = "app.db"

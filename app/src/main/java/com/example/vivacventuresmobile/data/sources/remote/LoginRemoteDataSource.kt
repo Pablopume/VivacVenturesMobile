@@ -16,9 +16,11 @@ class LoginRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-
+                if (response.code() == 409) {
+                    NetworkResult.Error(Constantes.USER_EXISTS)
+                } else {
                     NetworkResult.Error("${response.code()} ${response.errorBody()}")
-
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -55,7 +57,11 @@ class LoginRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.message()}")
+                if (response.code() == 404) {
+                    NetworkResult.Error("No existe una cuenta con ese correo")
+                } else {
+                    NetworkResult.Error("${response.code()} ${response.message()}")
+            }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -68,7 +74,12 @@ class LoginRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.message()}")
+
+                if (response.code() == 403) {
+                    NetworkResult.Error("La contraseña temporal introducida es incorrecta")
+                } else {
+                    NetworkResult.Error("${response.code()} ${response.message()}")
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
