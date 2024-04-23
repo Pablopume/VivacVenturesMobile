@@ -4,4 +4,5 @@
     <dimen name="smallmedium_padding">8dp</dimen>
     <dimen name="medium_padding">16dp</dimen>
     <dimen name="big_padding">25dp</dimen>
+    <dimen name="xl_padding">60dp</dimen>
 </resources>

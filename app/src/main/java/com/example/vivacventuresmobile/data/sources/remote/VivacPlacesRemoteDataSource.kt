@@ -62,7 +62,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
 
     suspend fun addVivacPlace(vivacPlace: VivacPlace): NetworkResult<VivacPlace> {
         try {
-            val response = vivacPlacesService.postVivacPlace(vivacPlace.toVivacPlaceResponse())
+            val response = vivacPlacesService.saveVivacPlace(vivacPlace)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {

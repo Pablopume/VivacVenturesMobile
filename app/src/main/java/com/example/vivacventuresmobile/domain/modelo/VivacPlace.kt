@@ -13,5 +13,6 @@ data class VivacPlace(
     val date: LocalDate = LocalDate.MIN,
     val valorations: List<Valoration> = emptyList(),
     val type: String = "",
+    val price: Double = 0.0,
     val images: List<String> = emptyList()
 )

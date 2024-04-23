@@ -10,6 +10,11 @@ import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
 import com.example.vivacventuresmobile.utils.Constants.BASE_URL
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
@@ -30,7 +35,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     @Singleton
     @Provides
     fun provideHttpClient(

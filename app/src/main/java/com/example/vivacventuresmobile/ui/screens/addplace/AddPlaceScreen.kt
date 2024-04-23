@@ -45,7 +45,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,24 +52,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
-import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+
 
 @Composable
 fun AddPlaceScreen(
     viewModel: AddPlaceViewModel = hiltViewModel(),
     bottomNavigationBar: @Composable () -> Unit = {},
-    onAddDone: () -> Unit
+    onAddDone: () -> Unit,
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
 
     AddPlace(
         state.value,
@@ -84,6 +86,7 @@ fun AddPlaceScreen(
         { viewModel.handleEvent(AddPlaceEvent.OnTypeChange(it)) },
         { viewModel.handleEvent(AddPlaceEvent.OnDateChange(it)) },
         { viewModel.handleEvent(AddPlaceEvent.OnCapacityChange(it)) },
+        { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it))}
     )
 
 
@@ -102,6 +105,7 @@ fun AddPlace(
     onTypeChange: (String) -> Unit,
     onDateChange: (LocalDate) -> Unit,
     onCapacityChange: (Int) -> Unit,
+    onPriceChange: (String) -> Unit
 
     ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -142,14 +146,25 @@ fun AddPlace(
                     Text(text = stringResource(id = R.string.descripcion))
                     DescriptionField(state.place.description, onDesciptionChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.tipo))
-                    TipoPicker(state.place.type, onTypeChange)
+                    Row {
+                        Text(text = stringResource(id = R.string.tipo))
+                        TipoPicker(state.place.type, onTypeChange)
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.xl_padding)))
+                        Text(text = stringResource(id = R.string.fecha))
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.big_padding)))
+                        DatePickerField(state.place.date, onDateChange)
+                    }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.capacidad))
-                    CapacityField(state.place.capacity, onCapacityChange)
+                    Row {
+                        Text(text = stringResource(id = R.string.capacidad))
+                        CapacityField(state.place.capacity, Modifier.weight(1f) , onCapacityChange)
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Text(text = stringResource(id = R.string.precio))
+                        PriceField(state.place.price, Modifier.weight(1f) , onPriceChange)
+                    }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.fecha))
-                    DatePickerField(state.place.date, onDateChange)
+//                    Text(text = stringResource(id = R.string.fecha))
+//                    DatePickerField(state.place.date, onDateChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     Text(text = stringResource(id = R.string.fotos))
                     PicturePicker(state.place.images, onPicturesChange)
@@ -219,11 +234,37 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
 }
 
 @Composable
-fun CapacityField(capacity: Int, onCapacityChange: (Int) -> Unit) {
+fun PriceField(price: Double, modifier: Modifier, onPriceChange: (String) -> Unit) {
+    val priceStr = if (price == 0.0) "" else price.toString()
     TextField(
-        value = capacity.toString(),
-        onValueChange = { onCapacityChange(it.toInt()) },
-        modifier = Modifier.fillMaxWidth(),
+        value = priceStr,
+        onValueChange = {
+            val price = it.toDoubleOrNull()
+            if (price != null) {
+                onPriceChange(it)
+            } else if (it.isEmpty()) {
+                onPriceChange("0")
+            }
+        },
+        modifier = modifier.fillMaxWidth(),
+        placeholder = { Text(stringResource(id = R.string.precio)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true,
+    )
+}
+
+@Composable
+fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> Unit) {
+    val capacityStr = if (capacity == 0) "" else capacity.toString()
+    TextField(
+        value = capacityStr,
+        onValueChange = {
+            if (it.isNotEmpty()) {
+                onCapacityChange(it.toInt())
+            } else {
+                onCapacityChange(0)
+            } },
+        modifier = modifier.fillMaxWidth(),
         placeholder = { Text(stringResource(id = R.string.capacidad)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
@@ -357,4 +398,27 @@ fun AddButton(onAddPlaceClick: () -> Unit) {
         }
 
     }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    device = Devices.PIXEL_4
+)
+@Composable
+fun AddPlacePreview() {
+    AddPlace(
+        state = AddPlaceState(),
+        errorVisto = {},
+        bottomNavigationBar = {},
+        onAddDone = {},
+        onAddPlaceClick = {},
+        onNameChange = {},
+        onDesciptionChange = {},
+        onPicturesChange = {},
+        onTypeChange = {},
+        onDateChange = {},
+        onCapacityChange = {},
+        onPriceChange = {}
+    )
 }

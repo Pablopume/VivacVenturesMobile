@@ -20,7 +20,7 @@
     <string name="capacidad_">Capacidad</string>
     <string name="precio">PRECIO</string>
     <string name="precio_">Precio</string>
-    <string name="fecha">FECHA</string>
+    <string name="fecha">FECHA:</string>
     <string name="select_date">Selecciona una fecha</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
