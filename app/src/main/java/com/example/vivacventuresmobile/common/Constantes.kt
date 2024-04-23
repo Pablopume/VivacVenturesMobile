@@ -16,10 +16,10 @@ object Constantes {
     const val NO_PERMISSION = "You need admin permission"
     const val REGISTER_PATH = "/auth/register"
     const val LOGIN_PATH = "/auth/login"
-    const val REFRESH_PATH = "/auth/refresh"
+    const val REFRESH_PATH = "/auth/refreshToken"
     const val FORGOTPASSWORDPATH = "/auth/forgotPassword"
     const val RESETPATH = "/auth/resetPassword"
-    const val TOKEN = "token"
+    const val TOKEN = "refreshToken"
     const val FORBIDDEN = "Forbidden"
     const val VERIFY_EMAIL = "Verify your email"
 
