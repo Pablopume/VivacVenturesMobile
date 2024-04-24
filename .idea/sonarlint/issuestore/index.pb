@@ -27,8 +27,6 @@ v
 Fapp/src/main/java/com/example/vivacventuresmobile/common/Constantes.kt,9\2\92f978460874d5efd03e57d4e29b9ed6a7fb67d0
 }
 Mapp/src/main/java/com/example/vivacventuresmobile/data/mappers/DataMappers.kt,b\c\bc940de4601b4db5b127f9e39bbf3fd339302a62
-{
-Kapp/src/main/java/com/example/vivacventuresmobile/data/model/LoginTokens.kt,3\e\3ef8c50a356f8eba92a5dea06d0cf3b9061f4954
 Ö
 Uapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/LoginService.kt,a\2\a2ab54a32dc1e3e479fa96f170d99f0b6179e14d
 ~
@@ -98,11 +96,7 @@ G.idea/sonarlint/issuestore/9/2/92f978460874d5efd03e57d4e29b9ed6a7fb67d0,a\4\a4
 Å
 Q.idea/sonarlint/securityhotspotstore/9/2/92f978460874d5efd03e57d4e29b9ed6a7fb67d0,1\e\1e6f567569bc76f214b05f1f1d8ba77fbacb9593
 w
-G.idea/sonarlint/issuestore/3/e/3ef8c50a356f8eba92a5dea06d0cf3b9061f4954,9\b\9bb0baebe18a772dcc3afcf98123ea0b59772815
-w
 G.idea/sonarlint/issuestore/3/1/3163ef10bcb706c63e3f2ce2d01e7aa7814338ab,0\6\062b0afd44afa5e7f6fb610429a4383168454068
-Å
-Q.idea/sonarlint/securityhotspotstore/3/e/3ef8c50a356f8eba92a5dea06d0cf3b9061f4954,f\1\f1e782e569b2e8e8bab70e8259eb1d0575adcf0e
 Å
 Q.idea/sonarlint/securityhotspotstore/3/1/3163ef10bcb706c63e3f2ce2d01e7aa7814338ab,7\f\7fcc729bd6b4a911ad11fa96f3c2465cb9cd245c
 w

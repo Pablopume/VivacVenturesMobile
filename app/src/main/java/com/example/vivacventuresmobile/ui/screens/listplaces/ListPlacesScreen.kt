@@ -1,19 +1,29 @@
 package com.example.vivacventuresmobile.ui.screens.listplaces
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bed
+import androidx.compose.material.icons.filled.EmojiFoodBeverage
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.NightsStay
+import androidx.compose.material.icons.filled.SingleBed
+import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -23,6 +33,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -38,14 +49,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
@@ -270,27 +287,55 @@ fun VivacPlaceItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(dimensionResource(id = R.dimen.smallmedium_padding))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding)))
             .clickable { onViewDetalle(vivacPlace.id) },
+        elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = backgroundColor
+//            containerColor = backgroundColor
+            containerColor = MaterialTheme.colorScheme.onSurface
         ),
     ) {
-        Row(modifier = Modifier.padding(dimensionResource(id = R.dimen.small_padding))) {
-            Text(
-                text = vivacPlace.name,
-                modifier = Modifier.weight(weight = 0.5F)
-            )
-            Text(
-                text = vivacPlace.type,
-                modifier = Modifier.weight(weight = 0.5F)
+        Row(
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.medium_padding))
+                .fillMaxWidth()
+        ) {
+            val imageUrl = if (vivacPlace.images.isNotEmpty()) {
+                vivacPlace.images[0]
+            } else {
+                "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2Fdefault.jpg?alt=media&token=5ef9d6e8-c7b8-47ac-87a3-419d22857a70"
+            }
+            val image: Painter = rememberAsyncImagePainter(imageUrl)
+            Image(
+                modifier = Modifier
+                    .size(80.dp, 80.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                painter = image,
+                alignment = Alignment.CenterStart,
+                contentDescription = "",
+                contentScale = ContentScale.Crop
             )
 
-        }
-        Row(modifier = Modifier.padding(dimensionResource(id = R.dimen.smallmedium_padding))) {
-            Text(
-                text = vivacPlace.description,
-                modifier = Modifier.weight(weight = 0.8F)
-            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+
+            Column(modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp)) {
+                Text(
+                    text = vivacPlace.name,
+                    modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    fontWeight = FontWeight.Bold,
+                    style = typography.titleMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = vivacPlace.type,
+                    modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    style = typography.labelMedium
+                )
+
+            }
         }
     }
 }
@@ -361,3 +406,4 @@ fun previewLista() {
         placesClient = Places.createClient(LocalContext.current)
     )
 }
+
