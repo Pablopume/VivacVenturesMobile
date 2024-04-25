@@ -40,6 +40,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -233,13 +234,12 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
-//                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                ),
                 modifier = Modifier
                     .width(100.dp)
                     .menuAnchor()
-//                modifier = Modifier
-//                    .width(200.dp)
-//                    .align(AbsoluteAlignment.Right)
             )
 
             ExposedDropdownMenu(
@@ -318,7 +318,9 @@ fun VivacPlaceItem(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
-            Column(modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp)) {
+            Column(modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp)) {
                 Text(
                     text = vivacPlace.name,
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
