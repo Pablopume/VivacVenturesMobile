@@ -161,7 +161,8 @@ fun Navigation(
                             inclusive = true
                         }
                     }
-                }
+                },
+                dataStore = dataStore
             )
         }
 

@@ -41,6 +41,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,11 +56,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberImagePainter
 import com.example.vivacventuresmobile.R
+import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -70,8 +74,13 @@ fun AddPlaceScreen(
     viewModel: AddPlaceViewModel = hiltViewModel(),
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddDone: () -> Unit,
+    dataStore: DataStore<AppPreferences>
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    val appPreferences = dataStore.data.collectAsState(initial = AppPreferences()).value
+    val username = appPreferences.username
+    viewModel.handleEvent(AddPlaceEvent.AddUsername(username))
 
 
     AddPlace(
@@ -86,7 +95,7 @@ fun AddPlaceScreen(
         { viewModel.handleEvent(AddPlaceEvent.OnTypeChange(it)) },
         { viewModel.handleEvent(AddPlaceEvent.OnDateChange(it)) },
         { viewModel.handleEvent(AddPlaceEvent.OnCapacityChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it))}
+        { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it))} ,
     )
 
 
@@ -105,8 +114,7 @@ fun AddPlace(
     onTypeChange: (String) -> Unit,
     onDateChange: (LocalDate) -> Unit,
     onCapacityChange: (Int) -> Unit,
-    onPriceChange: (String) -> Unit
-
+    onPriceChange: (String) -> Unit,
     ) {
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(state.addPlaceDone) {
@@ -147,12 +155,14 @@ fun AddPlace(
                     DescriptionField(state.place.description, onDesciptionChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     Row {
+                        Spacer(modifier = Modifier.weight(0.1f))
                         Text(text = stringResource(id = R.string.tipo))
                         TipoPicker(state.place.type, onTypeChange)
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.xl_padding)))
+                        Spacer(modifier = Modifier.weight(0.3f))
                         Text(text = stringResource(id = R.string.fecha))
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.big_padding)))
+                        Spacer(modifier = Modifier.weight(0.1f))
                         DatePickerField(state.place.date, onDateChange)
+                        Spacer(modifier = Modifier.weight(0.1f))
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     Row {
@@ -162,9 +172,6 @@ fun AddPlace(
                         Text(text = stringResource(id = R.string.precio))
                         PriceField(state.place.price, Modifier.weight(1f) , onPriceChange)
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-//                    Text(text = stringResource(id = R.string.fecha))
-//                    DatePickerField(state.place.date, onDateChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     Text(text = stringResource(id = R.string.fotos))
                     PicturePicker(state.place.images, onPicturesChange)
@@ -384,7 +391,9 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
 
 @Composable
 fun AddButton(onAddPlaceClick: () -> Unit) {
-    FloatingActionButton(onClick = { onAddPlaceClick() }) {
+    FloatingActionButton(onClick = {
+        onAddPlaceClick()
+    }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.small_padding))
@@ -400,25 +409,26 @@ fun AddButton(onAddPlaceClick: () -> Unit) {
     }
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-    device = Devices.PIXEL_4
-)
-@Composable
-fun AddPlacePreview() {
-    AddPlace(
-        state = AddPlaceState(),
-        errorVisto = {},
-        bottomNavigationBar = {},
-        onAddDone = {},
-        onAddPlaceClick = {},
-        onNameChange = {},
-        onDesciptionChange = {},
-        onPicturesChange = {},
-        onTypeChange = {},
-        onDateChange = {},
-        onCapacityChange = {},
-        onPriceChange = {}
-    )
-}
+//@Preview(
+//    showBackground = true,
+//    showSystemUi = true,
+//    device = Devices.PIXEL_4
+//)
+//@Composable
+//fun AddPlacePreview() {
+//    AddPlace(
+//        state = AddPlaceState(),
+//        errorVisto = {},
+//        bottomNavigationBar = {},
+//        onAddDone = {},
+//        onAddPlaceClick = {},
+//        onNameChange = {},
+//        onDesciptionChange = {},
+//        onPicturesChange = {},
+//        onTypeChange = {},
+//        onDateChange = {},
+//        onCapacityChange = {},
+//        onPriceChange = {},
+//        dataStore = DataStore<AppPreferences> { AppPreferences() }
+//    )
+//}

@@ -13,4 +13,5 @@ sealed class AddPlaceEvent {
     class OnDateChange(val date: LocalDate) : AddPlaceEvent()
     class OnCapacityChange(val capacity: Int) : AddPlaceEvent()
     class OnPriceChange(val price: String) : AddPlaceEvent()
+    class AddUsername(val userName: String) : AddPlaceEvent()
 }
