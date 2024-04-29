@@ -12,6 +12,7 @@ data class MapState(
     val loading: Boolean = false,
     val isLocationEnabled: Boolean = false,
     val currentLocation: LatLng? = null,
-    val cameraPositionState: CameraPositionState = CameraPositionState(),
+//    val cameraPositionState: CameraPositionState = CameraPositionState(),
+    val currentLatLng: LatLng = LatLng(0.toDouble(), 0.toDouble()),
     val isDarkMap: Boolean = false,
 )

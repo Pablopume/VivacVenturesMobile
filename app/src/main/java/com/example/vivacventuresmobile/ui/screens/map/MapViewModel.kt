@@ -41,16 +41,10 @@ class MapViewModel @Inject constructor(
     private lateinit var locationCallback: LocationCallback
 
     init {
-        val cameraPosition = CameraPositionState(
-            position = CameraPosition.fromLatLngZoom(
-                LatLng(40.42966863252524, -3.6797065289867783),
-                5.5f
-            )
-        )
         _uiState.value = MapState(
             error = null,
             loading = false,
-            cameraPositionState = cameraPosition,
+            currentLatLng = LatLng(40.42966863252524, -3.6797065289867783),
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
         )
         getVivacPlaces()
@@ -70,12 +64,7 @@ class MapViewModel @Inject constructor(
                         for (location in p0.locations) {
                             _uiState.value = _uiState.value.copy(
                                 currentLocation = LatLng(location.latitude, location.longitude),
-                                cameraPositionState = CameraPositionState(
-                                    position = CameraPosition.fromLatLngZoom(
-                                        LatLng(location.latitude, location.longitude),
-                                        10f
-                                    )
-                                )
+                                currentLatLng = LatLng(location.latitude, location.longitude)
                             )
                         }
                     }
@@ -99,14 +88,8 @@ class MapViewModel @Inject constructor(
             }
 
             is MapEvent.UpdateCameraPosition -> {
-                val cameraPosition = CameraPositionState(
-                    position = CameraPosition.fromLatLngZoom(
-                        event.latLng,
-                        10f
-                    )
-                )
                 _uiState.value = _uiState.value.copy(
-                    cameraPositionState = cameraPosition
+                    currentLatLng = event.latLng
                 )
             }
         }
@@ -170,11 +153,6 @@ class MapViewModel @Inject constructor(
     private fun locationOff() {
         _uiState.value = _uiState.value.copy(
             isLocationEnabled = false,
-//            cameraPositionState = CameraPositionState(
-//                position = CameraPosition.fromLatLngZoom(
-//                    LatLng(40.42966863252524, -3.6797065289867783),
-//                    5.5f
-//                )),
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
             error = "Location is off",
         )

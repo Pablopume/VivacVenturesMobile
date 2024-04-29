@@ -20,11 +20,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDcuxEy_4dgFwX_vVM6pgE3UTaWOxvTZWg" />
+
+        <meta-data
+            android:name="com.google.android.maps.api.MAP_ID"
+            android:value="c01187762679eb87" />
 
         <activity
             android:name=".ui.MainActivity"

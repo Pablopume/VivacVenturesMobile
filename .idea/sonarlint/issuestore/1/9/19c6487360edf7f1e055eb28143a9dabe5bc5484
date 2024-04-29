@@ -1,4 +1,4 @@
 
-Œkotlin:S107U"HThis function has 10 parameters, which is greater than the 7 authorized.(ÎËÌÀ8À€Úğ1J$d5da5ba7-277e-41af-bc5c-3c33a532fa61
-xkotlin:S1135À"2Complete the task associated to this TODO comment.(Æ¡Ü8Ã€Úğ1J$570175f4-90fa-4618-87cc-9ec064c1645e
-—kotlin:S3776U"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(ÎËÌÀ8Ê€Úğ1J$f5297a60-5469-42da-b0b1-80795e3256f9
+Œkotlin:S107W"HThis function has 10 parameters, which is greater than the 7 authorized.(ÎËÌÀ8Ÿ´×ò1J$0738aefa-c866-486d-9807-3047d528f7ea
+—kotlin:S3776W"RRefactor this method to reduce its Cognitive Complexity from 44 to the 15 allowed.(ÎËÌÀ8¨Ÿ´×ò1J$2d5afcfe-b181-4ea8-8aec-b748a1f10d82
+ƒkotlin:S6511Ä"=Merge chained "if" statements into a single "when" statement.(åŸºÂ8¬Ÿ´×ò1J$a40fd942-4fe3-48a3-8090-9b669ca10767

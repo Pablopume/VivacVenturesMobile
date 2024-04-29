@@ -1,8 +1,10 @@
 package com.example.vivacventuresmobile.ui.screens.listplaces
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +36,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -73,11 +76,6 @@ import com.example.vivacventuresmobile.ui.theme.GreenVivac
 import com.example.vivacventuresmobile.ui.theme.RedAlbergue
 import com.example.vivacventuresmobile.ui.theme.YellowRefugee
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompletePrediction
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.PlacesClient
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 
 @Composable
@@ -88,18 +86,18 @@ fun ListPlacesScreen(
     onAddPlace: () -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
-    if (!Places.isInitialized()) {
-        Places.initialize(LocalContext.current, "AIzaSyAJhTuHWdTmBCIsJkZ-_QrwxmfPvw3Qx5I")
-    }
-    val placesClient = Places.createClient(LocalContext.current)
+
+    viewModel.placesClient = Places.createClient(LocalContext.current)
+
     ListPlaces(
         state.value,
+        viewModel,
         { viewModel.handleEvent(ListPlacesEvent.ErrorVisto) },
         onViewDetalle,
         { viewModel.handleEvent(ListPlacesEvent.GetVivacPlacesByType(it)) },
         bottomNavigationBar,
         onAddPlace,
-        placesClient
+        { viewModel.handleEvent(ListPlacesEvent.SearchPlaces(it)) },
     )
 }
 
@@ -107,12 +105,13 @@ fun ListPlacesScreen(
 @Composable
 fun ListPlaces(
     state: ListPlacesState,
+    viewModel: ListPlacesViewModel,
     errorVisto: () -> Unit,
     onViewDetalle: (Int) -> Unit,
     onGetVivacPlacesByType: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddPlace: () -> Unit,
-    placesClient: PlacesClient,
+    searchPlaces: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -140,35 +139,51 @@ fun ListPlaces(
         }
 
         Column {
-            Box(
+            Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Barra de búsqueda
-                val coroutineScope = rememberCoroutineScope()
 
                 var searchText by remember { mutableStateOf("") }
-
-                TextField(
-                    value = searchText,
-                    onValueChange = { value ->
-                        searchText = value
-                        // Buscar lugares con Google Places
-                        coroutineScope.launch {
-                            val places = searchPlaces(placesClient, searchText)
-                            // Aquí puedes actualizar tu estado con los lugares encontrados
-                        }
-
-                    },
-                    label = { Text("Buscador") },
+                Row (modifier = Modifier.fillMaxWidth()){
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = {
+                            searchText = it
+                            searchPlaces(it)
+                        },
+                        label = { Text("Buscador") },
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically),
+                    )
+                    Box(modifier = Modifier.align(Alignment.CenterVertically)) {
+                        DropDown(onGetVivacPlacesByType = onGetVivacPlacesByType)
+                    }
+                }
+                AnimatedVisibility(
+                    viewModel.locationAutofill.isNotEmpty(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.CenterStart)
-                        .padding(horizontal = 8.dp),
-                )
-
-                Box(modifier = Modifier.align(Alignment.TopEnd)) {
-                    DropDown(onGetVivacPlacesByType = onGetVivacPlacesByType)
+                        .padding(8.dp)
+                ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(viewModel.locationAutofill) {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .clickable {
+                                    searchText = it.address
+                                    viewModel.locationAutofill.clear()
+                                    viewModel.getCoordinates(it)
+                                }) {
+                                Text(it.address)
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
                 }
+
             }
             if (state.loading) {
                 Box(
@@ -342,15 +357,6 @@ fun VivacPlaceItem(
     }
 }
 
-suspend fun searchPlaces(placesClient: PlacesClient, query: String): List<AutocompletePrediction> {
-    val request = FindAutocompletePredictionsRequest.builder()
-        .setQuery(query)
-        .build()
-
-    val response = placesClient.findAutocompletePredictions(request).await()
-
-    return response.autocompletePredictions
-}
 
 @Preview
 @Composable
@@ -377,35 +383,36 @@ fun previewDropDown() {
     DropDown(onGetVivacPlacesByType = {})
 }
 
-@Preview(
-    device = Devices.PIXEL_4_XL,
-)
-@Composable
-fun previewLista() {
-    ListPlaces(
-        state = ListPlacesState(
-            vivacPlaces = listOf(
-                VivacPlace(
-                    id = 1,
-                    name = "Vivac Place",
-                    type = "Type",
-                    description = "Description",
-                    lat = 0.0,
-                    lon = 0.0,
-                    capacity = 0,
-                    date = LocalDate.now(),
-                    username = "Username",
-                )
-            ),
-            loading = false,
-            error = null
-        ),
-        errorVisto = {},
-        onViewDetalle = {},
-        onGetVivacPlacesByType = {},
-        bottomNavigationBar = {},
-        onAddPlace = {},
-        placesClient = Places.createClient(LocalContext.current)
-    )
-}
+//@Preview(
+//    device = Devices.PIXEL_4_XL,
+//)
+//@Composable
+//fun previewLista() {
+//    ListPlaces(
+//        state = ListPlacesState(
+//            vivacPlaces = listOf(
+//                VivacPlace(
+//                    id = 1,
+//                    name = "Vivac Place",
+//                    type = "Type",
+//                    description = "Description",
+//                    lat = 0.0,
+//                    lon = 0.0,
+//                    capacity = 0,
+//                    date = LocalDate.now(),
+//                    username = "Username",
+//                )
+//            ),
+//            loading = false,
+//            error = null
+//        ),
+//        viewModel = ListPlacesViewModel(),
+//        errorVisto = {},
+//        onViewDetalle = {},
+//        onGetVivacPlacesByType = {},
+//        bottomNavigationBar = {},
+//        onAddPlace = {},
+//        searchPlaces = {}
+//    )
+//}
 

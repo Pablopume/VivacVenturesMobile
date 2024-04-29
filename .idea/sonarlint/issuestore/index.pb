@@ -251,3 +251,7 @@ Yapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/ResetPassword
 Zapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/ForgotPasswordUseCase.kt,5\0\50d7e318ceedb2911c48e14bd1af11497b0871df
 z
 Japp/src/main/java/com/example/vivacventuresmobile/data/model/LoginToken.kt,9\1\9107ec320b68a796a5da1484fcc14d5083e5df4a
+Ö
+Uapp/src/main/java/com/example/vivacventuresmobile/domain/modelo/AutocompleteResult.kt,4\0\4057724cc9574b5305d4406d77e07dbcbf894f14
+è
+_app/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlaceNearbyUseCase.kt,7\5\75b5f11c3f96a5af316dff69f5f532bdcdb5421f

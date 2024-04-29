@@ -3,6 +3,7 @@ package com.example.vivacventuresmobile.data.repositories
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +35,14 @@ class VivacPlacesRepository @Inject constructor(
         return flow {
             emit(NetworkResult.Loading())
             val result = remoteDataSource.getVivacPlaceByType(type)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
+    fun getNearbyPlaces(latLng: LatLng): Flow<NetworkResult<List<VivacPlace>>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.getNearbyPlaces(latLng)
             emit(result)
         }.flowOn(dispatcher)
     }

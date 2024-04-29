@@ -4,5 +4,6 @@ sealed class ListPlacesEvent {
     class GetVivacPlaces() : ListPlacesEvent()
 
     class GetVivacPlacesByType(val type: String) : ListPlacesEvent()
+    class SearchPlaces(val query: String) : ListPlacesEvent()
     object ErrorVisto : ListPlacesEvent()
 }

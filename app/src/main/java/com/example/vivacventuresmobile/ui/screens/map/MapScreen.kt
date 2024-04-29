@@ -45,8 +45,10 @@ import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.MainActivity
 import com.example.vivacventuresmobile.ui.theme.GreenS
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
@@ -189,25 +191,25 @@ fun Maps(
                 LoadingAnimation(state.loading)
             }
         } else {
-            //TODO animar la camara
-//            val cameraPositionState = rememberCameraPositionState {
-//                position = state.cameraPositionState.position
-//            }
-//
-//            LaunchedEffect(cameraPositionState.position) {
-//                cameraPositionState.animate(
-//                    update = CameraUpdateFactory.newCameraPosition(
-//                        CameraPosition(cameraPositionState.position.target, 15f, 0f, 0f)
-//                    ),
-//                    durationMs = 1000
-//                )
-//            }
+            val cameraPositionState = remember { CameraPositionState() }
+            LaunchedEffect(state.currentLatLng) {
+                if (!state.isLocationEnabled && state.currentLocation != state.currentLatLng){
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 10f))
+                } else if (state.isLocationEnabled && state.currentLocation == state.currentLatLng){
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 15f))
+                } else if (state.isLocationEnabled){
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 10f))
+                }
+                if (state.currentLatLng == LatLng(40.42966863252524, -3.6797065289867783)){
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 5.5f))
+                }
+            }
             GoogleMap(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
                 properties = state.properties,
-                cameraPositionState = state.cameraPositionState,
+                cameraPositionState = cameraPositionState,
                 uiSettings = uiSettings,
             ) {
                 state.vivacPlaces.forEach { place ->

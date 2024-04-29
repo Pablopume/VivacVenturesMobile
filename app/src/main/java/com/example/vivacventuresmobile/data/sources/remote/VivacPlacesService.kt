@@ -24,7 +24,6 @@ interface VivacPlacesService {
     @Headers("Content-Type: application/json")
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlace): Response<VivacPlaceResponse>
 
-
-//      @GET("/vivacplaces/type?type={type}")
-//    suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<VivacPlaceResponse>>
+    @GET("/nearby")
+    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double): Response<List<VivacPlaceResponse>>
 }

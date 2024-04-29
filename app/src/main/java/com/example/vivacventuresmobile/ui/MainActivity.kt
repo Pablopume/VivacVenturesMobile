@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel> ()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
@@ -59,7 +61,9 @@ class MainActivity : ComponentActivity() {
                 zoomY.start()
             }
         }
-
+        if (!Places.isInitialized()) {
+            Places.initialize(applicationContext, "AIzaSyAJhTuHWdTmBCIsJkZ-_QrwxmfPvw3Qx5I")
+        }
         setContent {
             VivacVenturesMobileTheme {
                 Surface(
