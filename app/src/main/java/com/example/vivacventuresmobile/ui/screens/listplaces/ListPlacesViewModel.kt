@@ -238,6 +238,4 @@ class ListPlacesViewModel @Inject constructor(
                 it.printStackTrace()
             }
     }
-
-
 }

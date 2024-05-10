@@ -94,4 +94,21 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         }
         return NetworkResult.Error("Error")
     }
+
+    suspend fun getVivacPlacesByUsername(username: String): NetworkResult<List<VivacPlace>> {
+        try {
+            val response = vivacPlacesService.getVivacPlacesByUsername(username)
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    return NetworkResult.Success(body.map { it.toVivacPlace() })
+                }
+            } else {
+                return NetworkResult.Error("Error")
+            }
+        } catch (e: Exception) {
+            return NetworkResult.Error(e.message ?: e.toString())
+        }
+        return NetworkResult.Error("Error")
+    }
 }

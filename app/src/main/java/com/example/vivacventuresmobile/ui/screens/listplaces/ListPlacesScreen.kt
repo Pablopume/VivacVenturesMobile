@@ -183,7 +183,6 @@ fun ListPlaces(
                     }
                     Spacer(Modifier.height(16.dp))
                 }
-
             }
             if (state.loading) {
                 Box(
@@ -306,7 +305,6 @@ fun VivacPlaceItem(
             .clickable { onViewDetalle(vivacPlace.id) },
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-//            containerColor = backgroundColor
             containerColor = MaterialTheme.colorScheme.onSurface
         ),
     ) {
@@ -382,37 +380,3 @@ fun PreviewVivacPlaceItem() {
 fun previewDropDown() {
     DropDown(onGetVivacPlacesByType = {})
 }
-
-//@Preview(
-//    device = Devices.PIXEL_4_XL,
-//)
-//@Composable
-//fun previewLista() {
-//    ListPlaces(
-//        state = ListPlacesState(
-//            vivacPlaces = listOf(
-//                VivacPlace(
-//                    id = 1,
-//                    name = "Vivac Place",
-//                    type = "Type",
-//                    description = "Description",
-//                    lat = 0.0,
-//                    lon = 0.0,
-//                    capacity = 0,
-//                    date = LocalDate.now(),
-//                    username = "Username",
-//                )
-//            ),
-//            loading = false,
-//            error = null
-//        ),
-//        viewModel = ListPlacesViewModel(),
-//        errorVisto = {},
-//        onViewDetalle = {},
-//        onGetVivacPlacesByType = {},
-//        bottomNavigationBar = {},
-//        onAddPlace = {},
-//        searchPlaces = {}
-//    )
-//}
-

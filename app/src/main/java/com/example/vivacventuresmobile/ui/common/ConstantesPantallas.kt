@@ -6,6 +6,10 @@ object ConstantesPantallas {
     const val LOGOUT = "logout"
     const val REGISTER = "register"
     const val FORGOTPASSWORD = "forgotpassword"
+    const val FAVOURITES = "favoritos/"
+    const val FAVOURITES_USER = "favoritos/{username}"
+    const val MYPLACES = "mislugares/"
+    const val MYPLACES_USER = "mislugares/{username}"
 
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"
@@ -14,6 +18,7 @@ object ConstantesPantallas {
     const val DETALLELUGAR = "detallelugar/"
     const val DETALLELUGAR_LUGARID = "detallelugar/{lugarId}"
     const val LUGAR_ID = "lugarId"
+    const val USERNAME = "username"
 
     const val PELICULA_ID = "peliculaId"
 

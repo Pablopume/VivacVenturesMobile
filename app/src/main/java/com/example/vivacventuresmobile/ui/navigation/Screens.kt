@@ -15,7 +15,6 @@ val screensBottomBar = listOf(
     Screens(ConstantesPantallas.LUGARES, Icons.Filled.Terrain),
     Screens(ConstantesPantallas.MAP, Icons.Filled.Map),
     Screens(ConstantesPantallas.CUENTA, Icons.Filled.Person),
-    Screens(ConstantesPantallas.LOGOUT, Icons.Filled.ExitToApp),
 )
 
 data class Screens(val route: String, val icon: ImageVector) {

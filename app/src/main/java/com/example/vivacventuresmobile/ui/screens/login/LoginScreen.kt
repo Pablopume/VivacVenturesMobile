@@ -122,7 +122,6 @@ fun PantallaLogin(
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
                         Nombre(state.user ?: "", onNombreChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-
                         Password(state.password ?: "", onPasswordChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                         BotonLogin(onLogin)

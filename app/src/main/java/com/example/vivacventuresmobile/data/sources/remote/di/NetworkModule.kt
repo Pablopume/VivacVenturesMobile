@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
 import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
+import com.example.vivacventuresmobile.data.sources.remote.FavouritesService
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
 import com.example.vivacventuresmobile.utils.Constants.BASE_URL
@@ -84,6 +85,11 @@ object NetworkModule {
     @Provides
     fun provideVivacPlacesService(retrofit: Retrofit): VivacPlacesService =
         retrofit.create(VivacPlacesService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFavouritesService(retrofit: Retrofit): FavouritesService =
+        retrofit.create(FavouritesService::class.java)
 
 
     @Singleton

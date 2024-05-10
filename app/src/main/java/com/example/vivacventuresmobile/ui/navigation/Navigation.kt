@@ -17,8 +17,9 @@ import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceScree
 import com.example.vivacventuresmobile.ui.screens.forgotpassword.ForgotPasswordScreen
 import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.login.LoginScreen
-import com.example.vivacventuresmobile.ui.screens.logout.LogoutScreen
 import com.example.vivacventuresmobile.ui.screens.map.MapScreen
+import com.example.vivacventuresmobile.ui.screens.myfavourites.MyFavouritesScreen
+import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
 
 @Composable
@@ -109,15 +110,6 @@ fun Navigation(
                 })
         }
         composable(
-            ConstantesPantallas.CUENTA
-        ) {
-            AccountScreen(bottomNavigationBar = {
-                BottomBar(
-                    navController = navController, screens = screensBottomBar
-                )
-            })
-        }
-        composable(
             ConstantesPantallas.DETALLELUGAR_LUGARID,
             arguments = listOf(navArgument(name = ConstantesPantallas.LUGAR_ID) {
                 type = NavType.IntType
@@ -129,14 +121,61 @@ fun Navigation(
                     BottomBar(
                         navController = navController, screens = screensBottomBar
                     )
-                })
+                },
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+            )
         }
         composable(
-            ConstantesPantallas.LOGOUT
+            ConstantesPantallas.FAVOURITES_USER,
+            arguments = listOf(navArgument(name = ConstantesPantallas.USERNAME) {
+                type = NavType.StringType
+                defaultValue = ""
+            })
         ) {
-            LogoutScreen(
+            MyFavouritesScreen(
+                username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
                 onViewDetalle = {
+                    navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
+                },
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
+            )
+        }
+        composable(
+            ConstantesPantallas.MYPLACES_USER,
+            arguments = listOf(navArgument(name = ConstantesPantallas.USERNAME) {
+                type = NavType.StringType
+                defaultValue = ""
+            })
+        ) {
+            MyPlacesScreen(
+                username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
+                onViewDetalle = {
+                    navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
+                },
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
+            )
+
+        }
+        composable(
+            ConstantesPantallas.CUENTA
+        ) {
+            AccountScreen(
+                toLoginScreen = {
                     navController.navigate(ConstantesPantallas.LOGIN)
+                },
+                toFavourites = {
+                    navController.navigate(ConstantesPantallas.FAVOURITES + "${it}")
+                },
+                toMyPlaces = {
+                    navController.navigate(ConstantesPantallas.MYPLACES + "${it}")
                 },
                 dataStore = dataStore,
                 bottomNavigationBar = {
