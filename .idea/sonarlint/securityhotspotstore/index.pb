@@ -267,8 +267,6 @@ dapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlace
 Yapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetFavouritesUseCase.kt,f\c\fcce75778db94eb4009806775f4bcd4566f226d3
 é
 ^app/src/main/java/com/example/vivacventuresmobile/ui/screens/myfavourites/MyFavouritesEvent.kt,7\2\72f91e0e0015853ac07818c44e441d40481cc9af
-è
-_app/src/main/java/com/example/vivacventuresmobile/ui/screens/myfavourites/MyFavourtiesScreen.kt,8\5\85fa1ff1ec89403e159fa3df3db306bf59a08bcb
 é
 ^app/src/main/java/com/example/vivacventuresmobile/ui/screens/myfavourites/MyFavouritesState.kt,3\8\3839b49887f120707e0b56f915f6e241c07a60c1
 í
@@ -279,3 +277,6 @@ _app/src/main/java/com/example/vivacventuresmobile/ui/screens/myfavourites/MyFav
 Xapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddFavouriteUseCase.kt,8\8\88775c418d48091fcbea04e56d6bef3142c7f2fa
 ã
 [app/src/main/java/com/example/vivacventuresmobile/domain/usecases/DeleteFavouriteUseCase.kt,0\3\0330a2f0ae1f50fff6fab1c77fb385288a4511a8
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
