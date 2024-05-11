@@ -15,17 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Bed
-import androidx.compose.material.icons.filled.EmojiFoodBeverage
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.NightsStay
-import androidx.compose.material.icons.filled.SingleBed
-import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -49,7 +45,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,9 +54,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -144,7 +137,7 @@ fun ListPlaces(
             ) {
 
                 var searchText by remember { mutableStateOf("") }
-                Row (modifier = Modifier.fillMaxWidth()){
+                Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = searchText,
                         onValueChange = {
@@ -331,9 +324,11 @@ fun VivacPlaceItem(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
-            Column(modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp)) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(8.dp)
+            ) {
                 Text(
                     text = vivacPlace.name,
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
@@ -351,7 +346,37 @@ fun VivacPlaceItem(
                 )
 
             }
+
+            if (vivacPlace.isfavoured) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    FavouriteTag()
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun FavouriteTag() {
+    ChipView(isFavourite = "favorito", colorResource = Color.Green)
+}
+
+@Composable
+fun ChipView(isFavourite: String, colorResource: Color) {
+    Box(
+        modifier = Modifier
+            .wrapContentWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colorResource.copy(.08f))
+    ) {
+        Text(
+            text = isFavourite, modifier = Modifier.padding(12.dp, 6.dp, 12.dp, 6.dp),
+            style = MaterialTheme.typography.labelMedium,
+            color = colorResource
+        )
     }
 }
 
@@ -370,6 +395,7 @@ fun PreviewVivacPlaceItem() {
             capacity = 0,
             date = LocalDate.now(),
             username = "Username",
+            isfavoured = true,
         ),
         onViewDetalle = {}
     )
