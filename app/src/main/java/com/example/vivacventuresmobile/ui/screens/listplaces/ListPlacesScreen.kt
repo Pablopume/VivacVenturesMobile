@@ -374,7 +374,7 @@ fun ChipView(isFavourite: String, colorResource: Color) {
     ) {
         Text(
             text = isFavourite, modifier = Modifier.padding(12.dp, 6.dp, 12.dp, 6.dp),
-            style = MaterialTheme.typography.labelMedium,
+            style = typography.labelMedium,
             color = colorResource
         )
     }
