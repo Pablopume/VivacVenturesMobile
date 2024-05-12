@@ -4,5 +4,5 @@ import com.example.vivacventuresmobile.data.repositories.VivacPlacesRepository
 import javax.inject.Inject
 
 class GetVivacPlaceByTypeUseCase @Inject constructor(private val repository: VivacPlacesRepository){
-    operator fun invoke(type: String) = repository.getVivacPlaceByType(type)
+    operator fun invoke(type: String, username: String) = repository.getVivacPlaceByType(type, username)
 }

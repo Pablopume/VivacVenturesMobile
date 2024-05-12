@@ -3,6 +3,7 @@ package com.example.vivacventuresmobile.data.repositories
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,14 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    fun getVivacPlacesWithFavourites(username: String): Flow<NetworkResult<List<VivacPlaceList>>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.getVivacPlacesWithFavourites(username)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
     fun getVivacPlace(id: Int): Flow<NetworkResult<VivacPlace>> {
         return flow {
             emit(NetworkResult.Loading())
@@ -31,7 +40,7 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun getVivacPlacesByUsername(username: String): Flow<NetworkResult<List<VivacPlace>>> {
+    fun getVivacPlacesByUsername(username: String): Flow<NetworkResult<List<VivacPlaceList>>> {
         return flow {
             emit(NetworkResult.Loading())
             val result = remoteDataSource.getVivacPlacesByUsername(username)
@@ -39,18 +48,18 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun getVivacPlaceByType(type: String): Flow<NetworkResult<List<VivacPlace>>> {
+    fun getVivacPlaceByType(type: String, username: String): Flow<NetworkResult<List<VivacPlaceList>>> {
         return flow {
             emit(NetworkResult.Loading())
-            val result = remoteDataSource.getVivacPlaceByType(type)
+            val result = remoteDataSource.getVivacPlaceByType(type, username)
             emit(result)
         }.flowOn(dispatcher)
     }
 
-    fun getNearbyPlaces(latLng: LatLng): Flow<NetworkResult<List<VivacPlace>>> {
+    fun getNearbyPlaces(latLng: LatLng, username: String): Flow<NetworkResult<List<VivacPlaceList>>> {
         return flow {
             emit(NetworkResult.Loading())
-            val result = remoteDataSource.getNearbyPlaces(latLng)
+            val result = remoteDataSource.getNearbyPlaces(latLng, username)
             emit(result)
         }.flowOn(dispatcher)
     }

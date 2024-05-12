@@ -2,8 +2,10 @@ package com.example.vivacventuresmobile.data.sources.remote
 
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.model.toVivacPlace
+import com.example.vivacventuresmobile.data.model.toVivacPlaceList
 import com.example.vivacventuresmobile.data.model.toVivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
 
@@ -17,6 +19,23 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                 val body = response.body()
                 body?.let {
                     return NetworkResult.Success(body.map { it.toVivacPlace() })
+                }
+            } else {
+                return NetworkResult.Error("Error")
+            }
+        } catch (e: Exception) {
+            return NetworkResult.Error(e.message ?: e.toString())
+        }
+        return NetworkResult.Error("Error")
+    }
+
+    suspend fun getVivacPlacesWithFavourites(username: String): NetworkResult<List<VivacPlaceList>> {
+        try {
+            val response = vivacPlacesService.getVivacPlacesWithFavourites(username)
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
                 return NetworkResult.Error("Error")
@@ -44,13 +63,13 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         return NetworkResult.Error("Error")
     }
 
-    suspend fun getVivacPlaceByType(type: String): NetworkResult<List<VivacPlace>> {
+    suspend fun getVivacPlaceByType(type: String, username: String): NetworkResult<List<VivacPlaceList>> {
         try {
-            val response = vivacPlacesService.getVivacPlaceByType(type)
+            val response = vivacPlacesService.getVivacPlaceByType(type, username)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    return NetworkResult.Success(body.map { it.toVivacPlace() })
+                    return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
                 return NetworkResult.Error("Error")
@@ -78,13 +97,13 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         return NetworkResult.Error("Error")
     }
 
-    suspend fun getNearbyPlaces(latLong: LatLng): NetworkResult<List<VivacPlace>> {
+    suspend fun getNearbyPlaces(latLong: LatLng, username: String): NetworkResult<List<VivacPlaceList>> {
         try {
-            val response = vivacPlacesService.getNearbyPlaces(latLong.latitude, latLong.longitude)
+            val response = vivacPlacesService.getNearbyPlaces(latLong.latitude, latLong.longitude, username)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    return NetworkResult.Success(body.map { it.toVivacPlace() })
+                    return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
                 return NetworkResult.Error("Error")
@@ -95,13 +114,13 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         return NetworkResult.Error("Error")
     }
 
-    suspend fun getVivacPlacesByUsername(username: String): NetworkResult<List<VivacPlace>> {
+    suspend fun getVivacPlacesByUsername(username: String): NetworkResult<List<VivacPlaceList>> {
         try {
             val response = vivacPlacesService.getVivacPlacesByUsername(username)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    return NetworkResult.Success(body.map { it.toVivacPlace() })
+                    return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
                 return NetworkResult.Error("Error")

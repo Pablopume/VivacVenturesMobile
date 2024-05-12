@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.ui.screens.listplaces.VivacPlaceItem
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
 
 @Composable
 fun MyPlacesScreen(
@@ -86,7 +86,7 @@ fun PantallaMyPlaces(
                         items = state.vivacPlaces,
                         key = { vivacPlace -> vivacPlace.id }
                     ) { vivacPlace ->
-                        VivacPlaceItem(
+                        VivacPlaceListItem(
                             vivacPlace = vivacPlace,
                             onViewDetalle = onViewDetalle
                         )

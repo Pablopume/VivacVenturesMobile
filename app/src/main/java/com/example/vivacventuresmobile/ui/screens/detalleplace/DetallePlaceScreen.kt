@@ -42,13 +42,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 
@@ -96,7 +94,7 @@ fun DetallePlace(
                 },
                 title = { Text(text = state.vivacPlace?.type ?: "") },
                 actions = {
-                    if (state.vivacPlace?.isfavoured == true) {
+                    if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
                             Icon(Icons.Filled.FavoriteBorder, contentDescription = "Unfavorite")
                         }

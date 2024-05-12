@@ -7,6 +7,7 @@ import com.example.vivacventuresmobile.domain.modelo.AutocompleteResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceByTypeUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceNearbyUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
+import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesWithFavouritesUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListPlacesViewModel @Inject constructor(
-    private val getVivacPlacesUseCase: GetVivacPlacesUseCase,
+    private val getVivacPlacesUseCase: GetVivacPlacesWithFavouritesUseCase,
     private val getVivacPlacesByTypeUseCase: GetVivacPlaceByTypeUseCase,
     private val getVivacPlacesNearbyUseCase: GetVivacPlaceNearbyUseCase
 ) : ViewModel() {
@@ -51,6 +52,7 @@ class ListPlacesViewModel @Inject constructor(
             is ListPlacesEvent.GetVivacPlaces -> getVivacPlaces()
             is ListPlacesEvent.GetVivacPlacesByType -> getVivacPlacesByType(event.type)
             is ListPlacesEvent.SearchPlaces -> searchPlaces(event.query)
+            is ListPlacesEvent.SaveUsername -> _uiState.value = _uiState.value.copy(username = event.username)
         }
     }
 
@@ -60,7 +62,7 @@ class ListPlacesViewModel @Inject constructor(
             getVivacPlaces()
         } else {
             viewModelScope.launch {
-                getVivacPlacesByTypeUseCase(type)
+                getVivacPlacesByTypeUseCase(type, _uiState.value.username)
                     .catch(action = { cause ->
                         _uiState.update {
                             it.copy(
@@ -108,7 +110,7 @@ class ListPlacesViewModel @Inject constructor(
     private fun getVivacPlaces() {
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
-            getVivacPlacesUseCase()
+            getVivacPlacesUseCase(_uiState.value.username)
                 .catch(action = { cause ->
                     _uiState.update {
                         it.copy(
@@ -154,7 +156,7 @@ class ListPlacesViewModel @Inject constructor(
     private fun getVivacPlaceNearby(latLong: LatLng){
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
-            getVivacPlacesNearbyUseCase(latLong)
+            getVivacPlacesNearbyUseCase(latLong, _uiState.value.username)
                 .catch(action = { cause ->
                     _uiState.update {
                         it.copy(

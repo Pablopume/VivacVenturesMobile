@@ -1,7 +1,6 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
-import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.data.model.FavouritesVivacPlaceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,7 +16,7 @@ interface FavouritesService {
     suspend fun saveFavorito(@Query("username") username: String, @Query("vivacId") vivacId: Int): Response<Unit>
 
     @GET("/favoritos/{username}")
-    suspend fun getFavoritos(@Path("username") username: String): Response<List<VivacPlaceResponse>>
+    suspend fun getFavoritos(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @POST("/favorito/delete")
     @Headers("Content-Type: application/json")

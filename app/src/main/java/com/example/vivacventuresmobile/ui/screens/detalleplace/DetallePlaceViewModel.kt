@@ -115,7 +115,7 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(isfavoured = true)
+                                    vivacPlace = it.vivacPlace?.copy(favorite = true)
                                 )
                             }
                         }
@@ -161,7 +161,7 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(isfavoured = false)
+                                    vivacPlace = it.vivacPlace?.copy(favorite = false)
                                 )
                             }
                         }

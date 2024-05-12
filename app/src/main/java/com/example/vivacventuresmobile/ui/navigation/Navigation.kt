@@ -98,16 +98,19 @@ fun Navigation(
         composable(
             ConstantesPantallas.LUGARES
         ) {
-            ListPlacesScreen(onViewDetalle = { vivacPlaceId ->
-                navController.navigate(ConstantesPantallas.DETALLELUGAR + "${vivacPlaceId}")
-            }, bottomNavigationBar = {
-                BottomBar(
-                    navController = navController, screens = screensBottomBar
-                )
-            },
+            ListPlacesScreen(
+                onViewDetalle = { vivacPlaceId ->
+                    navController.navigate(ConstantesPantallas.DETALLELUGAR + "${vivacPlaceId}")
+                }, bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                },
                 onAddPlace = {
                     navController.navigate(ConstantesPantallas.ADDLUGAR)
-                })
+                },
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
+            )
         }
         composable(
             ConstantesPantallas.DETALLELUGAR_LUGARID,
@@ -116,7 +119,8 @@ fun Navigation(
                 defaultValue = 0
             })
         ) {
-            DetallePlaceScreen(placeId = it.arguments?.getInt(ConstantesPantallas.LUGAR_ID) ?: 0,
+            DetallePlaceScreen(
+                placeId = it.arguments?.getInt(ConstantesPantallas.LUGAR_ID) ?: 0,
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar

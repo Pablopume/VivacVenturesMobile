@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
+import com.example.vivacventuresmobile.data.model.FavouritesVivacPlaceResponse
 import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import retrofit2.Response
@@ -18,15 +19,18 @@ interface VivacPlacesService {
     suspend fun getVivacPlace(@Path("id") id: Int): Response<VivacPlaceResponse>
 
     @GET("/vivacplaces/user/{username}")
-    suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<VivacPlaceResponse>>
+    suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/{type}")
-    suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<VivacPlaceResponse>>
+    @GET("/vivacplaces/{username}")
+    suspend fun getVivacPlacesWithFavourites(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+
+    @GET("/vivacplaces/type/{type}/{username}")
+    suspend fun getVivacPlaceByType(@Path("type") type: String, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @POST("/vivacplace")
     @Headers("Content-Type: application/json")
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlace): Response<VivacPlaceResponse>
 
-    @GET("/nearby")
-    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double): Response<List<VivacPlaceResponse>>
+    @GET("/nearby/{username}")
+    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 }

@@ -280,3 +280,9 @@ Xapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddFavouriteU
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+Å
+Qapp/src/main/java/com/example/vivacventuresmobile/domain/modelo/VivacPlaceList.kt,2\5\2572a7dab55186b89ae658aea873058601fc555b
+å
+\app/src/main/java/com/example/vivacventuresmobile/data/model/FavouritesVivacPlaceResponse.kt,9\2\9224bea8a4470ce160ca0a5374296828ce68624a
+ò
+happ/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetVivacPlacesWithFavouritesUseCase.kt,9\2\92a06d8d8040abfdc400ee6ee7b7160ad022051c

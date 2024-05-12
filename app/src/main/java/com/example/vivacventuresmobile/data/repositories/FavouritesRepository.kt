@@ -2,6 +2,7 @@ package com.example.vivacventuresmobile.data.repositories
 
 import com.example.vivacventuresmobile.data.sources.remote.FavouritesRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.utils.NetworkResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ class FavouritesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun getFavourites(username: String): Flow<NetworkResult<List<VivacPlace>>> {
+    fun getFavourites(username: String): Flow<NetworkResult<List<VivacPlaceList>>> {
         return flow {
             emit(NetworkResult.Loading())
             val result = remoteDataSource.getFavourites(username)

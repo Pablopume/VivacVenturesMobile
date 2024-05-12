@@ -64,6 +64,8 @@ import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
+import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesEvent
 import com.example.vivacventuresmobile.ui.theme.BlueRefugee
 import com.example.vivacventuresmobile.ui.theme.GreenVivac
 import com.example.vivacventuresmobile.ui.theme.RedAlbergue
@@ -75,12 +77,17 @@ import java.time.LocalDate
 fun ListPlacesScreen(
     viewModel: ListPlacesViewModel = hiltViewModel(),
     onViewDetalle: (Int) -> Unit,
+    username: String,
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddPlace: () -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.placesClient = Places.createClient(LocalContext.current)
+
+    if (state.value.username.isEmpty()) {
+        viewModel.handleEvent(ListPlacesEvent.SaveUsername(username))
+    }
 
     ListPlaces(
         state.value,
@@ -196,7 +203,7 @@ fun ListPlaces(
                         items = state.vivacPlaces,
                         key = { vivacPlace -> vivacPlace.id }
                     ) { vivacPlace ->
-                        VivacPlaceItem(
+                        VivacPlaceListItem(
                             vivacPlace = vivacPlace,
                             onViewDetalle = onViewDetalle
                         )
@@ -347,7 +354,7 @@ fun VivacPlaceItem(
 
             }
 
-            if (vivacPlace.isfavoured) {
+            if (vivacPlace.favorite) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -395,7 +402,7 @@ fun PreviewVivacPlaceItem() {
             capacity = 0,
             date = LocalDate.now(),
             username = "Username",
-            isfavoured = true,
+            favorite = true,
         ),
         onViewDetalle = {}
     )
