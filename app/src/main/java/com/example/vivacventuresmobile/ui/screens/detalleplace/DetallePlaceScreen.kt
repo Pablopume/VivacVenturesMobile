@@ -60,8 +60,7 @@ fun DetallePlaceScreen(
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.value.vivacPlace == null) {
-        viewModel.handleEvent(DetallePlaceEvent.SaveUsername(username))
-        viewModel.handleEvent(DetallePlaceEvent.GetDetalle(placeId))
+        viewModel.handleEvent(DetallePlaceEvent.SaveUsernameAndId(username, placeId))
     }
 
     DetallePlace(
@@ -96,11 +95,11 @@ fun DetallePlace(
                 actions = {
                     if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
-                            Icon(Icons.Filled.FavoriteBorder, contentDescription = "Unfavorite")
+                            Icon(Icons.Filled.Favorite, contentDescription = "Unfavorite")
                         }
                     } else {
                         IconButton(onClick = { favourite() }) {
-                            Icon(Icons.Filled.Favorite, contentDescription = "Favorite")
+                            Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
                         }
                     }
                 }

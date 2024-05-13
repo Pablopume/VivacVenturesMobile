@@ -38,10 +38,10 @@ class DetallePlaceViewModel @Inject constructor(
             is DetallePlaceEvent.GetDetalle -> getVivacPlace(event.id)
             is DetallePlaceEvent.AddFavourite -> addFavourite()
             is DetallePlaceEvent.DeleteFavourite -> deleteFavourite()
-            is DetallePlaceEvent.SaveUsername -> {
+            is DetallePlaceEvent.SaveUsernameAndId -> {
                 _uiState.value =
                     _uiState.value.copy(username = event.username)
-                getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                getVivacPlace(event.vivacId ?: 0)
             }
         }
     }
@@ -118,9 +118,9 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(favorite = true)
                                 )
                             }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
                         }
 
                         is NetworkResult.Loading -> {
@@ -164,9 +164,9 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(favorite = false)
                                 )
                             }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
                         }
 
                         is NetworkResult.Loading -> {

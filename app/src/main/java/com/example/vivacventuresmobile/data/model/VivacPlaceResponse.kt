@@ -30,6 +30,8 @@ data class VivacPlaceResponse(
     val price: Double = 0.0,
     @SerializedName("images")
     val images: List<String> = emptyList(),
+    @SerializedName("favorite")
+    val favorite: Boolean = false
 )
 
 fun VivacPlaceResponse.toVivacPlace(): VivacPlace = VivacPlace(
@@ -44,7 +46,8 @@ fun VivacPlaceResponse.toVivacPlace(): VivacPlace = VivacPlace(
     valorations.map { it.toValoration() },
     type,
     price,
-    images
+    images,
+    favorite
 )
 
 fun VivacPlace.toVivacPlaceResponse(): VivacPlaceResponse = VivacPlaceResponse(
@@ -59,5 +62,6 @@ fun VivacPlace.toVivacPlaceResponse(): VivacPlaceResponse = VivacPlaceResponse(
     valorations.map { it.toValorationResponse() },
     type,
     price,
-    images
+    images,
+    favorite
 )
