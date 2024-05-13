@@ -32,10 +32,10 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun getVivacPlace(id: Int): Flow<NetworkResult<VivacPlace>> {
+    fun getVivacPlace(id: Int, username: String): Flow<NetworkResult<VivacPlace>> {
         return flow {
             emit(NetworkResult.Loading())
-            val result = remoteDataSource.getVivacPlace(id)
+            val result = remoteDataSource.getVivacPlace(id, username)
             emit(result)
         }.flowOn(dispatcher)
     }

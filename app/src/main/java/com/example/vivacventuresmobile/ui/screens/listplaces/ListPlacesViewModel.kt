@@ -43,7 +43,6 @@ class ListPlacesViewModel @Inject constructor(
             error = null,
             loading = false
         )
-        getVivacPlaces()
     }
 
     fun handleEvent(event: ListPlacesEvent) {
@@ -52,13 +51,16 @@ class ListPlacesViewModel @Inject constructor(
             is ListPlacesEvent.GetVivacPlaces -> getVivacPlaces()
             is ListPlacesEvent.GetVivacPlacesByType -> getVivacPlacesByType(event.type)
             is ListPlacesEvent.SearchPlaces -> searchPlaces(event.query)
-            is ListPlacesEvent.SaveUsername -> _uiState.value = _uiState.value.copy(username = event.username)
+            is ListPlacesEvent.SaveUsername -> {
+                _uiState.value = _uiState.value.copy(username = event.username)
+                getVivacPlaces()
+            }
         }
     }
 
     private fun getVivacPlacesByType(type: String) {
         _uiState.update { it.copy(loading = true) }
-        if (type.equals("")) {
+        if (type == "") {
             getVivacPlaces()
         } else {
             viewModelScope.launch {

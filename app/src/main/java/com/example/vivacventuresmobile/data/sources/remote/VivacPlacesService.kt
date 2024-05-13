@@ -15,8 +15,8 @@ interface VivacPlacesService {
     @GET("/vivacplaces")
     suspend fun getVivacPlaces(): Response<List<VivacPlaceResponse>>
 
-    @GET("/vivacplaces/{id}")
-    suspend fun getVivacPlace(@Path("id") id: Int): Response<VivacPlaceResponse>
+    @GET("/vivacplaces/id/{id}/{username}")
+    suspend fun getVivacPlace(@Path("id") id: Int, @Path("username") username: String): Response<VivacPlaceResponse>
 
     @GET("/vivacplaces/user/{username}")
     suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>

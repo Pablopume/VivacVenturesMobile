@@ -46,9 +46,9 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         return NetworkResult.Error("Error")
     }
 
-    suspend fun getVivacPlace(id: Int): NetworkResult<VivacPlace> {
+    suspend fun getVivacPlace(id: Int, username: String): NetworkResult<VivacPlace> {
         try {
-            val response = vivacPlacesService.getVivacPlace(id)
+            val response = vivacPlacesService.getVivacPlace(id, username)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {

@@ -60,8 +60,8 @@ fun DetallePlaceScreen(
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.value.vivacPlace == null) {
-        viewModel.handleEvent(DetallePlaceEvent.GetDetalle(placeId))
         viewModel.handleEvent(DetallePlaceEvent.SaveUsername(username))
+        viewModel.handleEvent(DetallePlaceEvent.GetDetalle(placeId))
     }
 
     DetallePlace(

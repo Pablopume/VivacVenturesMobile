@@ -38,15 +38,18 @@ class DetallePlaceViewModel @Inject constructor(
             is DetallePlaceEvent.GetDetalle -> getVivacPlace(event.id)
             is DetallePlaceEvent.AddFavourite -> addFavourite()
             is DetallePlaceEvent.DeleteFavourite -> deleteFavourite()
-            is DetallePlaceEvent.SaveUsername -> _uiState.value =
-                _uiState.value.copy(username = event.username)
+            is DetallePlaceEvent.SaveUsername -> {
+                _uiState.value =
+                    _uiState.value.copy(username = event.username)
+                getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+            }
         }
     }
 
     private fun getVivacPlace(id: Int) {
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
-            getVivacPlaceUseCase(id)
+            getVivacPlaceUseCase(id, _uiState.value.username ?: "")
                 .catch(action = { cause ->
                     _uiState.update {
                         it.copy(
