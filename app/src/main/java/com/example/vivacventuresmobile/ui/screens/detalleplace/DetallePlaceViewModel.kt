@@ -47,48 +47,50 @@ class DetallePlaceViewModel @Inject constructor(
     }
 
     private fun getVivacPlace(id: Int) {
-        _uiState.update { it.copy(loading = true) }
-        viewModelScope.launch {
-            getVivacPlaceUseCase(id, _uiState.value.username ?: "")
-                .catch(action = { cause ->
-                    _uiState.update {
-                        it.copy(
-                            error = cause.message,
-                            loading = false
-                        )
-                    }
-                })
-                .collect { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    error = result.message,
-                                    loading = false
-                                )
-                            }
+        if (_uiState.value.username.isNotEmpty() && _uiState.value.vivacPlace?.id != 0) {
+            _uiState.update { it.copy(loading = true) }
+            viewModelScope.launch {
+                getVivacPlaceUseCase(id, _uiState.value.username)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
                         }
-
-                        is NetworkResult.Success -> {
-                            result.data?.let { places ->
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        vivacPlace = places,
+                                        error = result.message,
                                         loading = false
                                     )
                                 }
                             }
-                        }
 
-                        is NetworkResult.Loading -> {
-                            _uiState.update {
-                                it.copy(
-                                    loading = true
-                                )
+                            is NetworkResult.Success -> {
+                                result.data?.let { places ->
+                                    _uiState.update {
+                                        it.copy(
+                                            vivacPlace = places,
+                                            loading = false
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
                             }
                         }
                     }
-                }
+            }
         }
     }
 

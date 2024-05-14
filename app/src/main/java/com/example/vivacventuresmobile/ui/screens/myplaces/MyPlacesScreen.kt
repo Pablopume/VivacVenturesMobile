@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -77,19 +79,34 @@ fun PantallaMyPlaces(
                     LoadingAnimation(state.loading)
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                ) {
-                    items(
-                        items = state.vivacPlaces,
-                        key = { vivacPlace -> vivacPlace.id }
-                    ) { vivacPlace ->
-                        VivacPlaceListItem(
-                            vivacPlace = vivacPlace,
-                            onViewDetalle = onViewDetalle
+                if (state.vivacPlaces.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Empieza a crear lugares!",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+                    }
+                } else{
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    ) {
+                        items(
+                            items = state.vivacPlaces,
+                            key = { vivacPlace -> vivacPlace.id }
+                        ) { vivacPlace ->
+                            VivacPlaceListItem(
+                                vivacPlace = vivacPlace,
+                                onViewDetalle = onViewDetalle
+                            )
+                        }
                     }
                 }
             }

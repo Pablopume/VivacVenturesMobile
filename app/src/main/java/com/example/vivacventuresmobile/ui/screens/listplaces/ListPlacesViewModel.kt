@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.modelo.AutocompleteResult
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceByTypeUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceNearbyUseCase
-import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesWithFavouritesUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.google.android.libraries.places.api.model.Place
@@ -110,48 +109,50 @@ class ListPlacesViewModel @Inject constructor(
     }
 
     private fun getVivacPlaces() {
-        _uiState.update { it.copy(loading = true) }
-        viewModelScope.launch {
-            getVivacPlacesUseCase(_uiState.value.username)
-                .catch(action = { cause ->
-                    _uiState.update {
-                        it.copy(
-                            error = cause.message,
-                            loading = false
-                        )
-                    }
-                })
-                .collect { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    error = result.message,
-                                    loading = false
-                                )
-                            }
+        if (_uiState.value.username.isNotEmpty()){
+            _uiState.update { it.copy(loading = true) }
+            viewModelScope.launch {
+                getVivacPlacesUseCase(_uiState.value.username)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
                         }
-
-                        is NetworkResult.Success -> {
-                            result.data?.let { places ->
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        vivacPlaces = places,
+                                        error = result.message,
                                         loading = false
                                     )
                                 }
                             }
-                        }
 
-                        is NetworkResult.Loading -> {
-                            _uiState.update {
-                                it.copy(
-                                    loading = true
-                                )
+                            is NetworkResult.Success -> {
+                                result.data?.let { places ->
+                                    _uiState.update {
+                                        it.copy(
+                                            vivacPlaces = places,
+                                            loading = false
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
                             }
                         }
                     }
-                }
+            }
         }
     }
 
