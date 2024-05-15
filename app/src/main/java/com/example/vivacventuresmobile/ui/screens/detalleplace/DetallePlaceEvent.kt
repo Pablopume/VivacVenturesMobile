@@ -5,5 +5,6 @@ sealed class DetallePlaceEvent {
     class SaveUsernameAndId(val username: String, val vivacId: Int) : DetallePlaceEvent()
     class AddFavourite() : DetallePlaceEvent()
     class DeleteFavourite() : DetallePlaceEvent()
+    class DeletePlace() : DetallePlaceEvent()
     object ErrorVisto : DetallePlaceEvent()
 }

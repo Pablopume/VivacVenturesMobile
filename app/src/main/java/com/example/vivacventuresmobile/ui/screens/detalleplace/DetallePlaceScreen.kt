@@ -17,6 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
@@ -63,12 +65,20 @@ fun DetallePlaceScreen(
         viewModel.handleEvent(DetallePlaceEvent.SaveUsernameAndId(username, placeId))
     }
 
+    LaunchedEffect(state.value.deleted) {
+        if (state.value.deleted) {
+            //onBack()
+        }
+
+    }
+
     DetallePlace(
         state.value,
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
         bottomNavigationBar,
-        {viewModel.handleEvent(DetallePlaceEvent.AddFavourite())},
-        {viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite())}
+        { viewModel.handleEvent(DetallePlaceEvent.AddFavourite()) },
+        { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite()) },
+        { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) }
     )
 }
 
@@ -80,6 +90,7 @@ fun DetallePlace(
     bottomNavigationBar: @Composable () -> Unit,
     favourite: () -> Unit,
     unfavourite: () -> Unit,
+    delete: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -100,6 +111,14 @@ fun DetallePlace(
                     } else {
                         IconButton(onClick = { favourite() }) {
                             Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
+                        }
+                    }
+                    if (state.vivacPlace?.username == state.username) {
+                        IconButton(onClick = { delete() }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                        }
+                        IconButton(onClick = { /*onEdit()*/ }) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Edit")
                         }
                     }
                 }
@@ -125,7 +144,7 @@ fun DetallePlace(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-            ){
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -137,7 +156,10 @@ fun DetallePlace(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     TextDescription(description = state.vivacPlace?.description ?: "")
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    OpenLocationInMapsButton(lat = state.vivacPlace?.lat ?: 0.0, lon = state.vivacPlace?.lon ?: 0.0)
+                    OpenLocationInMapsButton(
+                        lat = state.vivacPlace?.lat ?: 0.0,
+                        lon = state.vivacPlace?.lon ?: 0.0
+                    )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     CapacidadText(capacidad = state.vivacPlace?.capacity ?: 0)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
@@ -238,7 +260,6 @@ fun PriceText(price: Double) {
 }
 
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewDetallePlace() {
@@ -251,7 +272,8 @@ fun PreviewDetallePlace() {
         errorVisto = {},
         bottomNavigationBar = {},
         favourite = {},
-        unfavourite = {}
+        unfavourite = {},
+        delete = {}
     )
 }
 

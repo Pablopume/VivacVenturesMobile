@@ -5,6 +5,7 @@ import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -33,4 +34,7 @@ interface VivacPlacesService {
 
     @GET("/nearby/{username}")
     suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+
+    @DELETE("/delete/{id}")
+    suspend fun deleteVivacPlace(@Path("id") id: Int): Response<Unit>
 }

@@ -130,4 +130,18 @@ class VivacPlacesRemoteDataSource @Inject constructor(
         }
         return NetworkResult.Error("Error")
     }
+
+    suspend fun deleteVivacPlace(id: Int): NetworkResult<Unit> {
+        try {
+            val response = vivacPlacesService.deleteVivacPlace(id)
+            if (response.isSuccessful) {
+                return NetworkResult.Success(Unit)
+            } else {
+                return NetworkResult.Error("Error")
+            }
+        } catch (e: Exception) {
+            return NetworkResult.Error(e.message ?: e.toString())
+        }
+        return NetworkResult.Error("Error")
+    }
 }

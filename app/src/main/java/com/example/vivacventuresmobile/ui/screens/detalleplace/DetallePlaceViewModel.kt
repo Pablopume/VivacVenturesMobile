@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
+import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class DetallePlaceViewModel @Inject constructor(
     private val getVivacPlaceUseCase: GetVivacPlaceUseCase,
     private val addFavouriteUseCase: AddFavouriteUseCase,
-    private val deleteFavouriteUseCase: DeleteFavouriteUseCase
+    private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
+    private val deletePlaceUseCase: DeleteVivacPlaceUseCase,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
         MutableStateFlow(DetallePlaceState())
@@ -43,6 +45,8 @@ class DetallePlaceViewModel @Inject constructor(
                     _uiState.value.copy(username = event.username)
                 getVivacPlace(event.vivacId ?: 0)
             }
+
+            is DetallePlaceEvent.DeletePlace -> deletePlace()
         }
     }
 
@@ -180,6 +184,52 @@ class DetallePlaceViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun deletePlace() {
+        if (_uiState.value.vivacPlace?.id != 0){
+            viewModelScope.launch {
+                deletePlaceUseCase(_uiState.value.vivacPlace?.id ?: 0)
+                    .catch { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = false,
+                                        error = "Place deleted",
+                                        deleted = true
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 }
