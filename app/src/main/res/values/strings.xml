@@ -28,5 +28,7 @@
     <string name="change_password">Change password</string>
     <string name="send_password">Send new password</string>
     <string name="password_visibility_toggle">Password visibility toggle</string>
+    <string name="continuar">Continuar</string>
+    <string name="volver">Volver</string>
 
 </resources>

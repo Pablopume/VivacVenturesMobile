@@ -9,9 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
+import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.ui.common.BottomBar
 import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.ui.screens.account.AccountScreen
+import com.example.vivacventuresmobile.ui.screens.addimages.AddImages
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceScreen
 import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceScreen
 import com.example.vivacventuresmobile.ui.screens.forgotpassword.ForgotPasswordScreen
@@ -21,6 +23,7 @@ import com.example.vivacventuresmobile.ui.screens.map.MapScreen
 import com.example.vivacventuresmobile.ui.screens.myfavourites.MyFavouritesScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
+
 
 @Composable
 fun Navigation(
@@ -37,6 +40,7 @@ fun Navigation(
     NavHost(
         navController = navController,
         startDestination = if (userName.isNotBlank() && !userName.equals("")) ConstantesPantallas.MAP else ConstantesPantallas.LOGIN,
+//        startDestination = "AddImagesScreen",
     ) {
         composable(
             ConstantesPantallas.LOGIN
@@ -100,17 +104,17 @@ fun Navigation(
         ) {
             ListPlacesScreen(
                 onViewDetalle = { vivacPlaceId ->
-                    navController.navigate(ConstantesPantallas.DETALLELUGAR + "${vivacPlaceId}")
-                }, bottomNavigationBar = {
+                navController.navigate(ConstantesPantallas.DETALLELUGAR + "${vivacPlaceId}")
+                },
+                bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar
                     )
                 },
-                onAddPlace = {
-                    navController.navigate(ConstantesPantallas.ADDLUGAR)
+                onAddPlace = { existsPlace ->
+                    navController.navigate(ConstantesPantallas.ADDLUGAR + "${existsPlace}")
                 },
-                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
-            )
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username)
         }
         composable(
             ConstantesPantallas.DETALLELUGAR_LUGARID,
@@ -119,14 +123,15 @@ fun Navigation(
                 defaultValue = 0
             })
         ) {
-            DetallePlaceScreen(
-                placeId = it.arguments?.getInt(ConstantesPantallas.LUGAR_ID) ?: 0,
+            DetallePlaceScreen(placeId = it.arguments?.getInt(ConstantesPantallas.LUGAR_ID) ?: 0,
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar
                     )
                 },
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                onUpdatePlace = { navController.navigate(ConstantesPantallas.ADDLUGAR + "${it}")
+                },
             )
         }
         composable(
@@ -190,9 +195,19 @@ fun Navigation(
             )
         }
         composable(
-            ConstantesPantallas.ADDLUGAR
+            ConstantesPantallas.ADDLUGAR_EXISTS,
+//            arguments = listOf(navArgument(name = ConstantesPantallas.EXISTS) {
+//                type = NavType.ParcelableType(VivacPlace::class.java)
+//                defaultValue = VivacPlace()
+//            })
+            arguments = listOf(navArgument(name = ConstantesPantallas.EXISTS) {
+                type = NavType.StringType
+                defaultValue = ""
+            })
         ) {
             AddPlaceScreen(
+//                vivacPlace = it.arguments?.getParcelable(ConstantesPantallas.EXISTS)!!,
+                vivacPlace = it.arguments?.getString(ConstantesPantallas.EXISTS) ?: "",
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar
@@ -205,9 +220,35 @@ fun Navigation(
                         }
                     }
                 },
+                onUpdateDone = {
+                    navController.navigate(ConstantesPantallas.MYPLACES_USER,) {
+                        popUpTo(ConstantesPantallas.ADDLUGAR) {
+                            inclusive = true
+                        }
+                    }
+                },
                 dataStore = dataStore
             )
         }
+//        composable(
+//            ConstantesPantallas.ADDLUGAR
+//        ) {
+//            AddPlaceScreen(
+//                bottomNavigationBar = {
+//                    BottomBar(
+//                        navController = navController, screens = screensBottomBar
+//                    )
+//                },
+//                onAddDone = {
+//                    navController.navigate(ConstantesPantallas.LUGARES) {
+//                        popUpTo(ConstantesPantallas.ADDLUGAR) {
+//                            inclusive = true
+//                        }
+//                    }
+//                },
+//                dataStore = dataStore
+//            )
+//        }
 
     }
 }

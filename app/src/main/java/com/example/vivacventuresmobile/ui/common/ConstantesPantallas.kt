@@ -22,7 +22,10 @@ object ConstantesPantallas {
 
     const val PELICULA_ID = "peliculaId"
 
-    const val ADDLUGAR = "addlugar"
+    const val ADDLUGAR = "addlugar/"
+    const val ADDLUGAR_EXISTS = "addlugar/{exists}"
+    const val EXISTS = "exists"
+    const val VIVACPLACE = "vivacPlace"
 
     const val ELIMINADO = "Eliminado"
     const val ERRORCAMPOSVACIOS = "Rellene todos los campos"

@@ -1,12 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -50,31 +42,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
+import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.ui.screens.addimages.AddImages
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
-import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-
 @Composable
 fun AddPlaceScreen(
     viewModel: AddPlaceViewModel = hiltViewModel(),
+    vivacPlace: String ,
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddDone: () -> Unit,
+    onUpdateDone: () -> Unit,
     dataStore: DataStore<AppPreferences>
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,47 +72,93 @@ fun AddPlaceScreen(
     val appPreferences = dataStore.data.collectAsState(initial = AppPreferences()).value
     val username = appPreferences.username
     viewModel.handleEvent(AddPlaceEvent.AddUsername(username))
+    viewModel.handleEvent(AddPlaceEvent.ChangeExists(vivacPlace))
 
+    Column {
+        if (state.value.cambioPantalla == 0) {
+            AddPlace(
+                state.value,
+                { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
+                bottomNavigationBar,
+                { viewModel.handleEvent(AddPlaceEvent.DetailsCompleted()) },
+//                onAddDone,
+//                { onAddDone() }, // Update callback for complete event
+                { viewModel.handleEvent(AddPlaceEvent.OnNameChange(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.OnDescriptionChange(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.OnTypeChange(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.OnDateChange(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.OnCapacityChange(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it)) },
+            )
 
-    AddPlace(
-        state.value,
-        { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
-        bottomNavigationBar,
-        onAddDone,
-        { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
-        { viewModel.handleEvent(AddPlaceEvent.OnNameChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnDescriptionChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnPicturesChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnTypeChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnDateChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnCapacityChange(it)) },
-        { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it))} ,
-    )
+//            Button(
+//                onClick = {
+//                    if (viewModel.validatePlaceDetails()) {
+//                        isPlaceDetailsCompleted = true
+//                    }
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.continuar))
+//            }
+        } else {
+            // AddImagesScreen content
+            AddImages(
+                state.value,
+                { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
+                bottomNavigationBar,
+                onAddDone,
+                onUpdateDone,
+                { viewModel.handleEvent(AddPlaceEvent.AddUri(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.DeleteUri(it)) },
+                { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
+                { viewModel.handleEvent(AddPlaceEvent.UpdatePlace()) },
+                { viewModel.handleEvent(AddPlaceEvent.Vuelta()) },
+                state.value.exists
+            )
 
-
+//            Button(
+//                onClick = {
+//                    viewModel.handleEvent(AddPlaceEvent.AddPlace())// Handle complete place and image addition
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.add))
+//            }
+//
+//            Button(
+//                modifier = Modifier
+//                    .fillMaxWidth() // Stretch across full width
+//                    .padding(start = dimensionResource(id = R.dimen.medium_padding)), // Add padding to separate from "Add" button
+//                onClick = {
+//                    isPlaceDetailsCompleted = false
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.volver))
+//            }
+        }
+    }
 }
-
 @Composable
 fun AddPlace(
     state: AddPlaceState,
     errorVisto: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit,
-    onAddDone: () -> Unit,
-    onAddPlaceClick: () -> Unit,
+    onDetailsCompleted: () -> Unit,
+//    onAddDone: () -> Unit,
+//    onViewDetalle: (VivacPlace) -> Unit,
+//    onAddPlaceClick: () -> Unit,
     onNameChange: (String) -> Unit,
     onDesciptionChange: (String) -> Unit,
-    onPicturesChange: (List<Uri>) -> Unit,
     onTypeChange: (String) -> Unit,
     onDateChange: (LocalDate) -> Unit,
     onCapacityChange: (Int) -> Unit,
     onPriceChange: (String) -> Unit,
-    ) {
+) {
     val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(state.addPlaceDone) {
-        if (state.addPlaceDone) {
-            onAddDone()
-        }
-    }
+//    LaunchedEffect(state.addPlaceDone) {
+//        if (state.addPlaceDone) {
+//            onAddDone()
+//        }
+//    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -142,11 +178,10 @@ fun AddPlace(
                 LoadingAnimation(state.loading)
             }
         } else {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
+                    .padding(innerPadding)
             ) {
                 Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
                     Text(text = stringResource(id = R.string.nombre))
@@ -155,37 +190,34 @@ fun AddPlace(
                     Text(text = stringResource(id = R.string.descripcion))
                     DescriptionField(state.place.description, onDesciptionChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Row {
-                        Spacer(modifier = Modifier.weight(0.1f))
-                        Text(text = stringResource(id = R.string.tipo))
-                        TipoPicker(state.place.type, onTypeChange)
-                        Spacer(modifier = Modifier.weight(0.3f))
-                        Text(text = stringResource(id = R.string.fecha))
-                        Spacer(modifier = Modifier.weight(0.1f))
-                        DatePickerField(state.place.date, onDateChange)
-                        Spacer(modifier = Modifier.weight(0.1f))
-                    }
+
+                    Text(text = stringResource(id = R.string.tipo))
+                    TipoPicker(state.place.type, onTypeChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                    Text(text = stringResource(id = R.string.fecha))
+                    DatePickerField(state.place.date, onDateChange)
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+
                     Row {
                         Text(text = stringResource(id = R.string.capacidad))
-                        CapacityField(state.place.capacity, Modifier.weight(1f) , onCapacityChange)
+                        CapacityField(state.place.capacity, Modifier.weight(1f), onCapacityChange)
                         Spacer(modifier = Modifier.weight(0.1f))
                         Text(text = stringResource(id = R.string.precio))
-                        PriceField(state.place.price, Modifier.weight(1f) , onPriceChange)
+                        PriceField(state.place.price, Modifier.weight(1f), onPriceChange)
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.fotos))
-                    PicturePicker(state.place.images, onPicturesChange)
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 Column(
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
+                        .align(Alignment.CenterHorizontally)
                         .padding(bottom = dimensionResource(id = R.dimen.medium_padding))
                 ) {
-                    AddButton(onAddPlaceClick)
+                    ContinueButton(onDetailsCompleted)
                 }
             }
         }
+
+
     }
 }
 
@@ -271,7 +303,8 @@ fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> 
                 onCapacityChange(it.toInt())
             } else {
                 onCapacityChange(0)
-            } },
+            }
+        },
         modifier = modifier.fillMaxWidth(),
         placeholder = { Text(stringResource(id = R.string.capacidad)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -313,56 +346,6 @@ fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
 }
 
 @Composable
-fun PicturePicker(images: List<String>, onPicturesChange: (List<Uri>) -> Unit) {
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> onPicturesChange(listOf(uri) as List<Uri>) }
-    )
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> onPicturesChange(uris)}
-    )
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Button(onClick = {
-                    singlePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }) {
-                    Text(text = "Pick one photo")
-                }
-                Button(onClick = {
-                    multiplePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }) {
-                    Text(text = "Pick multiple photo")
-                }
-            }
-        }
-
-        items(images) { imageUrl ->
-            val painter = rememberImagePainter(data = imageUrl)
-
-            Image(
-                painter = painter,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-@Composable
 fun DescriptionField(description: String, onDesciptionChange: (String) -> Unit) {
     OutlinedTextField(
         value = description,
@@ -391,9 +374,32 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
 }
 
 @Composable
-fun AddButton(onAddPlaceClick: () -> Unit) {
+fun ContinueButton(
+    onAddPlaceClick: () -> Unit,
+
+) {
     FloatingActionButton(onClick = {
         onAddPlaceClick()
+    }) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.small_padding))
+        ) {
+            Text(text = stringResource(id = R.string.continuar))
+        }
+
+    }
+}
+
+@Composable
+fun AddButton(
+    onAddPlaceClick: () -> Unit,
+//              onViewDetalle: (VivacPlace) -> Unit,
+//              place: VivacPlace
+) {
+    FloatingActionButton(onClick = {
+        onAddPlaceClick()
+//        onViewDetalle(place)
     }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

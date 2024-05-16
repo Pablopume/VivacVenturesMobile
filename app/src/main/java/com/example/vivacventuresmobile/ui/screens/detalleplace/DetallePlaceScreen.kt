@@ -56,6 +56,7 @@ fun DetallePlaceScreen(
     placeId: Int,
     username: String,
     bottomNavigationBar: @Composable () -> Unit = {},
+    onUpdatePlace: (String) -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -69,7 +70,8 @@ fun DetallePlaceScreen(
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
         bottomNavigationBar,
         {viewModel.handleEvent(DetallePlaceEvent.AddFavourite())},
-        {viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite())}
+        {viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite())},
+        onUpdatePlace
     )
 }
 
@@ -81,6 +83,7 @@ fun DetallePlace(
     bottomNavigationBar: @Composable () -> Unit,
     favourite: () -> Unit,
     unfavourite: () -> Unit,
+    onUpdatePlace: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -145,6 +148,12 @@ fun DetallePlace(
                     DateText(date = state.vivacPlace?.date.toString())
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     PriceText(price = state.vivacPlace?.price ?: 0.0)
+                    if (state.vivacPlace?.username == state.username) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                        Button(onClick = { onUpdatePlace("true") }) {
+                            Text("Editar")
+                        }
+                    }
                 }
             }
         }
@@ -252,7 +261,8 @@ fun PreviewDetallePlace() {
         errorVisto = {},
         bottomNavigationBar = {},
         favourite = {},
-        unfavourite = {}
+        unfavourite = {},
+        onUpdatePlace = {}
     )
 }
 

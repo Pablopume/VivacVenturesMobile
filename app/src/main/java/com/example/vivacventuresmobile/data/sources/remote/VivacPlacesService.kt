@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -30,6 +31,10 @@ interface VivacPlacesService {
     @POST("/vivacplace")
     @Headers("Content-Type: application/json")
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlace): Response<VivacPlaceResponse>
+
+    @PUT("/vivacplace}")
+    @Headers("Content-Type: application/json")
+    suspend fun updateVivacPlace(@Body vivacPlace: VivacPlace): Response<Boolean>
 
     @GET("/nearby/{username}")
     suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>

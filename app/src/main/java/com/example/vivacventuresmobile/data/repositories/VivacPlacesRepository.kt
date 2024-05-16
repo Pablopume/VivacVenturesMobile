@@ -72,4 +72,12 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    fun updateVivacPlace(vivacPlace: VivacPlace): Flow<NetworkResult<Boolean>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.updateVivacPlace(vivacPlace)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
 }
