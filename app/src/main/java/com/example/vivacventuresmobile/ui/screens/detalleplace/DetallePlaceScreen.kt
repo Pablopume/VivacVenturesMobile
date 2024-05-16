@@ -267,19 +267,19 @@ fun PriceText(price: Double) {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewDetallePlace() {
-    DetallePlace(
-        state = DetallePlaceState(
-            error = null,
-            loading = false,
-            vivacPlace = VivacPlace(1, "name", "description", 1.0, 1.0, "image")
-        ),
-        errorVisto = {},
-        bottomNavigationBar = {},
-        favourite = {},
-        unfavourite = {}
-    )
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewDetallePlace() {
+//    DetallePlace(
+//        state = DetallePlaceState(
+//            error = null,
+//            loading = false,
+//            vivacPlace = VivacPlace(1, "name", "description", 1.0, 1.0, "image")
+//        ),
+//        errorVisto = {},
+//        bottomNavigationBar = {},
+//        favourite = {},
+//        unfavourite = {}
+//    )
+//}
 
