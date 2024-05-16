@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
+import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class DetallePlaceViewModel @Inject constructor(
     private val getVivacPlaceUseCase: GetVivacPlaceUseCase,
     private val addFavouriteUseCase: AddFavouriteUseCase,
-    private val deleteFavouriteUseCase: DeleteFavouriteUseCase
+    private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
+    private val deletePlaceUseCase: DeleteVivacPlaceUseCase,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
         MutableStateFlow(DetallePlaceState())
@@ -38,57 +40,61 @@ class DetallePlaceViewModel @Inject constructor(
             is DetallePlaceEvent.GetDetalle -> getVivacPlace(event.id)
             is DetallePlaceEvent.AddFavourite -> addFavourite()
             is DetallePlaceEvent.DeleteFavourite -> deleteFavourite()
-            is DetallePlaceEvent.SaveUsername -> {
+            is DetallePlaceEvent.SaveUsernameAndId -> {
                 _uiState.value =
                     _uiState.value.copy(username = event.username)
-                getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                getVivacPlace(event.vivacId ?: 0)
             }
+
+            is DetallePlaceEvent.DeletePlace -> deletePlace()
         }
     }
 
     private fun getVivacPlace(id: Int) {
-        _uiState.update { it.copy(loading = true) }
-        viewModelScope.launch {
-            getVivacPlaceUseCase(id, _uiState.value.username ?: "")
-                .catch(action = { cause ->
-                    _uiState.update {
-                        it.copy(
-                            error = cause.message,
-                            loading = false
-                        )
-                    }
-                })
-                .collect { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    error = result.message,
-                                    loading = false
-                                )
-                            }
+        if (_uiState.value.username.isNotEmpty() && _uiState.value.vivacPlace?.id != 0) {
+            _uiState.update { it.copy(loading = true) }
+            viewModelScope.launch {
+                getVivacPlaceUseCase(id, _uiState.value.username)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
                         }
-
-                        is NetworkResult.Success -> {
-                            result.data?.let { places ->
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        vivacPlace = places,
+                                        error = result.message,
                                         loading = false
                                     )
                                 }
                             }
-                        }
 
-                        is NetworkResult.Loading -> {
-                            _uiState.update {
-                                it.copy(
-                                    loading = true
-                                )
+                            is NetworkResult.Success -> {
+                                result.data?.let { places ->
+                                    _uiState.update {
+                                        it.copy(
+                                            vivacPlace = places,
+                                            loading = false
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
                             }
                         }
                     }
-                }
+            }
         }
     }
 
@@ -118,9 +124,9 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(favorite = true)
                                 )
                             }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
                         }
 
                         is NetworkResult.Loading -> {
@@ -164,9 +170,9 @@ class DetallePlaceViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     loading = false,
-                                    vivacPlace = it.vivacPlace?.copy(favorite = false)
                                 )
                             }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
                         }
 
                         is NetworkResult.Loading -> {
@@ -178,6 +184,52 @@ class DetallePlaceViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun deletePlace() {
+        if (_uiState.value.vivacPlace?.id != 0){
+            viewModelScope.launch {
+                deletePlaceUseCase(_uiState.value.vivacPlace?.id ?: 0)
+                    .catch { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = false,
+                                        error = "Place deleted",
+                                        deleted = true
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 }

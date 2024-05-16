@@ -41,7 +41,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.ui.screens.listplaces.FavouriteTag
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
@@ -105,19 +104,34 @@ fun PantallaFavourites(
                     LoadingAnimation(state.loading)
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                ) {
-                    items(
-                        items = state.vivacPlaces,
-                        key = { vivacPlace -> vivacPlace.id }
-                    ) { vivacPlace ->
-                        VivacPlaceListItem(
-                            vivacPlace = vivacPlace,
-                            onViewDetalle = onViewDetalle
+                if (state.vivacPlaces.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No tienes lugares favoritos, empieza a guardarlos!",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+                    }
+                } else{
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    ) {
+                        items(
+                            items = state.vivacPlaces,
+                            key = { vivacPlace -> vivacPlace.id }
+                        ) { vivacPlace ->
+                            VivacPlaceListItem(
+                                vivacPlace = vivacPlace,
+                                onViewDetalle = onViewDetalle
+                            )
+                        }
                     }
                 }
             }

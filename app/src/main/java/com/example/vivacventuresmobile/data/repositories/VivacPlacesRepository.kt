@@ -80,4 +80,12 @@ class VivacPlacesRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    fun deleteVivacPlace(id: Int): Flow<NetworkResult<Unit>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.deleteVivacPlace(id)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
 }

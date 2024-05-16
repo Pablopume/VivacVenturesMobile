@@ -65,7 +65,6 @@ import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
-import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesEvent
 import com.example.vivacventuresmobile.ui.theme.BlueRefugee
 import com.example.vivacventuresmobile.ui.theme.GreenVivac
 import com.example.vivacventuresmobile.ui.theme.RedAlbergue
@@ -87,6 +86,10 @@ fun ListPlacesScreen(
 
     if (state.value.username.isEmpty()) {
         viewModel.handleEvent(ListPlacesEvent.SaveUsername(username))
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.handleEvent(ListPlacesEvent.GetVivacPlaces())
     }
 
     ListPlaces(

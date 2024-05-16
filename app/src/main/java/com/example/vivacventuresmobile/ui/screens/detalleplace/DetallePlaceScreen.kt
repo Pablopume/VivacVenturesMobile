@@ -17,6 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
@@ -61,8 +63,14 @@ fun DetallePlaceScreen(
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.value.vivacPlace == null) {
-        viewModel.handleEvent(DetallePlaceEvent.SaveUsername(username))
-        viewModel.handleEvent(DetallePlaceEvent.GetDetalle(placeId))
+        viewModel.handleEvent(DetallePlaceEvent.SaveUsernameAndId(username, placeId))
+    }
+
+    LaunchedEffect(state.value.deleted) {
+        if (state.value.deleted) {
+            //onBack()
+        }
+
     }
 
     DetallePlace(
@@ -71,6 +79,7 @@ fun DetallePlaceScreen(
         bottomNavigationBar,
         {viewModel.handleEvent(DetallePlaceEvent.AddFavourite())},
         {viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite())},
+        { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
         onUpdatePlace
     )
 }
@@ -83,6 +92,7 @@ fun DetallePlace(
     bottomNavigationBar: @Composable () -> Unit,
     favourite: () -> Unit,
     unfavourite: () -> Unit,
+    delete: () -> Unit,
     onUpdatePlace: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -99,11 +109,19 @@ fun DetallePlace(
                 actions = {
                     if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
-                            Icon(Icons.Filled.FavoriteBorder, contentDescription = "Unfavorite")
+                            Icon(Icons.Filled.Favorite, contentDescription = "Unfavorite")
                         }
                     } else {
                         IconButton(onClick = { favourite() }) {
-                            Icon(Icons.Filled.Favorite, contentDescription = "Favorite")
+                            Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
+                        }
+                    }
+                    if (state.vivacPlace?.username == state.username) {
+                        IconButton(onClick = { delete() }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                        }
+                        IconButton(onClick = { /*onEdit()*/ }) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Edit")
                         }
                     }
                 }
@@ -261,8 +279,7 @@ fun PreviewDetallePlace() {
         errorVisto = {},
         bottomNavigationBar = {},
         favourite = {},
-        unfavourite = {},
-        onUpdatePlace = {}
+        unfavourite = {}
     )
 }
 
