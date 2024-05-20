@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Report
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,15 +45,22 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.domain.modelo.Valoration
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 
 @Composable
 fun DetallePlaceScreen(
@@ -58,6 +68,7 @@ fun DetallePlaceScreen(
     placeId: Int,
     username: String,
     bottomNavigationBar: @Composable () -> Unit = {},
+    onBack: () -> Unit,
     onUpdatePlace: (String) -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
@@ -68,7 +79,7 @@ fun DetallePlaceScreen(
 
     LaunchedEffect(state.value.deleted) {
         if (state.value.deleted) {
-            //onBack()
+            onBack()
         }
 
     }
@@ -77,9 +88,10 @@ fun DetallePlaceScreen(
         state.value,
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
         bottomNavigationBar,
-        {viewModel.handleEvent(DetallePlaceEvent.AddFavourite())},
-        {viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite())},
+        { viewModel.handleEvent(DetallePlaceEvent.AddFavourite()) },
+        { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite()) },
         { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
+        onBack,
         onUpdatePlace
     )
 }
@@ -93,6 +105,7 @@ fun DetallePlace(
     favourite: () -> Unit,
     unfavourite: () -> Unit,
     delete: () -> Unit,
+    onBack: () -> Unit,
     onUpdatePlace: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -101,12 +114,24 @@ fun DetallePlace(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { /*onBack()*/ }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 title = { Text(text = state.vivacPlace?.type ?: "") },
                 actions = {
+                    if (state.vivacPlace?.username == state.username) {
+                        IconButton(onClick = { delete() }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                        }
+                        IconButton(onClick = { onUpdatePlace("true") }) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Edit")
+                        }
+                    } else {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(Icons.Filled.Report, contentDescription = "Report")
+                        }
+                    }
                     if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
                             Icon(Icons.Filled.Favorite, contentDescription = "Unfavorite")
@@ -114,14 +139,6 @@ fun DetallePlace(
                     } else {
                         IconButton(onClick = { favourite() }) {
                             Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
-                        }
-                    }
-                    if (state.vivacPlace?.username == state.username) {
-                        IconButton(onClick = { delete() }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
-                        }
-                        IconButton(onClick = { /*onEdit()*/ }) {
-                            Icon(Icons.Filled.Edit, contentDescription = "Edit")
                         }
                     }
                 }
@@ -147,11 +164,12 @@ fun DetallePlace(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-            ){
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(id = R.dimen.medium_padding))
+                        .verticalScroll(rememberScrollState())
                 ) {
                     TextTitle(title = state.vivacPlace?.name ?: "")
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
@@ -159,25 +177,46 @@ fun DetallePlace(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     TextDescription(description = state.vivacPlace?.description ?: "")
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    OpenLocationInMapsButton(lat = state.vivacPlace?.lat ?: 0.0, lon = state.vivacPlace?.lon ?: 0.0)
+                    MapLocation(
+                        lat = state.vivacPlace?.lat ?: 0.0,
+                        lon = state.vivacPlace?.lon ?: 0.0
+                    )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     CapacidadText(capacidad = state.vivacPlace?.capacity ?: 0)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     DateText(date = state.vivacPlace?.date.toString())
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     PriceText(price = state.vivacPlace?.price ?: 0.0)
-                    if (state.vivacPlace?.username == state.username) {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                        Button(onClick = { onUpdatePlace("true") }) {
-                            Text("Editar")
-                        }
-                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                    ValorationsList(valoration = state.vivacPlace?.valorations ?: emptyList())
                 }
             }
         }
 
     }
 
+}
+
+@Composable
+fun ValorationsList(valoration: List<Valoration>) {
+    if (valoration.isNotEmpty()) {
+        val mediatotal = valoration.map { it.score }.average()
+        Text(
+            text = "Valoración media: $mediatotal",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(16.dp)
+        )
+        Column {
+            val sortedValorations = valoration.sortedByDescending { it.date }
+            sortedValorations.forEach {
+                Text(
+                    text = "${it.user}: ${it.review}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -223,18 +262,38 @@ fun TextDescription(description: String) {
 }
 
 @Composable
-fun OpenLocationInMapsButton(lat: Double, lon: Double) {
+fun MapLocation(lat: Double, lon: Double) {
+    val uiSettings = remember {
+        MapUiSettings(
+            myLocationButtonEnabled = false,
+            zoomControlsEnabled = false,
+            compassEnabled = false,
+            scrollGesturesEnabled = false
+        )
+    }
+    val cameraPosition = remember {
+        mutableStateOf(CameraPosition(LatLng(lat, lon),13f, 0f, 0f))
+    }
     val context = LocalContext.current
-
-    Button(onClick = {
-        val gmmIntentUri = Uri.parse("geo:$lat,$lon?q=$lat,$lon")
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        mapIntent.setPackage("com.google.android.apps.maps")
-        if (mapIntent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(mapIntent)
+    GoogleMap(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        uiSettings = uiSettings,
+        cameraPositionState = CameraPositionState(cameraPosition.value),
+        onMapClick = {
+            val gmmIntentUri = Uri.parse("geo:$lat,$lon?q=$lat,$lon")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(mapIntent)
+            }
         }
-    }) {
-        Text("Abrir ubicación en Google Maps")
+    ) {
+        Marker(
+            state = MarkerState(position = LatLng(lat, lon)),
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+        )
     }
 }
 
@@ -258,13 +317,14 @@ fun DateText(date: String) {
 
 @Composable
 fun PriceText(price: Double) {
-    Text(
-        text = "Precio: $price",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(16.dp)
-    )
+    if (price != 0.0) {
+        Text(
+            text = "Precio: $price",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 }
-
 
 
 //@Preview(showBackground = true, showSystemUi = true)

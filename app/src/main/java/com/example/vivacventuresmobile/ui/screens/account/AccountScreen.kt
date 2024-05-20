@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ fun AccountScreen(
     dataStore: DataStore<AppPreferences>,
     toLoginScreen: () -> Unit,
     toMyPlaces: (String) -> Unit,
+    toMyFriends: (String) -> Unit,
     toFavourites: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
@@ -45,6 +47,7 @@ fun AccountScreen(
         toLoginScreen = toLoginScreen,
         toMyPlaces = toMyPlaces,
         toFavourites = toFavourites,
+        toMyFriends = toMyFriends,
         bottomNavigationBar = bottomNavigationBar
     )
 }
@@ -55,6 +58,7 @@ fun PantallaAccount(
     toLoginScreen: () -> Unit,
     toFavourites: (String) -> Unit,
     toMyPlaces: (String) -> Unit,
+    toMyFriends: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -91,7 +95,13 @@ fun PantallaAccount(
                     ExtendedFloatingActionButton(
                         onClick = { toFavourites(username) },
                         icon = { Icon(Icons.Filled.Favorite, "Favoritos") },
-                        text = { Text(text = "Mis favoritos") },
+                        text = { Text(text = "Mis listas") },
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                    ExtendedFloatingActionButton(
+                        onClick = { toMyFriends(username) },
+                        icon = { Icon(Icons.Filled.SupervisorAccount, "Amigos") },
+                        text = { Text(text = "Mis amigos") },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(

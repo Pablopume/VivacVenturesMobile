@@ -10,6 +10,9 @@ object ConstantesPantallas {
     const val FAVOURITES_USER = "favoritos/{username}"
     const val MYPLACES = "mislugares/"
     const val MYPLACES_USER = "mislugares/{username}"
+    const val MYFRIENDS = "misamigos/"
+    const val MYFRIENDS_USER = "misamigos/{username}"
+    const val SEARCHFRIENDS = "buscaramigos/"
 
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"
