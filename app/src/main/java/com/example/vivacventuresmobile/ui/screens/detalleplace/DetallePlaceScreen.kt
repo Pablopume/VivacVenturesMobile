@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,8 +26,13 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Report
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,15 +41,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -94,6 +105,7 @@ fun DetallePlaceScreen(
         { viewModel.handleEvent(DetallePlaceEvent.AddFavourite()) },
         { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite()) },
         { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
+        { id -> viewModel.handleEvent(DetallePlaceEvent.DeleteValoration(id)) },
         onBack,
         onUpdatePlace
     )
@@ -108,6 +120,7 @@ fun DetallePlace(
     favourite: () -> Unit,
     unfavourite: () -> Unit,
     delete: () -> Unit,
+    deleteValoration: (Int) -> Unit,
     onBack: () -> Unit,
     onUpdatePlace: (String) -> Unit
 ) {
@@ -191,7 +204,11 @@ fun DetallePlace(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     PriceText(price = state.vivacPlace?.price ?: 0.0)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    ValorationsList(valoration = state.vivacPlace?.valorations ?: emptyList())
+                    ValorationsList(
+                        valoration = state.vivacPlace?.valorations ?: emptyList(),
+                        username = state.username,
+                        deleteValoration = deleteValoration
+                    )
                 }
             }
         }
@@ -201,38 +218,86 @@ fun DetallePlace(
 }
 
 @Composable
-fun ValorationsList(valoration: List<Valoration>) {
+fun ValorationsList(valoration: List<Valoration>, username: String, deleteValoration: (Int) -> Unit){
     if (valoration.isNotEmpty()) {
         val mediatotal = valoration.map { it.score }.average()
         Text(
             text = "Valoración media: $mediatotal",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp)
         )
         Column {
             val sortedValorations = valoration.sortedByDescending { it.date }
-            sortedValorations.forEach {
-                Text(
-                    text = "${it.user}: ${it.review}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
+            sortedValorations.forEach { valoration ->
+                var showMenu by remember { mutableStateOf(false) }
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = valoration.user,
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                            Text(
+                                text = valoration.date.toString(),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Box {
+                                if (valoration.user == username) {
+                                    IconButton(onClick = { showMenu = true }) {
+                                        Icon(Icons.Filled.MoreVert, contentDescription = null)
+                                    }
+                                    DropdownMenu(
+                                        expanded = showMenu,
+                                        onDismissRequest = { showMenu = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                // Handle delete action here
+                                                deleteValoration(valoration.id)
+                                                showMenu = false
+                                            },
+                                            text = {
+                                                Text("Delete")
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        RatingBar(
+                            rating = valoration.score.toFloat(),
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(
+                            text = valoration.review,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+
 @Composable
-fun TextTitle(title: String) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge
-        )
+fun RatingBar(rating: Float, modifier: Modifier = Modifier) {
+    Row(modifier = modifier) {
+        for (i in 1..5) {
+            Icon(
+                imageVector = if (i <= rating) Icons.Filled.Star else Icons.Filled.StarBorder,
+                contentDescription = null,
+                tint = Color.Yellow
+            )
+        }
     }
 }
 
@@ -272,16 +337,38 @@ fun ImageCarousel(images: List<String>) {
                 )
 
                 if (currentImageIndex.value > 0) {
-                    IconButton(onClick = { currentImageIndex.value-- },
-                        modifier = Modifier.align(Alignment.CenterStart)) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Previous image")
+                    Surface(
+                        shape = CircleShape,
+                        color = Color.Black.copy(alpha = 0.5f),
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(16.dp)
+                    ) {
+                        IconButton(onClick = { currentImageIndex.value-- }) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = "Previous image",
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
 
                 if (currentImageIndex.value < images.size - 1) {
-                    IconButton(onClick = { currentImageIndex.value++ },
-                        modifier = Modifier.align(Alignment.CenterEnd)) {
-                        Icon(Icons.Filled.ArrowForward, contentDescription = "Next image")
+                    Surface(
+                        shape = CircleShape,
+                        color = Color.Black.copy(alpha = 0.5f),
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(16.dp)
+                    ) {
+                        IconButton(onClick = { currentImageIndex.value++ }) {
+                            Icon(
+                                Icons.Filled.ArrowForward,
+                                contentDescription = "Next image",
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }
@@ -299,6 +386,20 @@ fun TextDescription(description: String) {
 }
 
 @Composable
+fun TextTitle(title: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+}
+
+@Composable
 fun MapLocation(lat: Double, lon: Double) {
     val uiSettings = remember {
         MapUiSettings(
@@ -309,7 +410,7 @@ fun MapLocation(lat: Double, lon: Double) {
         )
     }
     val cameraPosition = remember {
-        mutableStateOf(CameraPosition(LatLng(lat, lon),13f, 0f, 0f))
+        mutableStateOf(CameraPosition(LatLng(lat, lon), 13f, 0f, 0f))
     }
     val context = LocalContext.current
     GoogleMap(

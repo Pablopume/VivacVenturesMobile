@@ -15,8 +15,8 @@ data class ValorationResponse(
     val score: Int,
     @SerializedName("review")
     val review: String,
-//    @SerializedName("date")
-//    val date: LocalDate
+    @SerializedName("date")
+    val date: LocalDate
 )
-fun ValorationResponse.toValoration() : Valoration = Valoration(id, username, vivacPlaceId, score, review, LocalDate.now())
-fun Valoration.toValorationResponse() : ValorationResponse = ValorationResponse(id, user, vivacPlaceId, score, review)
+fun ValorationResponse.toValoration() : Valoration = Valoration(id, username, vivacPlaceId, score, review, date)
+fun Valoration.toValorationResponse() : ValorationResponse = ValorationResponse(id, user, vivacPlaceId, score, review, date)

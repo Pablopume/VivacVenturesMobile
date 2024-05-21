@@ -3,7 +3,9 @@ package com.example.vivacventuresmobile.ui.screens.detalleplace
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddFavouriteUseCase
+import com.example.vivacventuresmobile.domain.usecases.AddValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
+import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
@@ -20,6 +22,8 @@ class DetallePlaceViewModel @Inject constructor(
     private val addFavouriteUseCase: AddFavouriteUseCase,
     private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
     private val deletePlaceUseCase: DeleteVivacPlaceUseCase,
+    private val addValorationUseCase: AddValorationUseCase,
+    private val deleteValorationUseCase: DeleteValorationUseCase
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
         MutableStateFlow(DetallePlaceState())
@@ -47,6 +51,57 @@ class DetallePlaceViewModel @Inject constructor(
             }
 
             is DetallePlaceEvent.DeletePlace -> deletePlace()
+            is DetallePlaceEvent.AddValoration -> {
+
+            }
+
+            is DetallePlaceEvent.DeleteValoration -> {
+
+            }
+        }
+    }
+
+    private fun deleteValoration(id: Int){
+        _uiState.update { it.copy(loading = true) }
+        viewModelScope.launch {
+            deleteValorationUseCase(id)
+                .catch { cause ->
+                    _uiState.update {
+                        it.copy(
+                            error = cause.message,
+                            loading = false
+                        )
+                    }
+                }
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = "Valoration deleted",
+                                    loading = false,
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = true
+                                )
+                            }
+                        }
+                    }
+                }
         }
     }
 
@@ -188,7 +243,7 @@ class DetallePlaceViewModel @Inject constructor(
     }
 
     private fun deletePlace() {
-        if (_uiState.value.vivacPlace?.id != 0){
+        if (_uiState.value.vivacPlace?.id != 0) {
             viewModelScope.launch {
                 deletePlaceUseCase(_uiState.value.vivacPlace?.id ?: 0)
                     .catch { cause ->
