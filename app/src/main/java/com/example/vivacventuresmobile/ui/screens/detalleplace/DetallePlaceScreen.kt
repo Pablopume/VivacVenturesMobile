@@ -3,6 +3,7 @@ package com.example.vivacventuresmobile.ui.screens.detalleplace
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
@@ -46,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
@@ -235,19 +238,53 @@ fun TextTitle(title: String) {
 
 @Composable
 fun ImageCarousel(images: List<String>) {
+    val showDialog = remember { mutableStateOf(false) }
+    val currentImageIndex = remember { mutableStateOf(0) }
     val scrollState = rememberScrollState()
     Row(Modifier.horizontalScroll(scrollState)) {
-        images.forEach { imageUrl ->
+        images.forEachIndexed { index, imageUrl ->
             val image: Painter = rememberAsyncImagePainter(imageUrl)
             Image(
                 painter = image,
                 contentDescription = null,
                 modifier = Modifier
                     .size(200.dp)
-                    .clip(RoundedCornerShape(6.dp)),
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable {
+                        currentImageIndex.value = index
+                        showDialog.value = true
+                    },
                 alignment = Alignment.CenterStart,
                 contentScale = ContentScale.Crop
             )
+        }
+    }
+    if (showDialog.value) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
+            Box {
+                val image: Painter = rememberAsyncImagePainter(images[currentImageIndex.value])
+                Image(
+                    painter = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(600.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+                if (currentImageIndex.value > 0) {
+                    IconButton(onClick = { currentImageIndex.value-- },
+                        modifier = Modifier.align(Alignment.CenterStart)) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Previous image")
+                    }
+                }
+
+                if (currentImageIndex.value < images.size - 1) {
+                    IconButton(onClick = { currentImageIndex.value++ },
+                        modifier = Modifier.align(Alignment.CenterEnd)) {
+                        Icon(Icons.Filled.ArrowForward, contentDescription = "Next image")
+                    }
+                }
+            }
         }
     }
 }
@@ -325,21 +362,3 @@ fun PriceText(price: Double) {
         )
     }
 }
-
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PreviewDetallePlace() {
-//    DetallePlace(
-//        state = DetallePlaceState(
-//            error = null,
-//            loading = false,
-//            vivacPlace = VivacPlace(1, "name", "description", 1.0, 1.0, "image")
-//        ),
-//        errorVisto = {},
-//        bottomNavigationBar = {},
-//        favourite = {},
-//        unfavourite = {}
-//    )
-//}
-
