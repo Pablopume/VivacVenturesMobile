@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 interface ValorationsService {
 
@@ -15,5 +15,5 @@ interface ValorationsService {
     suspend fun addValoration(@Body valoration: Valoration): Response<Unit>
 
     @DELETE("/valoration/{id}")
-    suspend fun deleteValoration(@Query("id") int: Int): Response<Unit>
+    suspend fun deleteValoration(@Path("id") int: Int): Response<Unit>
 }

@@ -328,3 +328,17 @@ Napp/src/main/java/com/example/vivacventuresmobile/data/model/FriendResponse.kt
 Xapp/src/main/java/com/example/vivacventuresmobile/data/repositories/FriendsRepository.kt,6\0\60276199f0c64284952a0fb364f1a9fe6eeffd88
 à
 Xapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/SearchFriendUseCase.kt,7\3\7307a1a160dc5838247434bf4f0dc147eab5bb0f
+â
+Yapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addimages/AddImagesScreen.kt,5\f\5fc5367446e0cb459e370a9d94b44f43216ceffc
+ç
+]app/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/AddLocationScreen.kt,2\6\26da9ce30b6024d488f586bd99ae1f380d4b5d8e
+â
+Yapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/LocationState.kt,6\f\6f200e86bea8bff1b330920b085b3fa9941260c8
+â
+Yapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/LocationEvent.kt,8\f\8f8a719b74180074b1ac19864e87ffbebfad0a7b
+ç
+]app/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/LocationViewModel.kt,8\0\8055e2944ead32e2a4a592fe7e1a94e4eae74e44
+å
+\app/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/AddLocationState.kt,1\8\184c52ecdbfe072826485ebf09bfd8b5a88a4a95
+å
+\app/src/main/java/com/example/vivacventuresmobile/ui/screens/addLocation/AddLocationEvent.kt,b\4\b401d4b8cb58211fa9a72d985a368de13acd349e

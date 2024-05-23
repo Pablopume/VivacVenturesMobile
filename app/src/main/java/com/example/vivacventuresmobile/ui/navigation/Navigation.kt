@@ -39,7 +39,6 @@ fun Navigation(
     NavHost(
         navController = navController,
         startDestination = if (userName.isNotBlank() && !userName.equals("")) ConstantesPantallas.MAP else ConstantesPantallas.LOGIN,
-//        startDestination = "AddImagesScreen",
     ) {
         composable(
             ConstantesPantallas.LOGIN

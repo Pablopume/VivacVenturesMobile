@@ -2,6 +2,7 @@ package com.example.vivacventuresmobile.ui.screens.addplace
 
 import android.net.Uri
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDate
 
 sealed class AddPlaceEvent {
@@ -13,6 +14,7 @@ sealed class AddPlaceEvent {
     class OnDateChange(val date: LocalDate) : AddPlaceEvent()
     class OnCapacityChange(val capacity: Int) : AddPlaceEvent()
     class OnPriceChange(val price: String) : AddPlaceEvent()
+    class OnLocationChange(val location: LatLng) : AddPlaceEvent()
     class AddUsername(val userName: String , val int : Int) : AddPlaceEvent()
     class AddUri(val pictures: List<Uri>) : AddPlaceEvent()
     class DeleteUri(val num: Int, val imagen : Boolean) : AddPlaceEvent()

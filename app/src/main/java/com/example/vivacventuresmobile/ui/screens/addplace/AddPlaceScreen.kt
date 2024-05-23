@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -33,7 +32,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,12 +44,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.data.preferences.AppPreferences
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
+import com.example.vivacventuresmobile.ui.screens.addLocation.AddLocationScreen
 import com.example.vivacventuresmobile.ui.screens.addimages.AddImages
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import java.time.Instant
@@ -61,7 +57,7 @@ import java.time.ZoneId
 @Composable
 fun AddPlaceScreen(
     viewModel: AddPlaceViewModel = hiltViewModel(),
-    vivacPlace: Int ,
+    vivacPlace: Int,
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddDone: () -> Unit,
     onUpdateDone: () -> Unit,
@@ -89,13 +85,19 @@ fun AddPlaceScreen(
                 { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it)) },
             )
 
-        }
-        else if (state.value.cambioPantalla == 1) {
-            AddButton(
-                { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
+        } else if (state.value.cambioPantalla == 1) {
+//            AddButton(
+//                { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
+//            )
+            AddLocationScreen(
+                addplacestate = state.value,
+                vuelta = { viewModel.handleEvent(AddPlaceEvent.VueltaLocation()) },
+                toImages = { viewModel.handleEvent(AddPlaceEvent.LocationCompleted()) },
+                onLocationChange = { viewModel.handleEvent(AddPlaceEvent.OnLocationChange(it)) },
+                bottomNavigationBar = bottomNavigationBar,
             )
-        }
-        else {
+
+        } else {
             AddImages(
                 state.value,
                 { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
@@ -103,7 +105,14 @@ fun AddPlaceScreen(
                 onAddDone,
                 onUpdateDone,
                 { viewModel.handleEvent(AddPlaceEvent.AddUri(it)) },
-                { index, isImage -> viewModel.handleEvent(AddPlaceEvent.DeleteUri(index, isImage)) },
+                { index, isImage ->
+                    viewModel.handleEvent(
+                        AddPlaceEvent.DeleteUri(
+                            index,
+                            isImage
+                        )
+                    )
+                },
                 { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
                 { viewModel.handleEvent(AddPlaceEvent.UpdatePlace()) },
                 { viewModel.handleEvent(AddPlaceEvent.Vuelta()) },
@@ -112,6 +121,7 @@ fun AddPlaceScreen(
         }
     }
 }
+
 @Composable
 fun AddPlace(
     state: AddPlaceState,
@@ -344,7 +354,7 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
 fun ContinueButton(
     onAddPlaceClick: () -> Unit,
 
-) {
+    ) {
     FloatingActionButton(onClick = {
         onAddPlaceClick()
     }) {

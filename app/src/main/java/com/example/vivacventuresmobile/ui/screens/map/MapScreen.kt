@@ -69,6 +69,7 @@ fun MapScreen(
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.handleEvent(MapEvent.StartLocationUpdates(LocationServices.getFusedLocationProviderClient(LocalContext.current)))
+
     Maps(
         state.value,
         { viewModel.handleEvent(MapEvent.ErrorVisto) },

@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddPlaceUseCase
-import com.example.vivacventuresmobile.domain.usecases.GetPlaceByIdUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.UpdatePlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
@@ -67,10 +66,16 @@ class AddPlaceViewModel @Inject constructor(
                 _uiState.update { it.copy(place = it.place.copy(price = event.price.toDouble())) }
             }
 
+            is AddPlaceEvent.OnLocationChange -> {
+                _uiState.update {
+                    it.copy(place = it.place.copy(lat = event.location.latitude, lon = event.location.longitude))
+                }
+            }
+
             is AddPlaceEvent.AddUsername -> {
                 val usernameEE = event.userName
                 _uiState.update { it.copy(place = it.place.copy(username = usernameEE)) }
-                if (uiState.value.place.username != ""){
+                if (uiState.value.place.username != "") {
                     rellenarPlace(event.int)
                 }
 
@@ -398,7 +403,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
 
-    private fun deleteUri(num: Int, imagen : Boolean) {
+    private fun deleteUri(num: Int, imagen: Boolean) {
         if (imagen) {
             val imageUrl = uiState.value.place.images[num]
             _uiState.update { it.copy(place = it.place.copy(images = it.place.images - imageUrl)) }
