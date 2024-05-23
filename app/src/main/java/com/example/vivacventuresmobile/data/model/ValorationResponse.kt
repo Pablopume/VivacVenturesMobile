@@ -19,4 +19,4 @@ data class ValorationResponse(
     val date: LocalDate
 )
 fun ValorationResponse.toValoration() : Valoration = Valoration(id, username, vivacPlaceId, score, review, date)
-fun Valoration.toValorationResponse() : ValorationResponse = ValorationResponse(id, user, vivacPlaceId, score, review, date)
+fun Valoration.toValorationResponse() : ValorationResponse = ValorationResponse(id, username, vivacPlaceId, score, review, date)

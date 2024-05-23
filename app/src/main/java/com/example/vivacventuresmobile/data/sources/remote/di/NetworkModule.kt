@@ -9,6 +9,8 @@ import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
 import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.FavouritesService
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
+import com.example.vivacventuresmobile.data.sources.remote.ReportsService
+import com.example.vivacventuresmobile.data.sources.remote.ValorationsService
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
 import com.example.vivacventuresmobile.utils.Constants.BASE_URL
 import com.google.firebase.firestore.FirebaseFirestore
@@ -90,6 +92,16 @@ object NetworkModule {
     @Provides
     fun provideFavouritesService(retrofit: Retrofit): FavouritesService =
         retrofit.create(FavouritesService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideValorationService(retrofit: Retrofit): ValorationsService =
+        retrofit.create(ValorationsService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideReportService(retrofit: Retrofit): ReportsService =
+        retrofit.create(ReportsService::class.java)
 
 
     @Singleton

@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -35,6 +39,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,7 +48,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
-import com.example.vivacventuresmobile.ui.screens.listplaces.FavouriteTag
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.example.vivacventuresmobile.ui.theme.BlueRefugee
 import com.example.vivacventuresmobile.ui.theme.GreenVivac
@@ -117,7 +122,7 @@ fun PantallaFavourites(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                } else{
+                } else {
                     LazyColumn(
                         modifier = Modifier
                             .padding(innerPadding)
@@ -185,32 +190,57 @@ fun VivacPlaceListItem(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
+            val columnWeight = if (vivacPlace.favorite) 0.8f else 1f
+
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(8.dp)
+                    .weight(columnWeight)
             ) {
                 Text(
                     text = vivacPlace.name,
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
                     color = MaterialTheme.colorScheme.surface,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = vivacPlace.type,
-                    modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    style = MaterialTheme.typography.labelMedium
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = vivacPlace.type,
+                        modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    if (vivacPlace.valorations != -1.0) {
+                        Text(
+                            text = vivacPlace.valorations.toString(),
+                            modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
+                            color = MaterialTheme.colorScheme.surface,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Valorations",
+                            tint = Color.Yellow
+                        )
+                    }
+                }
 
             }
 
             if (vivacPlace.favorite) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.29f),
                     horizontalArrangement = Arrangement.End
                 ) {
                     FavouriteTag()
@@ -218,4 +248,42 @@ fun VivacPlaceListItem(
             }
         }
     }
+}
+
+
+@Composable
+fun FavouriteTag() {
+    ChipView(isFavourite = "favorito", colorResource = Color.Green)
+}
+
+@Composable
+fun ChipView(isFavourite: String, colorResource: Color) {
+    Box(
+        modifier = Modifier
+            .wrapContentWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colorResource.copy(.08f))
+    ) {
+        Text(
+            text = isFavourite, modifier = Modifier.padding(12.dp, 6.dp, 12.dp, 6.dp),
+            style = MaterialTheme.typography.labelMedium,
+            color = colorResource
+        )
+    }
+}
+
+@Preview
+@Composable
+fun previewvivacPlaceCard() {
+    VivacPlaceListItem(
+        vivacPlace = VivacPlaceList(
+            id = 1,
+            name = "Refugio de la montaña",
+            type = "Refugio",
+            favorite = true,
+            valorations = 4.5,
+            images = "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2Fdefault.jpg?alt=media&token=5ef9d6e8-c7b8-47ac-87a3-419d22857a70"
+        ),
+        onViewDetalle = {}
+    )
 }

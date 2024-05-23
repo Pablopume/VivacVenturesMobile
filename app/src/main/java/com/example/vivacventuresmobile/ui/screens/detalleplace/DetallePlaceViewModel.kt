@@ -2,7 +2,9 @@ package com.example.vivacventuresmobile.ui.screens.detalleplace
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.domain.modelo.Valoration
 import com.example.vivacventuresmobile.domain.usecases.AddFavouriteUseCase
+import com.example.vivacventuresmobile.domain.usecases.AddReportUseCase
 import com.example.vivacventuresmobile.domain.usecases.AddValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +26,8 @@ class DetallePlaceViewModel @Inject constructor(
     private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
     private val deletePlaceUseCase: DeleteVivacPlaceUseCase,
     private val addValorationUseCase: AddValorationUseCase,
-    private val deleteValorationUseCase: DeleteValorationUseCase
+    private val deleteValorationUseCase: DeleteValorationUseCase,
+    private val addReportUseCase: AddReportUseCase,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
         MutableStateFlow(DetallePlaceState())
@@ -52,16 +56,142 @@ class DetallePlaceViewModel @Inject constructor(
 
             is DetallePlaceEvent.DeletePlace -> deletePlace()
             is DetallePlaceEvent.AddValoration -> {
-
+                addValoration()
             }
 
             is DetallePlaceEvent.DeleteValoration -> {
+                deleteValoration(event.id)
+            }
 
+            is DetallePlaceEvent.OnDescriptionReportChange -> {
+                _uiState.value = _uiState.value.copy(descriptionReport = event.description)
+            }
+
+            is DetallePlaceEvent.OnReviewValorationChange -> {
+                _uiState.value = _uiState.value.copy(reviewValoration = event.review)
+            }
+
+            is DetallePlaceEvent.OnScoreChange -> {
+                _uiState.value = _uiState.value.copy(score = event.score)
+            }
+
+            is DetallePlaceEvent.AddReport -> addReport()
+        }
+    }
+
+    private fun addReport() {
+        if (_uiState.value.descriptionReport.isNotEmpty() && _uiState.value.vivacPlace?.id != 0) {
+            _uiState.update { it.copy(loading = true) }
+            viewModelScope.launch {
+                addReportUseCase(
+                    com.example.vivacventuresmobile.domain.modelo.Report(
+                        0,
+                        _uiState.value.username,
+                        _uiState.value.vivacPlace?.id ?: 0,
+                        _uiState.value.descriptionReport,
+                    )
+                )
+                    .catch { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = "Report added",
+                                        loading = false,
+                                        descriptionReport = ""
+                                    )
+                                }
+                                getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
             }
         }
     }
 
-    private fun deleteValoration(id: Int){
+    private fun addValoration() {
+        if (_uiState.value.score != 0 && _uiState.value.reviewValoration.isNotEmpty() && _uiState.value.vivacPlace?.id != 0) {
+            val valoration = Valoration(
+                0,
+                _uiState.value.username,
+                _uiState.value.vivacPlace?.id ?: 0,
+                _uiState.value.score,
+                _uiState.value.reviewValoration,
+                LocalDate.now()
+            )
+            _uiState.update { it.copy(loading = true) }
+            viewModelScope.launch {
+                addValorationUseCase(valoration)
+                    .catch { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = "Valoration added",
+                                        loading = false,
+                                        score = 0,
+                                        reviewValoration = ""
+                                    )
+                                }
+                                getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun deleteValoration(id: Int) {
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             deleteValorationUseCase(id)
@@ -91,6 +221,7 @@ class DetallePlaceViewModel @Inject constructor(
                                     loading = false,
                                 )
                             }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
                         }
 
                         is NetworkResult.Loading -> {

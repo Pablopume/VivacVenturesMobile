@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class Valoration(
     val id: Int = 0,
-    val user: String = "",
+    val username: String = "",
     val vivacPlaceId: Int = 0,
     val score: Int = 0,
     val review: String = "",

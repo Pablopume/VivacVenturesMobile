@@ -55,6 +55,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -283,132 +284,6 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
             }
         }
     }
-}
-
-
-@Composable
-fun VivacPlaceItem(
-    vivacPlace: VivacPlace,
-    onViewDetalle: (Int) -> Unit,
-    modifier: Modifier = Modifier.background(MaterialTheme.colorScheme.background)
-) {
-    val backgroundColor = when (vivacPlace.type) {
-        "Vivac" -> GreenVivac
-        "Refugio" -> BlueRefugee
-        "Albergue" -> RedAlbergue
-        "Refugio Privado" -> YellowRefugee
-        else -> Color.Gray
-    }
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.smallmedium_padding))
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding)))
-            .clickable { onViewDetalle(vivacPlace.id) },
-        elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.medium_padding))
-                .fillMaxWidth()
-        ) {
-            val imageUrl = if (vivacPlace.images.isNotEmpty()) {
-                vivacPlace.images[0]
-            } else {
-                "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2Fdefault.jpg?alt=media&token=5ef9d6e8-c7b8-47ac-87a3-419d22857a70"
-            }
-            val image: Painter = rememberAsyncImagePainter(imageUrl)
-            Image(
-                modifier = Modifier
-                    .size(80.dp, 80.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                painter = image,
-                alignment = Alignment.CenterStart,
-                contentDescription = "",
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = vivacPlace.name,
-                    modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    fontWeight = FontWeight.Bold,
-                    style = typography.titleMedium
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = vivacPlace.type,
-                    modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    style = typography.labelMedium
-                )
-
-            }
-
-            if (vivacPlace.favorite) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    FavouriteTag()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun FavouriteTag() {
-    ChipView(isFavourite = "favorito", colorResource = Color.Green)
-}
-
-@Composable
-fun ChipView(isFavourite: String, colorResource: Color) {
-    Box(
-        modifier = Modifier
-            .wrapContentWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(colorResource.copy(.08f))
-    ) {
-        Text(
-            text = isFavourite, modifier = Modifier.padding(12.dp, 6.dp, 12.dp, 6.dp),
-            style = typography.labelMedium,
-            color = colorResource
-        )
-    }
-}
-
-
-@Preview
-@Composable
-fun PreviewVivacPlaceItem() {
-    VivacPlaceItem(
-        vivacPlace = VivacPlace(
-            id = 1,
-            name = "Vivac Place",
-            type = "Type",
-            description = "Description",
-            lat = 0.0,
-            lon = 0.0,
-            capacity = 0,
-            date = LocalDate.now(),
-            username = "Username",
-            favorite = true,
-        ),
-        onViewDetalle = {}
-    )
 }
 
 @Preview

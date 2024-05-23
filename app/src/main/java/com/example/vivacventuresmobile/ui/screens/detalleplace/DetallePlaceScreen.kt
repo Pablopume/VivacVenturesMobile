@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -38,11 +40,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -106,6 +110,17 @@ fun DetallePlaceScreen(
         { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite()) },
         { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
         { id -> viewModel.handleEvent(DetallePlaceEvent.DeleteValoration(id)) },
+        { description ->
+            viewModel.handleEvent(
+                DetallePlaceEvent.OnDescriptionReportChange(
+                    description
+                )
+            )
+        },
+        { review -> viewModel.handleEvent(DetallePlaceEvent.OnReviewValorationChange(review)) },
+        { score -> viewModel.handleEvent(DetallePlaceEvent.OnScoreChange(score)) },
+        { viewModel.handleEvent(DetallePlaceEvent.AddValoration()) },
+        { viewModel.handleEvent(DetallePlaceEvent.AddReport()) },
         onBack,
         onUpdatePlace
     )
@@ -121,10 +136,16 @@ fun DetallePlace(
     unfavourite: () -> Unit,
     delete: () -> Unit,
     deleteValoration: (Int) -> Unit,
+    onDescriptionReportChange: (String) -> Unit,
+    onReviewValorationChange: (String) -> Unit,
+    onScoreChange: (Int) -> Unit,
+    onAddValoration: () -> Unit,
+    onAddReport: () -> Unit,
     onBack: () -> Unit,
     onUpdatePlace: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    var reportDialogOpen by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -144,7 +165,7 @@ fun DetallePlace(
                             Icon(Icons.Filled.Edit, contentDescription = "Edit")
                         }
                     } else {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { reportDialogOpen = true }) {
                             Icon(Icons.Filled.Report, contentDescription = "Report")
                         }
                     }
@@ -207,8 +228,43 @@ fun DetallePlace(
                     ValorationsList(
                         valoration = state.vivacPlace?.valorations ?: emptyList(),
                         username = state.username,
-                        deleteValoration = deleteValoration
+                        deleteValoration = deleteValoration,
+                        onAddValoration = onAddValoration,
+                        onScoreChange = onScoreChange,
+                        onReviewValorationChange = onReviewValorationChange,
+                        score = state.score,
+                        review = state.reviewValoration
                     )
+                    if (reportDialogOpen) {
+                        AlertDialog(
+                            onDismissRequest = { reportDialogOpen = false },
+                            title = { Text("Report") },
+                            text = {
+                                TextField(
+                                    value = state.descriptionReport,
+                                    onValueChange = onDescriptionReportChange,
+                                    label = { Text("Report Description") }
+                                )
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        onAddReport()
+                                        reportDialogOpen = false
+                                    }
+                                ) {
+                                    Text("Send")
+                                }
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = { reportDialogOpen = false }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -218,14 +274,77 @@ fun DetallePlace(
 }
 
 @Composable
-fun ValorationsList(valoration: List<Valoration>, username: String, deleteValoration: (Int) -> Unit){
+fun ValorationsList(
+    valoration: List<Valoration>,
+    username: String,
+    deleteValoration: (Int) -> Unit,
+    onAddValoration: () -> Unit,
+    onScoreChange: (Int) -> Unit,
+    onReviewValorationChange: (String) -> Unit,
+    score: Int,
+    review: String
+) {
     if (valoration.isNotEmpty()) {
         val mediatotal = valoration.map { it.score }.average()
-        Text(
-            text = "Valoración media: $mediatotal",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
-        )
+        var valorationDialogOpen by remember { mutableStateOf(false) }
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Valoración media: $mediatotal",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Button(onClick = { valorationDialogOpen = true }) {
+                Text("Add")
+            }
+        }
+
+        if (valorationDialogOpen) {
+            AlertDialog(
+                onDismissRequest = { valorationDialogOpen = false },
+                title = { Text("Add Valoration") },
+                text = {
+                    Column {
+                        Column {
+                            Slider(
+                                value = score.toFloat(),
+                                onValueChange = {
+                                    onScoreChange(it.toInt())
+                                },
+                                valueRange = 1f..5f,
+                                steps = 5
+                            )
+                            Text(text = "Score: $score")
+                        }
+                        TextField(
+                            value = review,
+                            onValueChange = {
+                                onReviewValorationChange(it)
+                            },
+                            label = { Text("Review") }
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onAddValoration()
+                            valorationDialogOpen = false
+                        }
+                    ) {
+                        Text("Add")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { valorationDialogOpen = false }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
         Column {
             val sortedValorations = valoration.sortedByDescending { it.date }
             sortedValorations.forEach { valoration ->
@@ -242,7 +361,7 @@ fun ValorationsList(valoration: List<Valoration>, username: String, deleteValora
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = valoration.user,
+                                text = valoration.username,
                                 style = MaterialTheme.typography.labelMedium
                             )
                             Text(
@@ -250,7 +369,7 @@ fun ValorationsList(valoration: List<Valoration>, username: String, deleteValora
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Box {
-                                if (valoration.user == username) {
+                                if (valoration.username == username) {
                                     IconButton(onClick = { showMenu = true }) {
                                         Icon(Icons.Filled.MoreVert, contentDescription = null)
                                     }
@@ -260,7 +379,6 @@ fun ValorationsList(valoration: List<Valoration>, username: String, deleteValora
                                     ) {
                                         DropdownMenuItem(
                                             onClick = {
-                                                // Handle delete action here
                                                 deleteValoration(valoration.id)
                                                 showMenu = false
                                             },
