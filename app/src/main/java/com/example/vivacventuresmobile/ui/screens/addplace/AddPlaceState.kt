@@ -10,7 +10,7 @@ data class AddPlaceState (
     val updatePlaceDone: Boolean = false,
     val place: VivacPlace = VivacPlace(),
     val uris : List<Uri> = emptyList(),
-    val images: List<String> = emptyList(),
+    val imagesToDelete: List<String> = emptyList(),
     val cambioPantalla: Int = 0,
-    val exists : Boolean = false
+    val exists : Boolean = false,
 )

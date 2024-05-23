@@ -9,6 +9,7 @@
     <string name="newpassword">New password</string>
     <string name="add">Add</string>
     <string name="addplace">Add place</string>
+    <string name="updateplace">Update place</string>
     <string name="nombre">NOMBRE</string>
     <string name="nombre_">Nombre</string>
     <string name="descripcion">DESCRIPCIÓN DEL LUGAR</string>

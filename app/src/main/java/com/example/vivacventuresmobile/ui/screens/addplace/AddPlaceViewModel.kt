@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.domain.usecases.AddPlaceUseCase
+import com.example.vivacventuresmobile.domain.usecases.GetPlaceByIdUseCase
+import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.UpdatePlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.google.firebase.storage.FirebaseStorage
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddPlaceViewModel @Inject constructor(
     private val addPlaceUseCase: AddPlaceUseCase,
-    private val updatePlaceUseCase: UpdatePlaceUseCase
+    private val updatePlaceUseCase: UpdatePlaceUseCase,
+    private val getVivacPlaceUseCase: GetVivacPlaceUseCase
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<AddPlaceState> by lazy {
@@ -41,11 +44,11 @@ class AddPlaceViewModel @Inject constructor(
             AddPlaceEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
             is AddPlaceEvent.AddPlace -> addPlace()
             is AddPlaceEvent.OnNameChange -> {
-                _uiState.update { it.copy(place = it.place.copy(name = event.placeName)) }
+                _uiState.update { it.copy(place = it.place!!.copy(name = event.placeName)) }
             }
 
             is AddPlaceEvent.OnDescriptionChange -> {
-                _uiState.update { it.copy(place = it.place.copy(description = event.placeDescription)) }
+                _uiState.update { it.copy(place = it.place!!.copy(description = event.placeDescription)) }
             }
 
             is AddPlaceEvent.OnPicturesChange -> {
@@ -58,15 +61,15 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.OnTypeChange -> {
-                _uiState.update { it.copy(place = it.place.copy(type = event.type)) }
+                _uiState.update { it.copy(place = it.place!!.copy(type = event.type)) }
             }
 
             is AddPlaceEvent.OnCapacityChange -> {
-                _uiState.update { it.copy(place = it.place.copy(capacity = event.capacity)) }
+                _uiState.update { it.copy(place = it.place!!.copy(capacity = event.capacity)) }
             }
 
             is AddPlaceEvent.OnDateChange -> {
-                _uiState.update { it.copy(place = it.place.copy(date = event.date)) }
+                _uiState.update { it.copy(place = it.place!!.copy(date = event.date)) }
             }
 
             is AddPlaceEvent.OnPriceChange -> {
@@ -74,7 +77,13 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.AddUsername -> {
-                _uiState.update { it.copy(place = it.place.copy(username = event.userName)) }
+                val usernameEE = event.userName
+                _uiState.update { it.copy(place = it.place.copy(username = usernameEE)) }
+                if (uiState.value.place.username != ""){
+                    rellenarPlace(event.int)
+                }
+
+//                _uiState.update { it.copy(place = it.place!!.copy(username = event.userName)) }
             }
 
             is AddPlaceEvent.AddUri -> {
@@ -82,7 +91,7 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.DeleteUri -> {
-                deleteUri(event.num)
+                deleteUri(event.num, event.imagen)
             }
 
             is AddPlaceEvent.DetailsCompleted -> {
@@ -100,21 +109,68 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.ChangeExists -> {
-//                if (event.boolean.name != "") {
-//                    _uiState.update {
-//                        it.copy(exists = true,
-//                            place = event.boolean)
-//                    }
+                rellenarPlace(event.int)
+//                if (event.boolean == "true") {
+//                    _uiState.update { it.copy(exists = true) }
 //                } else {
 //                    _uiState.update { it.copy(exists = false) }
 //                }
-                if (event.boolean == "true") {
-                    _uiState.update { it.copy(exists = true) }
-                } else {
-                    _uiState.update { it.copy(exists = false) }
-                }
             }
         }
+    }
+
+    private fun rellenarPlace(int: Int) {
+        if (int != 0) {
+            viewModelScope.launch {
+                getVivacPlaceUseCase(int, uiState.value.place.username)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
+                        }
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                val place = result.data
+                                if (place != null) {
+                                    _uiState.update {
+                                        it.copy(
+                                            error = null,
+                                            loading = false,
+                                            place = place,
+                                            exists = true
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false,
+                                        exists = true
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
+        } else {
+            _uiState.update { it.copy(exists = false) }
+        }
+
     }
 
     fun validatePlaceDetails(): Boolean {
@@ -129,13 +185,14 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     private fun uploadImages(imageUris: List<Uri>) {
+        if (uiState.value.exists && uiState.value.uris.isEmpty()) {
+            updateVivacPlace()
+            return
+        }
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMAN)
         val imageUrls = mutableListOf<String>()
 
         for ((index, uri) in imageUris.withIndex()) {
-//            if (uiState.value.place.images.size >= 3) {
-//                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
-//            } else {
             val now = Date()
             val fileName: String = formatter.format(now)
             val storageReference =
@@ -148,9 +205,9 @@ class AddPlaceViewModel @Inject constructor(
                     imageUrls.add(downloadUrl)
                     _uiState.update { it.copy(place = it.place.copy(images = it.place.images + imageUrls)) }
 
-                    // Si es la última imagen, llama a saveVivacPlace.
+
                     if (index == imageUris.size - 1) {
-                        if (uiState.value.exists.equals("true")) updateVivacPlace()
+                        if (uiState.value.exists) updateVivacPlace()
                         else saveVivacPlace()
                     }
                 }.addOnFailureListener { e ->
@@ -159,7 +216,6 @@ class AddPlaceViewModel @Inject constructor(
                     }
                 }
             }
-//            }
         }
     }
 
@@ -273,10 +329,14 @@ class AddPlaceViewModel @Inject constructor(
         _uiState.update { it.copy(loading = true) }
         uploadImages(_uiState.value.uris)
     }
+
     private fun updatePlace() {
-        deleteImages(uiState.value.place.images)
         _uiState.update { it.copy(loading = true) }
+        if (_uiState.value.imagesToDelete.isNotEmpty()) {
+            deleteImages(_uiState.value.imagesToDelete)
+        }
         uploadImages(_uiState.value.uris)
+
     }
 
     private fun updateVivacPlace() {
@@ -324,10 +384,19 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     private fun deleteImages(images: List<String>) {
+        val totalImages = images.size
+        var imagesDeleted = 0
+
         for (image in images) {
             val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(image)
             storageReference.delete().addOnSuccessListener {
+                imagesDeleted++
+
                 _uiState.update { it.copy(error = "La imagen se ha eliminado correctamente.") }
+
+                if (imagesDeleted == totalImages) {
+                    uploadImages(_uiState.value.uris)
+                }
             }.addOnFailureListener { e ->
                 _uiState.update { it.copy(error = "Ha ocurrido un error al eliminar la imagen.") }
             }
@@ -335,24 +404,39 @@ class AddPlaceViewModel @Inject constructor(
     }
 
 
-
-    private fun deleteUri(num: Int) {
-        _uiState.update { currentState ->
-            val updatedUris = currentState.uris.toMutableList()
-            if (num >= 0 && num < updatedUris.size) {
-                updatedUris.removeAt(num)
+    private fun deleteUri(num: Int, imagen : Boolean) {
+        if (imagen) {
+            val imageUrl = uiState.value.place.images[num]
+            _uiState.update { it.copy(place = it.place.copy(images = it.place.images - imageUrl)) }
+            _uiState.update { it.copy(imagesToDelete = it.imagesToDelete + imageUrl) }
+        } else {
+            _uiState.update { currentState ->
+                val updatedUris = currentState.uris.toMutableList()
+                if (num >= 0 && num < updatedUris.size) {
+                    updatedUris.removeAt(num)
+                }
+                currentState.copy(uris = updatedUris)
             }
-            currentState.copy(uris = updatedUris)
         }
     }
 
     private fun addUri(pictures: List<Uri>) {
-        if (uiState.value.uris.size < 3) {
-            for (uri in pictures) {
-                _uiState.update { it.copy(uris = it.uris + uri) }
+        if (uiState.value.exists) {
+            if (uiState.value.uris.size + uiState.value.place.images.size < 3) {
+                for (uri in pictures) {
+                    _uiState.update { it.copy(uris = it.uris + uri) }
+                }
+            } else {
+                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
             }
         } else {
-            _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
+            if (uiState.value.uris.size < 3) {
+                for (uri in pictures) {
+                    _uiState.update { it.copy(uris = it.uris + uri) }
+                }
+            } else {
+                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
+            }
         }
 
     }

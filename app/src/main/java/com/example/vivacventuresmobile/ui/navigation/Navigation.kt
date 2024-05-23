@@ -110,8 +110,8 @@ fun Navigation(
                         navController = navController, screens = screensBottomBar
                     )
                 },
-                onAddPlace = { existsPlace ->
-                    navController.navigate(ConstantesPantallas.ADDLUGAR + "${existsPlace}")
+                onAddPlace = {
+                    navController.navigate(ConstantesPantallas.ADDLUGAR + "${it}")
                 },
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
             )
@@ -225,18 +225,13 @@ fun Navigation(
         }
         composable(
             ConstantesPantallas.ADDLUGAR_EXISTS,
-//            arguments = listOf(navArgument(name = ConstantesPantallas.EXISTS) {
-//                type = NavType.ParcelableType(VivacPlace::class.java)
-//                defaultValue = VivacPlace()
-//            })
             arguments = listOf(navArgument(name = ConstantesPantallas.EXISTS) {
-                type = NavType.StringType
-                defaultValue = ""
+                type = NavType.IntType
+                defaultValue = 0
             })
         ) {
             AddPlaceScreen(
-//                vivacPlace = it.arguments?.getParcelable(ConstantesPantallas.EXISTS)!!,
-                vivacPlace = it.arguments?.getString(ConstantesPantallas.EXISTS) ?: "",
+                vivacPlace = it.arguments?.getInt(ConstantesPantallas.EXISTS) ?: 0,
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar
@@ -250,13 +245,13 @@ fun Navigation(
                     }
                 },
                 onUpdateDone = {
-                    navController.navigate(ConstantesPantallas.MYPLACES_USER) {
+                    navController.navigate(ConstantesPantallas.CUENTA) {
                         popUpTo(ConstantesPantallas.ADDLUGAR) {
                             inclusive = true
                         }
                     }
                 },
-                dataStore = dataStore
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
             )
         }
 

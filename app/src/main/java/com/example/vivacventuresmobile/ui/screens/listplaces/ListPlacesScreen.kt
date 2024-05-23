@@ -79,7 +79,7 @@ fun ListPlacesScreen(
     onViewDetalle: (Int) -> Unit,
     username: String,
     bottomNavigationBar: @Composable () -> Unit = {},
-    onAddPlace: (String) -> Unit
+    onAddPlace: (Int) -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -114,7 +114,7 @@ fun ListPlaces(
     onViewDetalle: (Int) -> Unit,
     onGetVivacPlacesByType: (String) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
-    onAddPlace: (String) -> Unit,
+    onAddPlace: (Int) -> Unit,
     searchPlaces: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -122,7 +122,7 @@ fun ListPlaces(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar,
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAddPlace("false") }) {
+            FloatingActionButton(onClick = { onAddPlace(0) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add"

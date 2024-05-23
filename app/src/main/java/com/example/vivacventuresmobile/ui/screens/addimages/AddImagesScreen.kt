@@ -114,7 +114,7 @@ fun AddImages(
     onAddDone: () -> Unit,
     onUpdateDone: () -> Unit,
     AddUri: (List<Uri>) -> Unit,
-    DeleteUri: (Int) -> Unit,
+    DeleteUri: (Int, Boolean) -> Unit,
     AddPlace: () -> Unit,
     UpdatePlace: () -> Unit,
     Vuelta: () -> Unit,
@@ -160,7 +160,7 @@ fun AddImages(
                 verticalArrangement = Arrangement.SpaceBetween // Distributes space evenly
             ) {
                 ImagesPicker2(
-                    state.images,
+                    state.imagesToDelete,
                     AddUri,
                     DeleteUri,
                     Vuelta,
@@ -242,18 +242,23 @@ fun AddButton(onAddPlaceClick: () -> Unit, onUpdatePlace:() -> Unit , exists: Bo
                 contentDescription = stringResource(id = R.string.add)
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.smallmedium_padding)))
-            Text(text = stringResource(id = R.string.addplace))
+            Text(text = stringResource(id = if (exists) R.string.updateplace else R.string.addplace))
         }
     }
 }
 
 @Composable
-fun ImageN(index: Int, onDelete: (Int) -> Unit, images: List<Uri>) {
+fun ImageN(index: Int, onDelete: (Int, Boolean) -> Unit, uris: List<Uri>, images: List<String>) {
     val imageUrl = if (images.size > index) {
-        images[index].toString()
+        images[index]
     } else {
-        "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2Fdefault.jpg?alt=media&token=5ef9d6e8-c7b8-47ac-87a3-419d22857a70"
+        if (uris.size > index) {
+            uris[index].toString()
+        } else {
+            "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2Fdefault.jpg?alt=media&token=5ef9d6e8-c7b8-47ac-87a3-419d22857a70"
+        }
     }
+
     val image: Painter = rememberAsyncImagePainter(imageUrl)
 
     Row(
@@ -271,7 +276,13 @@ fun ImageN(index: Int, onDelete: (Int) -> Unit, images: List<Uri>) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.small_padding)))
-        Button(onClick = { onDelete(index) }) {
+        Button(onClick = {
+            if (images.size > index) {
+                onDelete(index, true)
+            } else {
+                onDelete(index, false)
+            }
+        }) {
             Icon(Icons.Default.Delete, contentDescription = "Eliminar")
         }
     }
@@ -281,7 +292,7 @@ fun ImageN(index: Int, onDelete: (Int) -> Unit, images: List<Uri>) {
 fun ImagesPicker2(
     images: List<String>,
     onPicturesChange: (List<Uri>) -> Unit,
-    DeleteUri: (Int) -> Unit,
+    DeleteUri: (Int, Boolean) -> Unit,
     Vuelta: () -> Unit,
     AddPlace: () -> Unit,
     UpdatePlace: () -> Unit,
@@ -343,20 +354,23 @@ fun ImagesPicker2(
         ) {
             ImageN(
                 index = 0,
-                onDelete = { DeleteUri(it) },
-                images = state.uris
+                onDelete = { index, isImage -> DeleteUri(index, isImage) },
+                uris = state.uris,
+                images = state.place.images
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
             ImageN(
                 index = 1,
-                onDelete = { DeleteUri(it) },
-                images = state.uris
+                onDelete = { index, isImage -> DeleteUri(index, isImage) },
+                uris = state.uris,
+                images = state.place.images
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
             ImageN(
                 index = 2,
-                onDelete = { DeleteUri(it) },
-                images = state.uris
+                onDelete = { index, isImage -> DeleteUri(index, isImage) },
+                uris = state.uris,
+                images = state.place.images
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
             Column(
@@ -392,88 +406,88 @@ fun ImagesPicker2(
     }
 }
 
-@Composable
-fun ImagesPicker(images: List<String>, onPicturesChange: (List<Uri>) -> Unit) {
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> uri?.let { onPicturesChange(listOf(it)) } }
-    )
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> onPicturesChange(uris) }
-    )
-
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Button(onClick = {
-                singlePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }) {
-                Text(text = "Pick one photo")
-            }
-            Button(onClick = {
-                multiplePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }) {
-                Text(text = "Pick multiple photos")
-            }
-        }
-
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-//                .padding(dimensionResource(id = R.dimen.medium_padding))
-        ) {
-            items(images) { imageUrl ->
-                val painter = rememberAsyncImagePainter(imageUrl)
-
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = dimensionResource(id = R.dimen.small_padding)),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(9f)
-        ) {
-            ImageN(
-                index = 0,
-                onDelete = { },
-                images = images.map { Uri.parse(it) }
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-            ImageN(
-                index = 0,
-                onDelete = { },
-                images = images.map { Uri.parse(it) }
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-            ImageN(
-                index = 0,
-                onDelete = { },
-                images = images.map { Uri.parse(it) }
-            )
-
-//                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-//                ImagesPicker(
-//                    state.images,
-//                    AddUri
+//@Composable
+//fun ImagesPicker(images: List<String>, onPicturesChange: (List<Uri>) -> Unit) {
+//    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.PickVisualMedia(),
+//        onResult = { uri -> uri?.let { onPicturesChange(listOf(it)) } }
+//    )
+//    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+//        onResult = { uris -> onPicturesChange(uris) }
+//    )
+//
+//    Column {
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceAround
+//        ) {
+//            Button(onClick = {
+//                singlePhotoPickerLauncher.launch(
+//                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 //                )
-        }
-
-    }
-}
+//            }) {
+//                Text(text = "Pick one photo")
+//            }
+//            Button(onClick = {
+//                multiplePhotoPickerLauncher.launch(
+//                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+//                )
+//            }) {
+//                Text(text = "Pick multiple photos")
+//            }
+//        }
+//
+//        LazyColumn(
+//            modifier = Modifier
+//                .weight(1f)
+////                .padding(dimensionResource(id = R.dimen.medium_padding))
+//        ) {
+//            items(images) { imageUrl ->
+//                val painter = rememberAsyncImagePainter(imageUrl)
+//
+//                Image(
+//                    painter = painter,
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = dimensionResource(id = R.dimen.small_padding)),
+//                    contentScale = ContentScale.Crop
+//                )
+//            }
+//        }
+//
+//        Column(
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            modifier = Modifier.weight(9f)
+//        ) {
+//            ImageN(
+//                index = 0,
+//                onDelete = { },
+//                images = images.map { Uri.parse(it) }
+//            )
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+//            ImageN(
+//                index = 0,
+//                onDelete = { },
+//                images = images.map { Uri.parse(it) }
+//            )
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+//            ImageN(
+//                index = 0,
+//                onDelete = { },
+//                images = images.map { Uri.parse(it) }
+//            )
+//
+////                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+////                ImagesPicker(
+////                    state.images,
+////                    AddUri
+////                )
+//        }
+//
+//    }
+//}
 
 //@Composable
 //fun ImagesPicker(images: List<String>, onPicturesChange: (List<Uri>) -> Unit) {

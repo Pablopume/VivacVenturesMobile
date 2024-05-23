@@ -61,18 +61,18 @@ import java.time.ZoneId
 @Composable
 fun AddPlaceScreen(
     viewModel: AddPlaceViewModel = hiltViewModel(),
-    vivacPlace: String ,
+    vivacPlace: Int ,
     bottomNavigationBar: @Composable () -> Unit = {},
     onAddDone: () -> Unit,
     onUpdateDone: () -> Unit,
-    dataStore: DataStore<AppPreferences>
+    username: String
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
-    val appPreferences = dataStore.data.collectAsState(initial = AppPreferences()).value
-    val username = appPreferences.username
-    viewModel.handleEvent(AddPlaceEvent.AddUsername(username))
-    viewModel.handleEvent(AddPlaceEvent.ChangeExists(vivacPlace))
+    if (state.value.place.username == "") {
+        viewModel.handleEvent(AddPlaceEvent.AddUsername(username, vivacPlace))
+    }
+
 
     Column {
         if (state.value.cambioPantalla == 0) {
@@ -109,7 +109,7 @@ fun AddPlaceScreen(
                 onAddDone,
                 onUpdateDone,
                 { viewModel.handleEvent(AddPlaceEvent.AddUri(it)) },
-                { viewModel.handleEvent(AddPlaceEvent.DeleteUri(it)) },
+                { index, isImage -> viewModel.handleEvent(AddPlaceEvent.DeleteUri(index, isImage)) },
                 { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
                 { viewModel.handleEvent(AddPlaceEvent.UpdatePlace()) },
                 { viewModel.handleEvent(AddPlaceEvent.Vuelta()) },

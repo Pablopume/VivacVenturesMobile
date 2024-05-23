@@ -13,6 +13,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+
 interface VivacPlacesService {
     @GET("/vivacplaces")
     suspend fun getVivacPlaces(): Response<List<VivacPlaceResponse>>
@@ -29,11 +30,14 @@ interface VivacPlacesService {
     @GET("/vivacplaces/type/{type}/{username}")
     suspend fun getVivacPlaceByType(@Path("type") type: String, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
+    @GET("/vivacplaces/id/{id}")
+    suspend fun getVivacPlaceById(@Path("id") id: Int): Response<VivacPlaceResponse>
+
     @POST("/vivacplace")
     @Headers("Content-Type: application/json")
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlace): Response<VivacPlaceResponse>
 
-    @PUT("/vivacplace}")
+    @PUT("/vivacplace")
     @Headers("Content-Type: application/json")
     suspend fun updateVivacPlace(@Body vivacPlace: VivacPlace): Response<Boolean>
 

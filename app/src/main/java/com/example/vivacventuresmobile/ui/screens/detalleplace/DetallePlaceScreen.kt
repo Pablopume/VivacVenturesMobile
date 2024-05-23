@@ -87,7 +87,7 @@ fun DetallePlaceScreen(
     username: String,
     bottomNavigationBar: @Composable () -> Unit = {},
     onBack: () -> Unit,
-    onUpdatePlace: (String) -> Unit
+    onUpdatePlace: (Int) -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -142,7 +142,7 @@ fun DetallePlace(
     onAddValoration: () -> Unit,
     onAddReport: () -> Unit,
     onBack: () -> Unit,
-    onUpdatePlace: (String) -> Unit
+    onUpdatePlace: (Int) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var reportDialogOpen by remember { mutableStateOf(false) }
@@ -161,7 +161,7 @@ fun DetallePlace(
                         IconButton(onClick = { delete() }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Delete")
                         }
-                        IconButton(onClick = { onUpdatePlace("true") }) {
+                        IconButton(onClick = { onUpdatePlace(state.vivacPlace.id) }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Edit")
                         }
                     } else {
