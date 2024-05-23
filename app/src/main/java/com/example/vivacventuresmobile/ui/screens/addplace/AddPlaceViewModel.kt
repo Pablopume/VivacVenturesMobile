@@ -44,11 +44,11 @@ class AddPlaceViewModel @Inject constructor(
             AddPlaceEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
             is AddPlaceEvent.AddPlace -> addPlace()
             is AddPlaceEvent.OnNameChange -> {
-                _uiState.update { it.copy(place = it.place!!.copy(name = event.placeName)) }
+                _uiState.update { it.copy(place = it.place.copy(name = event.placeName)) }
             }
 
             is AddPlaceEvent.OnDescriptionChange -> {
-                _uiState.update { it.copy(place = it.place!!.copy(description = event.placeDescription)) }
+                _uiState.update { it.copy(place = it.place.copy(description = event.placeDescription)) }
             }
 
             is AddPlaceEvent.OnTypeChange -> {
@@ -60,7 +60,7 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.OnDateChange -> {
-                _uiState.update { it.copy(place = it.place!!.copy(date = event.date)) }
+                _uiState.update { it.copy(place = it.place.copy(date = event.date)) }
             }
 
             is AddPlaceEvent.OnPriceChange -> {
@@ -74,7 +74,6 @@ class AddPlaceViewModel @Inject constructor(
                     rellenarPlace(event.int)
                 }
 
-//                _uiState.update { it.copy(place = it.place!!.copy(username = event.userName)) }
             }
 
             is AddPlaceEvent.AddUri -> {
@@ -328,6 +327,7 @@ class AddPlaceViewModel @Inject constructor(
         _uiState.update { it.copy(loading = true) }
         if (_uiState.value.imagesToDelete.isNotEmpty()) {
             deleteImages(_uiState.value.imagesToDelete)
+            return
         }
         uploadImages(_uiState.value.uris)
 
