@@ -51,21 +51,12 @@ class AddPlaceViewModel @Inject constructor(
                 _uiState.update { it.copy(place = it.place!!.copy(description = event.placeDescription)) }
             }
 
-            is AddPlaceEvent.OnPicturesChange -> {
-//                uploadImages(event.pictures)
-//                if (uiState.value.uris.size >= 3) {
-//                    _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
-//                } else {
-//                    _uiState.update { it.copy(uris = it.uris + event.pictures) }
-//                }
-            }
-
             is AddPlaceEvent.OnTypeChange -> {
-                _uiState.update { it.copy(place = it.place!!.copy(type = event.type)) }
+                _uiState.update { it.copy(place = it.place.copy(type = event.type)) }
             }
 
             is AddPlaceEvent.OnCapacityChange -> {
-                _uiState.update { it.copy(place = it.place!!.copy(capacity = event.capacity)) }
+                _uiState.update { it.copy(place = it.place.copy(capacity = event.capacity)) }
             }
 
             is AddPlaceEvent.OnDateChange -> {
@@ -100,6 +91,14 @@ class AddPlaceViewModel @Inject constructor(
                 }
             }
 
+            is AddPlaceEvent.VueltaLocation -> {
+                _uiState.update { it.copy(cambioPantalla = 1) }
+            }
+
+            is AddPlaceEvent.LocationCompleted -> {
+                _uiState.update { it.copy(cambioPantalla = 2) }
+            }
+
             is AddPlaceEvent.Vuelta -> {
                 _uiState.update { it.copy(cambioPantalla = 0) }
             }
@@ -110,11 +109,6 @@ class AddPlaceViewModel @Inject constructor(
 
             is AddPlaceEvent.ChangeExists -> {
                 rellenarPlace(event.int)
-//                if (event.boolean == "true") {
-//                    _uiState.update { it.copy(exists = true) }
-//                } else {
-//                    _uiState.update { it.copy(exists = false) }
-//                }
             }
         }
     }

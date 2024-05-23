@@ -11,6 +11,7 @@ import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -60,7 +61,7 @@ class DetallePlaceViewModel @Inject constructor(
             }
 
             is DetallePlaceEvent.DeleteValoration -> {
-                deleteValoration(event.id)
+                deleteImages(event.id)
             }
 
             is DetallePlaceEvent.OnDescriptionReportChange -> {
@@ -76,6 +77,33 @@ class DetallePlaceViewModel @Inject constructor(
             }
 
             is DetallePlaceEvent.AddReport -> addReport()
+        }
+    }
+
+    private fun deleteImages(id : Int) {
+        val images = uiState.value.vivacPlace?.images ?: emptyList()
+
+        if (images.isEmpty()) {
+            deleteValoration(id)
+            return
+        }
+
+        val totalImages = images.size
+        var imagesDeleted = 0
+
+        for (image in images) {
+            val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(image)
+            storageReference.delete().addOnSuccessListener {
+                imagesDeleted++
+
+                _uiState.update { it.copy(error = "La imagen se ha eliminado correctamente.") }
+
+                if (imagesDeleted == totalImages) {
+                    deleteValoration(id)
+                }
+            }.addOnFailureListener { e ->
+                _uiState.update { it.copy(error = "Ha ocurrido un error al eliminar la imagen.") }
+            }
         }
     }
 

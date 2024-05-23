@@ -9,7 +9,6 @@ sealed class AddPlaceEvent {
     object ErrorVisto : AddPlaceEvent()
     class OnNameChange(val placeName: String) : AddPlaceEvent()
     class OnDescriptionChange(val placeDescription: String) : AddPlaceEvent()
-    class OnPicturesChange(val pictures: List<Uri>) : AddPlaceEvent()
     class OnTypeChange(val type: String) : AddPlaceEvent()
     class OnDateChange(val date: LocalDate) : AddPlaceEvent()
     class OnCapacityChange(val capacity: Int) : AddPlaceEvent()
@@ -18,7 +17,9 @@ sealed class AddPlaceEvent {
     class AddUri(val pictures: List<Uri>) : AddPlaceEvent()
     class DeleteUri(val num: Int, val imagen : Boolean) : AddPlaceEvent()
     class DetailsCompleted() : AddPlaceEvent()
+    class LocationCompleted() : AddPlaceEvent()
     class Vuelta() : AddPlaceEvent()
+    class VueltaLocation() : AddPlaceEvent()
     class UpdatePlace() : AddPlaceEvent()
     class ChangeExists(val int: Int) : AddPlaceEvent()
 }

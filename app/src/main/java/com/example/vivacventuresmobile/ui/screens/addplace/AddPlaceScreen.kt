@@ -81,8 +81,6 @@ fun AddPlaceScreen(
                 { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
                 bottomNavigationBar,
                 { viewModel.handleEvent(AddPlaceEvent.DetailsCompleted()) },
-//                onAddDone,
-//                { onAddDone() }, // Update callback for complete event
                 { viewModel.handleEvent(AddPlaceEvent.OnNameChange(it)) },
                 { viewModel.handleEvent(AddPlaceEvent.OnDescriptionChange(it)) },
                 { viewModel.handleEvent(AddPlaceEvent.OnTypeChange(it)) },
@@ -91,17 +89,13 @@ fun AddPlaceScreen(
                 { viewModel.handleEvent(AddPlaceEvent.OnPriceChange(it)) },
             )
 
-//            Button(
-//                onClick = {
-//                    if (viewModel.validatePlaceDetails()) {
-//                        isPlaceDetailsCompleted = true
-//                    }
-//                }
-//            ) {
-//                Text(text = stringResource(id = R.string.continuar))
-//            }
-        } else {
-            // AddImagesScreen content
+        }
+        else if (state.value.cambioPantalla == 1) {
+            AddButton(
+                { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
+            )
+        }
+        else {
             AddImages(
                 state.value,
                 { viewModel.handleEvent(AddPlaceEvent.ErrorVisto) },
@@ -115,25 +109,6 @@ fun AddPlaceScreen(
                 { viewModel.handleEvent(AddPlaceEvent.Vuelta()) },
                 state.value.exists
             )
-
-//            Button(
-//                onClick = {
-//                    viewModel.handleEvent(AddPlaceEvent.AddPlace())// Handle complete place and image addition
-//                }
-//            ) {
-//                Text(text = stringResource(id = R.string.add))
-//            }
-//
-//            Button(
-//                modifier = Modifier
-//                    .fillMaxWidth() // Stretch across full width
-//                    .padding(start = dimensionResource(id = R.dimen.medium_padding)), // Add padding to separate from "Add" button
-//                onClick = {
-//                    isPlaceDetailsCompleted = false
-//                }
-//            ) {
-//                Text(text = stringResource(id = R.string.volver))
-//            }
         }
     }
 }
@@ -143,9 +118,6 @@ fun AddPlace(
     errorVisto: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit,
     onDetailsCompleted: () -> Unit,
-//    onAddDone: () -> Unit,
-//    onViewDetalle: (VivacPlace) -> Unit,
-//    onAddPlaceClick: () -> Unit,
     onNameChange: (String) -> Unit,
     onDesciptionChange: (String) -> Unit,
     onTypeChange: (String) -> Unit,
@@ -154,11 +126,6 @@ fun AddPlace(
     onPriceChange: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-//    LaunchedEffect(state.addPlaceDone) {
-//        if (state.addPlaceDone) {
-//            onAddDone()
-//        }
-//    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
