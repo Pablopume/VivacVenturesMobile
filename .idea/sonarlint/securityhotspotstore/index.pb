@@ -314,3 +314,17 @@ _app/src/main/java/com/example/vivacventuresmobile/data/sources/remote/ReportRem
 Xapp/src/main/java/com/example/vivacventuresmobile/data/repositories/ReportsRepository.kt,7\7\771b68278e89cb14202b57033f34b7a184e009f5
 Ö
 Uapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/AddReportUseCase.kt,0\0\0037494dcea901620241f94a30ef8dde9aedf4a9
+á
+Wapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/FriendsService.kt,2\1\21603c187d3ea9df6e3d3a7d01ac993b0320d1eb
+}
+Mapp/src/main/java/com/example/vivacventuresmobile/data/model/AmigoResponse.kt,3\2\32964703a1678976a13a3ac5b0ef7e08f2fe871a
+ê
+`app/src/main/java/com/example/vivacventuresmobile/data/sources/remote/FriendsRemoteDataSource.kt,3\a\3a3bf908740a260a2b6cdd573666a430cb2dea6e
+y
+Iapp/src/main/java/com/example/vivacventuresmobile/domain/modelo/Friend.kt,1\f\1f50c94b8e9f0627bb15d0a33cc0f8201ebbee68
+~
+Napp/src/main/java/com/example/vivacventuresmobile/data/model/FriendResponse.kt,0\7\07b5f35e4865192464e7bbd318b89cd4eb4af374
+à
+Xapp/src/main/java/com/example/vivacventuresmobile/data/repositories/FriendsRepository.kt,6\0\60276199f0c64284952a0fb364f1a9fe6eeffd88
+à
+Xapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/SearchFriendUseCase.kt,7\3\7307a1a160dc5838247434bf4f0dc147eab5bb0f

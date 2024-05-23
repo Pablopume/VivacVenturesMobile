@@ -8,6 +8,7 @@ import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
 import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.FavouritesService
+import com.example.vivacventuresmobile.data.sources.remote.FriendsService
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.ReportsService
 import com.example.vivacventuresmobile.data.sources.remote.ValorationsService
@@ -102,6 +103,11 @@ object NetworkModule {
     @Provides
     fun provideReportService(retrofit: Retrofit): ReportsService =
         retrofit.create(ReportsService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFriendsService(retrofit: Retrofit): FriendsService =
+        retrofit.create(FriendsService::class.java)
 
 
     @Singleton
