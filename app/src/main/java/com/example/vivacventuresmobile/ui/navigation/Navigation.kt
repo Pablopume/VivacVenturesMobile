@@ -22,6 +22,7 @@ import com.example.vivacventuresmobile.ui.screens.myfavourites.MyFavouritesScree
 import com.example.vivacventuresmobile.ui.screens.myfriends.MyFriendsScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
+import com.example.vivacventuresmobile.ui.screens.searchusers.SearchUsersScreen
 
 
 @Composable
@@ -189,8 +190,20 @@ fun Navigation(
                     navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
                 },
                 toSearchFriendsScreen = {
-                    navController.navigate(ConstantesPantallas.SEARCHFRIENDS)
+                    navController.navigate(ConstantesPantallas.SEARCHUSERS)
                 },
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
+            )
+        }
+        composable(
+            ConstantesPantallas.SEARCHUSERS
+        ) {
+            SearchUsersScreen(
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar
@@ -237,18 +250,10 @@ fun Navigation(
                     )
                 },
                 onAddDone = {
-                    navController.navigate(ConstantesPantallas.LUGARES) {
-                        popUpTo(ConstantesPantallas.ADDLUGAR) {
-                            inclusive = true
-                        }
-                    }
+                    navController.popBackStack()
                 },
                 onUpdateDone = {
-                    navController.navigate(ConstantesPantallas.CUENTA) {
-                        popUpTo(ConstantesPantallas.ADDLUGAR) {
-                            inclusive = true
-                        }
-                    }
+                    navController.popBackStack()
                 },
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
             )

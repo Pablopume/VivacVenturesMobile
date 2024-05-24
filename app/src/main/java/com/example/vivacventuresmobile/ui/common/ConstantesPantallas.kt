@@ -12,7 +12,7 @@ object ConstantesPantallas {
     const val MYPLACES_USER = "mislugares/{username}"
     const val MYFRIENDS = "misamigos/"
     const val MYFRIENDS_USER = "misamigos/{username}"
-    const val SEARCHFRIENDS = "buscaramigos/"
+    const val SEARCHUSERS = "buscarusuarios/"
 
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"

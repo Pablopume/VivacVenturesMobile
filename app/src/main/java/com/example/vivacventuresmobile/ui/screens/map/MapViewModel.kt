@@ -47,7 +47,7 @@ class MapViewModel @Inject constructor(
             currentLatLng = LatLng(40.42966863252524, -3.6797065289867783),
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
         )
-        getVivacPlaces()
+//        getVivacPlaces()
     }
 
     fun handleEvent(event: MapEvent) {
@@ -81,6 +81,10 @@ class MapViewModel @Inject constructor(
                     isDarkMap = !_uiState.value.isDarkMap
                 )
 
+            }
+
+            MapEvent.GetAll -> {
+                getVivacPlaces()
             }
 
             is MapEvent.SendError -> {

@@ -35,11 +35,11 @@ interface VivacPlacesService {
 
     @POST("/vivacplace")
     @Headers("Content-Type: application/json")
-    suspend fun saveVivacPlace(@Body vivacPlace: VivacPlace): Response<VivacPlaceResponse>
+    suspend fun saveVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<VivacPlaceResponse>
 
     @PUT("/vivacplace")
     @Headers("Content-Type: application/json")
-    suspend fun updateVivacPlace(@Body vivacPlace: VivacPlace): Response<Boolean>
+    suspend fun updateVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<Boolean>
 
     @GET("/nearby/{username}")
     suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>

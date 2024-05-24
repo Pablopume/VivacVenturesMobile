@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -281,6 +282,7 @@ class AddPlaceViewModel @Inject constructor(
 
     private fun saveVivacPlace() {
         viewModelScope.launch {
+            Timber.d("[debug] Place: ${_uiState.value.place}")
             addPlaceUseCase(_uiState.value.place)
                 .catch(action = { cause ->
                     _uiState.update {

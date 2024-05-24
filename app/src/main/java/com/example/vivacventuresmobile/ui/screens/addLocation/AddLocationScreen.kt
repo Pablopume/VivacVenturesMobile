@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceState
+import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -122,7 +123,13 @@ fun AddLocationScreen(
             }
 
             is LocationState.LocationLoading -> {
-                Text("Loading Map")
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LoadingAnimation(true)
+                }
             }
 
             is LocationState.Error -> {
@@ -136,15 +143,11 @@ fun AddLocationScreen(
 
             is LocationState.LocationAvailable -> {
                 val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(state.cameraLatLang, 15f)
-                }
-
-                LaunchedEffect(Unit) {
                     if (addplacestate.place.lat != 0.0) {
                         val defaultLocation = LatLng(addplacestate.place.lat, addplacestate.place.lon)
-                        cameraPositionState.animate(CameraUpdateFactory.newLatLng(defaultLocation))
+                        position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
                     } else {
-                        cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
+                        position = CameraPosition.fromLatLngZoom(state.cameraLatLang, 15f)
                     }
                 }
 

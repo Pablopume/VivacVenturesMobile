@@ -9,6 +9,7 @@ sealed class MapEvent {
     data class UpdateCameraPosition(val latLng: LatLng): MapEvent()
     data class StartLocationUpdates(val fusedLocationClient: FusedLocationProviderClient): MapEvent()
     data class SendError(val error: String): MapEvent()
+    object GetAll: MapEvent()
     object LocationOn: MapEvent()
     object LocationOff: MapEvent()
     object ErrorVisto : MapEvent()

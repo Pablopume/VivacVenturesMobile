@@ -70,6 +70,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.Valoration
+import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesEvent
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -90,6 +91,10 @@ fun DetallePlaceScreen(
     onUpdatePlace: (Int) -> Unit
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.handleEvent(DetallePlaceEvent.GetDetalle(placeId))
+    }
 
     if (state.value.vivacPlace == null) {
         viewModel.handleEvent(DetallePlaceEvent.SaveUsernameAndId(username, placeId))

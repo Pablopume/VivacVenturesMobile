@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.MainActivity
+import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceEvent
 import com.example.vivacventuresmobile.ui.theme.GreenS
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -67,6 +68,10 @@ fun MapScreen(
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.handleEvent(MapEvent.GetAll)
+    }
 
     viewModel.handleEvent(MapEvent.StartLocationUpdates(LocationServices.getFusedLocationProviderClient(LocalContext.current)))
 

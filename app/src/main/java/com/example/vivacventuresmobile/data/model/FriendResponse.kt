@@ -7,7 +7,7 @@ data class FriendResponse(
     @SerializedName("username")
     val username: String = "",
     @SerializedName("count")
-    val count: String = ""
+    val count: Int = 0,
 )
 
 fun FriendResponse.toFriend(): Friend = Friend(username, count)
