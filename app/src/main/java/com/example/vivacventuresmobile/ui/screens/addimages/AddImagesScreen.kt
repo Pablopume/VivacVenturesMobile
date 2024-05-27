@@ -380,7 +380,7 @@ fun ImagesPicker2(
                 AddButton(AddPlace, UpdatePlace, exists)
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                 Button(onClick = { Vuelta() }) {
-                    Text(text = stringResource(id = R.string.volver))
+                    Text(text = stringResource(id = R.string.back))
                 }
 
             }
