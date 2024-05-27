@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.datastore.core.DataStore
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
@@ -71,7 +72,7 @@ fun PantallaAccount(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar
     ) { contentPadding ->
-        Box(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .padding(contentPadding)
@@ -83,38 +84,38 @@ fun PantallaAccount(
                 ) {
 
                     Text(
-                        text = "¡Bienvenido " + username +"!"
+                        text = stringResource(R.string.welcome_user, username)
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
                         onClick = { toMyPlaces(username) },
-                        icon = { Icon(Icons.Filled.Place, "Place") },
-                        text = { Text(text = "Mis sitios") },
+                        icon = { Icon(Icons.Filled.Place, stringResource(R.string.place)) },
+                        text = { Text(text = stringResource(R.string.my_places)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
                         onClick = { toFavourites(username) },
-                        icon = { Icon(Icons.Filled.Favorite, "Favoritos") },
-                        text = { Text(text = "Mis listas") },
+                        icon = { Icon(Icons.Filled.Favorite, stringResource(R.string.favourites)) },
+                        text = { Text(text = stringResource(R.string.my_lists)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
                         onClick = { toMyFriends(username) },
-                        icon = { Icon(Icons.Filled.SupervisorAccount, "Amigos") },
-                        text = { Text(text = "Mis amigos") },
+                        icon = { Icon(Icons.Filled.SupervisorAccount, stringResource(R.string.friends)) },
+                        text = { Text(text = stringResource(R.string.my_friends)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
                         onClick = { showDialog.value = true },
-                        icon = { Icon(Icons.Filled.Logout, "Logout") },
-                        text = { Text(text = "Cerrar sesión") },
+                        icon = { Icon(Icons.Filled.Logout, stringResource(R.string.logout)) },
+                        text = { Text(text = stringResource(R.string.logout)) },
                     )
                 }
                 if (showDialog.value) {
                     AlertDialog(
                         onDismissRequest = { showDialog.value = false },
-                        title = { Text(text = "Confirmación") },
-                        text = { Text(text = "¿Estás seguro de que quieres cerrar sesión?") },
+                        title = { Text(text = stringResource(R.string.confirm)) },
+                        text = { Text(text = stringResource(R.string.sure_to_logout)) },
                         confirmButton = {
                             TextButton(
                                 onClick = {
@@ -130,14 +131,14 @@ fun PantallaAccount(
                                     showDialog.value = false
                                 }
                             ) {
-                                Text("Sí", color = Color.White)
+                                Text(stringResource(R.string.yes), color = Color.White)
                             }
                         },
                         dismissButton = {
                             TextButton(
                                 onClick = { showDialog.value = false },
                             ) {
-                                Text("No", color = Color.White)
+                                Text(stringResource(R.string.no), color = Color.White)
                             }
                         }
                     )
@@ -147,13 +148,3 @@ fun PantallaAccount(
     }
 
 }
-
-//@Preview
-//@Composable
-//fun PantallaLogoutPreview() {
-//    PantallaAccount(
-//        dataStore = DataStore(),
-//        toLoginScreen = { /*TODO*/ },
-//        toFavourites = { /*TODO*/ },
-//        toMyPlaces = { /*TODO*/ })
-//}

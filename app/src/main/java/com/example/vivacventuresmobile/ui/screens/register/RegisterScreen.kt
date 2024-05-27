@@ -62,7 +62,7 @@ fun PantallaRegister(
     onPasswordChanged: (String) -> Unit,
     onNombreChanged: (String) -> Unit,
     onRegister: () -> Unit,
-    ) {
+) {
 
     val snackbarHostState = remember { SnackbarHostState() }
 

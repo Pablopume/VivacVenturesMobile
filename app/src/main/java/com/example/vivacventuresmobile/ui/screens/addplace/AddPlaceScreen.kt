@@ -86,9 +86,6 @@ fun AddPlaceScreen(
             )
 
         } else if (state.value.cambioPantalla == 1) {
-//            AddButton(
-//                { viewModel.handleEvent(AddPlaceEvent.AddPlace()) },
-//            )
             AddLocationScreen(
                 addplacestate = state.value,
                 vuelta = { viewModel.handleEvent(AddPlaceEvent.VueltaLocation()) },
@@ -232,7 +229,7 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
                     },
                     enabled = confirmEnabled.value
                 ) {
-                    Text("OK", color = Color.White)
+                    Text(stringResource(R.string.ok), color = Color.White)
                 }
             },
             dismissButton = {
@@ -241,7 +238,7 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
                         openDialog.value = false
                     }
                 ) {
-                    Text("Cancel", color = Color.White)
+                    Text(stringResource(R.string.cancel), color = Color.White)
                 }
             }
         ) {
@@ -256,8 +253,7 @@ fun PriceField(price: Double, modifier: Modifier, onPriceChange: (String) -> Uni
     TextField(
         value = priceStr,
         onValueChange = {
-            val price = it.toDoubleOrNull()
-            if (price != null) {
+            if (it.toDoubleOrNull() != null) {
                 onPriceChange(it)
             } else if (it.isEmpty()) {
                 onPriceChange("0")
@@ -291,7 +287,7 @@ fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> 
 
 @Composable
 fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
-    val options = listOf("Vivac", "Refugio", "Refugio abierto", "Albergue", "Other")
+    val options = listOf(stringResource(R.string.vivac), stringResource(R.string.refuge), stringResource(R.string.private_refuge), stringResource(R.string.hostel), stringResource(R.string.other))
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -392,27 +388,3 @@ fun AddButton(
 
     }
 }
-
-//@Preview(
-//    showBackground = true,
-//    showSystemUi = true,
-//    device = Devices.PIXEL_4
-//)
-//@Composable
-//fun AddPlacePreview() {
-//    AddPlace(
-//        state = AddPlaceState(),
-//        errorVisto = {},
-//        bottomNavigationBar = {},
-//        onAddDone = {},
-//        onAddPlaceClick = {},
-//        onNameChange = {},
-//        onDesciptionChange = {},
-//        onPicturesChange = {},
-//        onTypeChange = {},
-//        onDateChange = {},
-//        onCapacityChange = {},
-//        onPriceChange = {},
-//        dataStore = DataStore<AppPreferences> { AppPreferences() }
-//    )
-//}

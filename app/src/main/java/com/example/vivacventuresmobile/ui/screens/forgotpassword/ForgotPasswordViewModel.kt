@@ -2,11 +2,14 @@ package com.example.vivacventuresmobile.ui.screens.forgotpassword
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.usecases.ForgotPasswordUseCase
 import com.example.vivacventuresmobile.domain.usecases.ResetPasswordUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,12 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class ForgotPasswordViewModel @Inject constructor(
     private val resetPasswordUseCase: ResetPasswordUseCase,
-    private val forgotPasswordUseCase: ForgotPasswordUseCase
+    private val forgotPasswordUseCase: ForgotPasswordUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ForgotPasswordState> by lazy {
         MutableStateFlow(ForgotPasswordState())
     }
-    val uiState: MutableStateFlow<ForgotPasswordState> = _uiState
+    val uiState: StateFlow<ForgotPasswordState> = _uiState
 
 
     init {
@@ -74,7 +78,7 @@ class ForgotPasswordViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Email sent with temporary password",
+                                        error = stringProvider.getString(R.string.email_send_with_temp_pass),
                                         loading = false,
                                         emailsend = true
                                     )
@@ -101,7 +105,7 @@ class ForgotPasswordViewModel @Inject constructor(
                     }
             }
         } else {
-            _uiState.update { it.copy(error = "Please enter an email") }
+            _uiState.update { it.copy(error = stringProvider.getString(R.string.enter_an_email)) }
         }
     }
 
@@ -122,7 +126,7 @@ class ForgotPasswordViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Password changed",
+                                        error = stringProvider.getString(R.string.pass_changed),
                                         loading = false,
                                         passwordchanged = true
                                     )
@@ -149,7 +153,7 @@ class ForgotPasswordViewModel @Inject constructor(
                     }
             }
         } else {
-            _uiState.update { it.copy(error = "Please fill all fields") }
+            _uiState.update { it.copy(error = stringProvider.getString(R.string.fill_all_fields)) }
         }
 
     }

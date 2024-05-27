@@ -41,10 +41,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
@@ -102,17 +104,18 @@ fun ListPlaces(
             FloatingActionButton(onClick = { onAddPlace(0) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
+                    contentDescription = stringResource(R.string.add)
                 )
 
             }
         }
     ) { innerPadding ->
+        val messageDismiss = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = messageDismiss,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -132,7 +135,7 @@ fun ListPlaces(
                             searchText = it
                             searchPlaces(it)
                         },
-                        label = { Text("Buscador") },
+                        label = { Text(stringResource(R.string.searcher)) },
                         modifier = Modifier
                             .align(Alignment.CenterVertically),
                     )
@@ -206,7 +209,7 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
         mutableStateOf("")
     }
 
-    val list = listOf("Vivac", "Refugio", "Albergue", "Refugio Privado", "All")
+    val list = listOf(stringResource(R.string.vivac), stringResource(R.string.refuge), stringResource(R.string.hostel), stringResource(R.string.private_refuge), stringResource(R.string.all))
 
     Column(
         modifier = Modifier
@@ -224,7 +227,7 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
-                    Icon(Icons.Filled.FilterAlt, contentDescription = "Place Icon")
+                    Icon(Icons.Filled.FilterAlt, contentDescription = stringResource(R.string.place))
                 },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
@@ -237,6 +240,7 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                     .menuAnchor()
             )
 
+            val messageAll = stringResource(R.string.all)
             ExposedDropdownMenu(
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
@@ -247,10 +251,10 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                             Text(text = type)
                         },
                         onClick = {
-                            if (type == "All") {
-                                typeSelect = ""
+                            typeSelect = if (type == messageAll) {
+                                ""
                             } else {
-                                typeSelect = list[index]
+                                list[index]
                             }
                             isExpanded = false
                             onGetVivacPlacesByType(typeSelect)

@@ -3,13 +3,16 @@ package com.example.vivacventuresmobile.ui.screens.addplace
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.usecases.AddPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.UpdatePlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,13 +27,14 @@ import javax.inject.Inject
 class AddPlaceViewModel @Inject constructor(
     private val addPlaceUseCase: AddPlaceUseCase,
     private val updatePlaceUseCase: UpdatePlaceUseCase,
-    private val getVivacPlaceUseCase: GetVivacPlaceUseCase
+    private val getVivacPlaceUseCase: GetVivacPlaceUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<AddPlaceState> by lazy {
         MutableStateFlow(AddPlaceState())
     }
-    val uiState: MutableStateFlow<AddPlaceState> = _uiState
+    val uiState: StateFlow<AddPlaceState> = _uiState
 
     init {
         _uiState.value = AddPlaceState(
@@ -176,7 +180,7 @@ class AddPlaceViewModel @Inject constructor(
         val place = uiState.value.place
 
         if (place.name.isEmpty() || place.description.isEmpty() || place.type.isEmpty()) {
-            _uiState.value = _uiState.value.copy(error = "Please fill all fields")
+            _uiState.value = _uiState.value.copy(error = stringProvider.getString(R.string.fill_all_fields))
             return false
         }
 
@@ -196,7 +200,7 @@ class AddPlaceViewModel @Inject constructor(
             val fileName: String = formatter.format(now)
             val storageReference =
                 FirebaseStorage.getInstance()
-                    .getReference("images/${uiState.value.place.username}" + "_" + "$fileName")
+                    .getReference("images/${uiState.value.place.username}" + "_" + fileName)
 
             storageReference.putFile(uri).addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
@@ -211,7 +215,7 @@ class AddPlaceViewModel @Inject constructor(
                     }
                 }.addOnFailureListener { e ->
                     _uiState.update {
-                        it.copy(error = "Error al subir la imagen")
+                        it.copy(error = stringProvider.getString(R.string.error_uploading_image))
                     }
                 }
             }
@@ -282,7 +286,6 @@ class AddPlaceViewModel @Inject constructor(
 
     private fun saveVivacPlace() {
         viewModelScope.launch {
-            Timber.d("[debug] Place: ${_uiState.value.place}")
             addPlaceUseCase(_uiState.value.place)
                 .catch(action = { cause ->
                     _uiState.update {
@@ -393,13 +396,13 @@ class AddPlaceViewModel @Inject constructor(
             storageReference.delete().addOnSuccessListener {
                 imagesDeleted++
 
-                _uiState.update { it.copy(error = "La imagen se ha eliminado correctamente.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
 
                 if (imagesDeleted == totalImages) {
                     uploadImages(_uiState.value.uris)
                 }
             }.addOnFailureListener { e ->
-                _uiState.update { it.copy(error = "Ha ocurrido un error al eliminar la imagen.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.error_deleting_image)) }
             }
         }
     }
@@ -428,7 +431,7 @@ class AddPlaceViewModel @Inject constructor(
                     _uiState.update { it.copy(uris = it.uris + uri) }
                 }
             } else {
-                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.only_three_images)) }
             }
         } else {
             if (uiState.value.uris.size < 3) {
@@ -436,7 +439,7 @@ class AddPlaceViewModel @Inject constructor(
                     _uiState.update { it.copy(uris = it.uris + uri) }
                 }
             } else {
-                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.only_three_images)) }
             }
         }
 

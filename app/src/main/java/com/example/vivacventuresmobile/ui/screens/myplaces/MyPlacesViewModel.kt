@@ -1,22 +1,12 @@
 package com.example.vivacventuresmobile.ui.screens.myplaces
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vivacventuresmobile.domain.modelo.AutocompleteResult
-import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceByTypeUseCase
-import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceNearbyUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesByUsernameUseCase
-import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +20,7 @@ class MyPlacesViewModel @Inject constructor(
         MutableStateFlow(MyPlacesState())
     }
 
-    val uiState: MutableStateFlow<MyPlacesState> = _uiState
+    val uiState: StateFlow<MyPlacesState> = _uiState
 
     init {
         _uiState.value = MyPlacesState(
@@ -46,6 +36,7 @@ class MyPlacesViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(username = event.username)
                 getVivacPlaces()
             }
+
             is MyPlacesEvent.GetVivacPlaces -> getVivacPlaces()
         }
     }

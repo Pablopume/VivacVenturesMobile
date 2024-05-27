@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,13 +27,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val getVivacPlacesRepository: GetVivacPlacesUseCase
+    private val getVivacPlacesRepository: GetVivacPlacesUseCase,
+    private val stringProvider: StringProvider
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MapState> by lazy {
         MutableStateFlow(MapState())
     }
-    val uiState: MutableStateFlow<MapState> = _uiState
+    val uiState: StateFlow<MapState> = _uiState
 
 
     private val permissions = arrayOf(
@@ -47,7 +51,6 @@ class MapViewModel @Inject constructor(
             currentLatLng = LatLng(40.42966863252524, -3.6797065289867783),
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
         )
-//        getVivacPlaces()
     }
 
     fun handleEvent(event: MapEvent) {
@@ -147,10 +150,9 @@ class MapViewModel @Inject constructor(
 
     private fun locationOn() {
         _uiState.value = _uiState.value.copy(
-            error = "Location is on",
+            error = stringProvider.getString(R.string.location_on),
             isLocationEnabled = true
         )
-        //get location
         startLocationUpdates()
     }
 
@@ -158,7 +160,7 @@ class MapViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             isLocationEnabled = false,
             currentLocation = LatLng(0.toDouble(), 0.toDouble()),
-            error = "Location is off",
+            error = stringProvider.getString(R.string.location_off)
         )
 
         //stop location updates
@@ -170,7 +172,7 @@ class MapViewModel @Inject constructor(
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         if (_uiState.value.isLocationEnabled) {
-            locationCallback?.let {
+            locationCallback.let {
                 val locationRequest = LocationRequest.Builder(
                     Priority.PRIORITY_HIGH_ACCURACY, 100
                 )
@@ -179,14 +181,14 @@ class MapViewModel @Inject constructor(
                     .setMaxUpdateDelayMillis(100)
                     .build()
 
-                fusedLocationCLient?.requestLocationUpdates(
+                fusedLocationCLient.requestLocationUpdates(
                     locationRequest,
                     it,
                     Looper.getMainLooper()
                 )
             }
         } else {
-            locationCallback?.let {
+            locationCallback.let {
                 fusedLocationCLient.removeLocationUpdates(it)
             }
         }

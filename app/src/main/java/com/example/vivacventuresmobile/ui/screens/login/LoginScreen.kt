@@ -53,7 +53,7 @@ fun LoginScreen(
     dataStore: DataStore<AppPreferences>
 ) {
     PantallaLogin(
-        state = viewModel.state.collectAsStateWithLifecycle().value,
+        state = viewModel.uiState.collectAsStateWithLifecycle().value,
         onLoginDone = onLoginDone,
         { viewModel.handleEvent(LoginEvent.PasswordChange(it)) },
         { viewModel.handleEvent(LoginEvent.NameChanged(it)) },

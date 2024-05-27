@@ -2,12 +2,14 @@ package com.example.vivacventuresmobile.ui.screens.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.Credentials
 import com.example.vivacventuresmobile.domain.usecases.RegisterUseCase
-import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,11 +19,12 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<RegisterState> by lazy {
         MutableStateFlow(RegisterState())
     }
-    val uiState: MutableStateFlow<RegisterState> = _uiState
+    val uiState: StateFlow<RegisterState> = _uiState
 
 
     init {
@@ -56,7 +59,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun register() {
         if (_uiState.value.user.isEmpty() || _uiState.value.password.isEmpty() || _uiState.value.user.isBlank() || _uiState.value.password.isBlank()) {
-            _uiState.update { it.copy(error = ConstantesPantallas.USER_OR_PASS_EMPTY) }
+            _uiState.update { it.copy(error = stringProvider.getString(R.string.user_or_pass_empty)) }
         } else {
             viewModelScope.launch {
                 registerUseCase(
@@ -88,7 +91,7 @@ class RegisterViewModel @Inject constructor(
                             is NetworkResult.Loading -> _uiState.update { it.copy(loading = true) }
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
-                                    error = ConstantesPantallas.USER_REGISTRADO,
+                                    error = stringProvider.getString(R.string.user_registered),
                                     loading = false,
                                     registered = true
                                 )

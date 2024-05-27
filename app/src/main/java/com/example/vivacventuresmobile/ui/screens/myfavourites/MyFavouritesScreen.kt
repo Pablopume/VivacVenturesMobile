@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,13 +47,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
-import com.example.vivacventuresmobile.ui.theme.BlueRefugee
-import com.example.vivacventuresmobile.ui.theme.GreenVivac
-import com.example.vivacventuresmobile.ui.theme.RedAlbergue
-import com.example.vivacventuresmobile.ui.theme.YellowRefugee
 
 @Composable
 fun MyFavouritesScreen(
@@ -88,11 +84,12 @@ fun PantallaFavourites(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar
     ) { innerPadding ->
+        val messageDismiss = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = messageDismiss,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -117,7 +114,7 @@ fun PantallaFavourites(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No tienes lugares favoritos, empieza a guardarlos!",
+                            text = stringResource(R.string.no_places_fav),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -150,14 +147,6 @@ fun VivacPlaceListItem(
     onViewDetalle: (Int) -> Unit,
     modifier: Modifier = Modifier.background(MaterialTheme.colorScheme.background)
 ) {
-    val backgroundColor = when (vivacPlace.type) {
-        "Vivac" -> GreenVivac
-        "Refugio" -> BlueRefugee
-        "Albergue" -> RedAlbergue
-        "Refugio Privado" -> YellowRefugee
-        else -> Color.Gray
-    }
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -228,7 +217,7 @@ fun VivacPlaceListItem(
 
                         Icon(
                             imageVector = Icons.Filled.Star,
-                            contentDescription = "Valorations",
+                            contentDescription = stringResource(R.string.valorations),
                             tint = Color.Yellow
                         )
                     }
@@ -253,7 +242,7 @@ fun VivacPlaceListItem(
 
 @Composable
 fun FavouriteTag() {
-    ChipView(isFavourite = "favorito", colorResource = Color.Green)
+    ChipView(isFavourite = stringResource(R.string.valorations), colorResource = Color.Green)
 }
 
 @Composable

@@ -283,7 +283,7 @@ fun ImageN(index: Int, onDelete: (Int, Boolean) -> Unit, uris: List<Uri>, images
                 onDelete(index, false)
             }
         }) {
-            Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete))
         }
     }
 }
@@ -318,14 +318,14 @@ fun ImagesPicker2(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                 )
             }) {
-                Text(text = "Pick one photo")
+                Text(text = stringResource(R.string.pick_one_photo))
             }
             Button(onClick = {
                 multiplePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                 )
             }) {
-                Text(text = "Pick multiple photos")
+                Text(text = stringResource(R.string.pick_multiple_photo))
             }
         }
 

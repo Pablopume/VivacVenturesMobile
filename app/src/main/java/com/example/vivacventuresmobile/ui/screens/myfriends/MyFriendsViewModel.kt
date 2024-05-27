@@ -10,6 +10,7 @@ import com.example.vivacventuresmobile.domain.usecases.RejectFriendRequestUseCas
 import com.example.vivacventuresmobile.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class MyFriendsViewModel @Inject constructor(
         MutableStateFlow(MyFriendsState())
     }
 
-    val uiState: MutableStateFlow<MyFriendsState> = _uiState
+    val uiState: StateFlow<MyFriendsState> = _uiState
 
     init {
         _uiState.value = MyFriendsState(
@@ -42,6 +43,7 @@ class MyFriendsViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(username = event.username)
                 getFriends()
             }
+
             MyFriendsEvent.GetFriends -> getFriends()
             is MyFriendsEvent.AcceptFriendRequest -> acceptFriendRequest(event.friendRequest)
             is MyFriendsEvent.RejectFriendRequest -> rejectFriendRequest(event.friendRequest)

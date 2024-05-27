@@ -111,6 +111,8 @@ fun Maps(
         )
     }
 
+    val messageGranted = stringResource(R.string.location_permission_granted)
+    val messageDenied = stringResource(R.string.location_permission_denied)
     val launcherMultiplePermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMaps ->
@@ -118,9 +120,9 @@ fun Maps(
         if (areGranted) {
             locationRequired = true
             startLocationUpdates()
-            sendError("Location permission granted")
+            sendError(messageGranted)
         } else {
-            sendError("Location permission denied")
+            sendError(messageDenied)
         }
     }
 
@@ -144,7 +146,7 @@ fun Maps(
                     ) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
-                            contentDescription = "Toggle location"
+                            contentDescription = stringResource(R.string.toggle_location)
                         )
                     }
                 } else {
@@ -163,7 +165,7 @@ fun Maps(
                     ) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
-                            contentDescription = "Toggle location"
+                            contentDescription = stringResource(R.string.toggle_location)
                         )
                     }
                 }
@@ -175,18 +177,19 @@ fun Maps(
                 ) {
                     Icon(
                         imageVector = if (state.isDarkMap) Icons.Default.ModeNight else Icons.Default.LightMode,
-                        contentDescription = "Toggle Dark map"
+                        contentDescription = stringResource(R.string.toggle_dark_map)
                     )
                 }
             }
         }
     ) { innerPadding ->
 
+        val messageDismiss = stringResource(id = R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = messageDismiss,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -223,15 +226,15 @@ fun Maps(
                     if (state.isLocationEnabled && state.currentLocation != null) {
                         Marker(
                             state = MarkerState(position = state.currentLocation),
-                            title = "Current location",
-                            snippet = "This is your current location",
+                            title = stringResource(R.string.current_location),
+                            snippet = stringResource(R.string.this_is_current_location),
                             icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                         )
                     }
                     Marker(
                         state = MarkerState(position = LatLng(place.lat, place.lon)),
                         title = place.name,
-                        snippet = "Click to see details",
+                        snippet = stringResource(R.string.click_to_details),
                         onInfoWindowClick = {
                             onViewDetalle(place.id)
                         },
@@ -241,15 +244,19 @@ fun Maps(
                             true
                         },
                         icon = when (place.type) {
-                            "Vivac" -> BitmapDescriptorFactory.defaultMarker(
+                            stringResource(R.string.vivac) -> BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_GREEN
                             )
 
-                            "Refugio" -> BitmapDescriptorFactory.defaultMarker(
+                            stringResource(R.string.refuge) -> BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_BLUE
                             )
 
-                            "Refugio abierto" -> BitmapDescriptorFactory.defaultMarker(
+                            stringResource(R.string.private_refuge) -> BitmapDescriptorFactory.defaultMarker(
+                                BitmapDescriptorFactory.HUE_ORANGE
+                            )
+
+                            stringResource(R.string.hostel) -> BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_MAGENTA
                             )
 

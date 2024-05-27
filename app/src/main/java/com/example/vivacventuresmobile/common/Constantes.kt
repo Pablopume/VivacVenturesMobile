@@ -12,7 +12,6 @@ object Constantes {
     const val DATA_STORE = "data_store"
     const val REFRESHTOKEN = "refresh_token"
     const val ACCESS_TOKEN = "access_token"
-    const val DISMISS = "Dismiss"
     const val NO_PERMISSION = "You need admin permission"
     const val REGISTER_PATH = "/auth/register"
     const val LOGIN_PATH = "/auth/login"

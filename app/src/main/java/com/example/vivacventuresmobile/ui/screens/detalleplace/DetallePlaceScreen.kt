@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -157,30 +158,30 @@ fun DetallePlace(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 title = { Text(text = state.vivacPlace?.type ?: "") },
                 actions = {
                     if (state.vivacPlace?.username == state.username) {
                         IconButton(onClick = { delete() }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                         }
                         IconButton(onClick = { onUpdatePlace(state.vivacPlace.id) }) {
-                            Icon(Icons.Filled.Edit, contentDescription = "Edit")
+                            Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit))
                         }
                     } else {
                         IconButton(onClick = { reportDialogOpen = true }) {
-                            Icon(Icons.Filled.Report, contentDescription = "Report")
+                            Icon(Icons.Filled.Report, contentDescription = stringResource(R.string.report))
                         }
                     }
                     if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
-                            Icon(Icons.Filled.Favorite, contentDescription = "Unfavorite")
+                            Icon(Icons.Filled.Favorite, contentDescription = stringResource(R.string.unfavorite))
                         }
                     } else {
                         IconButton(onClick = { favourite() }) {
-                            Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
+                            Icon(Icons.Filled.FavoriteBorder, contentDescription = stringResource(R.string.favorite))
                         }
                     }
                 }
@@ -189,11 +190,12 @@ fun DetallePlace(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = bottomNavigationBar
     ) { innerPadding ->
+        val dismissError = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = dismissError,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -243,12 +245,12 @@ fun DetallePlace(
                     if (reportDialogOpen) {
                         AlertDialog(
                             onDismissRequest = { reportDialogOpen = false },
-                            title = { Text("Report") },
+                            title = { Text(stringResource(R.string.report)) },
                             text = {
                                 TextField(
                                     value = state.descriptionReport,
                                     onValueChange = onDescriptionReportChange,
-                                    label = { Text("Report Description") }
+                                    label = { Text(stringResource(R.string.report_description)) }
                                 )
                             },
                             confirmButton = {
@@ -258,14 +260,14 @@ fun DetallePlace(
                                         reportDialogOpen = false
                                     }
                                 ) {
-                                    Text("Send")
+                                    Text(stringResource(R.string.send))
                                 }
                             },
                             dismissButton = {
                                 Button(
                                     onClick = { reportDialogOpen = false }
                                 ) {
-                                    Text("Cancel")
+                                    Text(stringResource(R.string.cancel))
                                 }
                             }
                         )
@@ -297,18 +299,18 @@ fun ValorationsList(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Valoración media: $mediatotal",
+                text = stringResource(R.string.valorations_average, mediatotal),
                 style = MaterialTheme.typography.titleMedium
             )
             Button(onClick = { valorationDialogOpen = true }) {
-                Text("Add")
+                Text(stringResource(R.string.add))
             }
         }
 
         if (valorationDialogOpen) {
             AlertDialog(
                 onDismissRequest = { valorationDialogOpen = false },
-                title = { Text("Add Valoration") },
+                title = { Text(stringResource(R.string.add_valoration)) },
                 text = {
                     Column {
                         Column {
@@ -320,14 +322,14 @@ fun ValorationsList(
                                 valueRange = 1f..5f,
                                 steps = 5
                             )
-                            Text(text = "Score: $score")
+                            Text(text = stringResource(R.string.score, score))
                         }
                         TextField(
                             value = review,
                             onValueChange = {
                                 onReviewValorationChange(it)
                             },
-                            label = { Text("Review") }
+                            label = { Text(stringResource(R.string.review)) }
                         )
                     }
                 },
@@ -338,14 +340,14 @@ fun ValorationsList(
                             valorationDialogOpen = false
                         }
                     ) {
-                        Text("Add")
+                        Text(stringResource(R.string.add))
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { valorationDialogOpen = false }
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )
@@ -388,7 +390,7 @@ fun ValorationsList(
                                                 showMenu = false
                                             },
                                             text = {
-                                                Text("Delete")
+                                                Text(stringResource(R.string.delete))
                                             }
                                         )
                                     }
@@ -470,7 +472,7 @@ fun ImageCarousel(images: List<String>) {
                         IconButton(onClick = { currentImageIndex.value-- }) {
                             Icon(
                                 Icons.Filled.ArrowBack,
-                                contentDescription = "Previous image",
+                                contentDescription = stringResource(R.string.previous_image),
                                 tint = Color.White
                             )
                         }
@@ -488,7 +490,7 @@ fun ImageCarousel(images: List<String>) {
                         IconButton(onClick = { currentImageIndex.value++ }) {
                             Icon(
                                 Icons.Filled.ArrowForward,
-                                contentDescription = "Next image",
+                                contentDescription = stringResource(R.string.next_image),
                                 tint = Color.White
                             )
                         }

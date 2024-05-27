@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,12 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 
@@ -102,15 +101,15 @@ fun PantallaMyFriends(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { if (seePendingRequests.value) Text("Solicitudes de amistad") else Text("Mis amigos") },
+                title = { if (seePendingRequests.value) Text(stringResource(R.string.friend_requests)) else Text(stringResource(R.string.my_friends)) },
                 navigationIcon = {
                     if (seePendingRequests.value) {
                         IconButton(onClick = { seePendingRequests.value = false }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     } else {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     }
                 },
@@ -119,7 +118,7 @@ fun PantallaMyFriends(
                         IconButton(onClick = { seePendingRequests.value = true }) {
                             Icon(
                                 Icons.Default.NotificationsActive,
-                                contentDescription = "To notifications"
+                                contentDescription = stringResource(R.string.to_notifications)
                             )
                         }
                     }
@@ -131,16 +130,17 @@ fun PantallaMyFriends(
             FloatingActionButton(onClick = { toSearchFriendsScreen() }) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
+                    contentDescription = stringResource(R.string.search)
                 )
             }
         }
     ) { innerPadding ->
+        val messageDismiss = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = messageDismiss,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -165,7 +165,7 @@ fun PantallaMyFriends(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "¡Empieza a añadir amigos!",
+                            text = stringResource(R.string.start_adding_friends),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -234,7 +234,10 @@ fun MyFriendRequestListItem(
                     color = Color.Black
                 )
                 IconButton(onClick = { showMenu = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Opciones")
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.options)
+                    )
                 }
                 DropdownMenu(
                     expanded = showMenu,
@@ -246,7 +249,7 @@ fun MyFriendRequestListItem(
                             showMenu = false
                         },
                         text = {
-                            Text("Eliminar amigo")
+                            Text(stringResource(R.string.delete_friend))
                         }
                     )
                 }
@@ -283,11 +286,11 @@ fun PendingFriendRequestListItem(
                 modifier = Modifier.weight(1f)
             )
             Button(onClick = { onAccept(friend) }) {
-                Text("Aceptar")
+                Text(stringResource(R.string.accept))
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { onReject(friend) }) {
-                Text("Rechazar")
+                Text(stringResource(R.string.reject))
             }
         }
     }

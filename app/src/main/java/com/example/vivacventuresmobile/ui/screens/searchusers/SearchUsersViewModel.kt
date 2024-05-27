@@ -2,12 +2,15 @@ package com.example.vivacventuresmobile.ui.screens.searchusers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.example.vivacventuresmobile.domain.usecases.SearchFriendUseCase
 import com.example.vivacventuresmobile.domain.usecases.SendFriendRequestUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,13 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchUsersViewModel @Inject constructor(
     private val searchFriendUseCase: SearchFriendUseCase,
-    private val sendFriendRequestUseCase: SendFriendRequestUseCase
+    private val sendFriendRequestUseCase: SendFriendRequestUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<SearchUsersState> by lazy {
         MutableStateFlow(SearchUsersState())
     }
 
-    val uiState: MutableStateFlow<SearchUsersState> = _uiState
+    val uiState: StateFlow<SearchUsersState> = _uiState
 
     init {
         _uiState.value = SearchUsersState(
@@ -54,10 +58,18 @@ class SearchUsersViewModel @Inject constructor(
 
     private fun sendFriendRequest() {
         if (_uiState.value.friend.username.isEmpty()) {
-            _uiState.value = _uiState.value.copy(error = "Busca un usuario antes.")
+            _uiState.value =
+                _uiState.value.copy(error = stringProvider.getString(R.string.search_user_first))
         } else {
             viewModelScope.launch {
-                sendFriendRequestUseCase(FriendRequest(0, uiState.value.username, uiState.value.friend.username, false))
+                sendFriendRequestUseCase(
+                    FriendRequest(
+                        0,
+                        uiState.value.username,
+                        uiState.value.friend.username,
+                        false
+                    )
+                )
                     .catch { cause ->
                         _uiState.update {
                             it.copy(
@@ -79,7 +91,7 @@ class SearchUsersViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Friend request sent",
+                                        error = stringProvider.getString(R.string.friend_request_sent),
                                         loading = false
                                     )
                                 }
@@ -100,7 +112,8 @@ class SearchUsersViewModel @Inject constructor(
 
     private fun doSearch() {
         if (_uiState.value.search.isEmpty()) {
-            _uiState.value = _uiState.value.copy(error = "Search field is empty")
+            _uiState.value =
+                _uiState.value.copy(error = stringProvider.getString(R.string.search_field_empty))
 
         } else {
             _uiState.update { it.copy(loading = true) }
@@ -119,7 +132,7 @@ class SearchUsersViewModel @Inject constructor(
                             is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Usuario no encontrado",
+                                        error = stringProvider.getString(R.string.user_not_found),
                                         loading = false
                                     )
                                 }

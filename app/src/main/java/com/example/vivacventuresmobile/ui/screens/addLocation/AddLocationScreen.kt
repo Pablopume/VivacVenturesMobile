@@ -26,8 +26,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,22 +44,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceState
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
-
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 private val permissions = arrayOf(
@@ -65,7 +68,6 @@ private val permissions = arrayOf(
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLocationScreen(
     viewModel: LocationViewModel = hiltViewModel(),
@@ -83,16 +85,18 @@ fun AddLocationScreen(
     viewModel.geoCoder = Geocoder(LocalContext.current)
 
 
+    val messageGranted = stringResource(R.string.location_permission_granted)
+    val messageDenied = stringResource(R.string.location_permission_denied)
     val launcherMultiplePermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionMaps ->
         val areGranted = permissionMaps.values.reduce { acc, next -> acc && next }
         if (areGranted) {
             viewModel.getCurrentLocation()
-            viewModel.handleEvent(AddLocationEvent.SendError("Location permission granted"))
+            viewModel.handleEvent(AddLocationEvent.SendError(messageGranted))
         } else {
             viewModel.locationState = LocationState.LocationDisabled
-            viewModel.handleEvent(AddLocationEvent.SendError("Location permission denied"))
+            viewModel.handleEvent(AddLocationEvent.SendError(messageDenied))
         }
     }
 
@@ -104,20 +108,20 @@ fun AddLocationScreen(
         when (state) {
             is LocationState.NoPermission -> {
                 Column {
-                    Text("We need location permission to continue")
+                    Text(stringResource(R.string.permission_needed))
                     Button(onClick = { launcherMultiplePermissions.launch(permissions) }) {
-                        Text("Request permission")
+                        Text(stringResource(R.string.request_permission))
                     }
                 }
             }
 
             is LocationState.LocationDisabled -> {
                 Column {
-                    Text("We need location to continue")
+                    Text(stringResource(R.string.permission_needed))
                     Button(onClick = {
                         viewModel.requestLocationEnable(context as Activity)
                     }) {
-                        Text("Enable location")
+                        Text(stringResource(R.string.enable_location))
                     }
                 }
             }
@@ -134,9 +138,9 @@ fun AddLocationScreen(
 
             is LocationState.Error -> {
                 Column {
-                    Text("Error fetching your location")
+                    Text(stringResource(R.string.error_fetching_location))
                     Button(onClick = { viewModel.getCurrentLocation() }) {
-                        Text("Retry")
+                        Text(stringResource(R.string.retry))
                     }
                 }
             }
@@ -144,7 +148,8 @@ fun AddLocationScreen(
             is LocationState.LocationAvailable -> {
                 val cameraPositionState = rememberCameraPositionState {
                     if (addplacestate.place.lat != 0.0) {
-                        val defaultLocation = LatLng(addplacestate.place.lat, addplacestate.place.lon)
+                        val defaultLocation =
+                            LatLng(addplacestate.place.lat, addplacestate.place.lon)
                         position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
                     } else {
                         position = CameraPosition.fromLatLngZoom(state.cameraLatLang, 15f)
@@ -166,21 +171,22 @@ fun AddLocationScreen(
                 }
                 val snackbarHostState = remember { SnackbarHostState() }
 
-                LaunchedEffect(locationstate.value.error) {
-                    locationstate.value.error?.let {
-                        snackbarHostState.showSnackbar(
-                            message = locationstate.value.error.toString(),
-                            actionLabel = Constantes.DISMISS,
-                            duration = SnackbarDuration.Short,
-                        )
-                        viewModel.handleEvent(AddLocationEvent.ErrorVisto)
-                    }
-                }
 
                 Scaffold(
-                    snackbarHost = { snackbarHostState },
+                    snackbarHost = { SnackbarHost(snackbarHostState) },
                     bottomBar = { bottomNavigationBar() }
                 ) { innerPadding ->
+                    val dismissError = stringResource(R.string.dismiss)
+                    LaunchedEffect(locationstate.value.error) {
+                        locationstate.value.error?.let {
+                            snackbarHostState.showSnackbar(
+                                message = locationstate.value.error.toString(),
+                                actionLabel = dismissError,
+                                duration = SnackbarDuration.Short,
+                            )
+                            viewModel.handleEvent(AddLocationEvent.ErrorVisto)
+                        }
+                    }
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -240,30 +246,32 @@ fun AddLocationScreen(
                                     Spacer(Modifier.height(16.dp))
                                 }
                                 OutlinedTextField(
-                                    value = viewModel.text, onValueChange = {
+                                    value = viewModel.text,
+                                    onValueChange = {
                                         viewModel.text = it
                                         viewModel.searchPlaces(it)
-                                    }, modifier = Modifier
+                                    },
+                                    modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(8.dp),
-                                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                                        focusedBorderColor = Color.Black,
-                                        unfocusedBorderColor = Color.Black,
+                                    colors = OutlinedTextFieldDefaults.colors(
                                         focusedTextColor = Color.Black,
                                         unfocusedTextColor = Color.Black,
+                                        focusedBorderColor = Color.Black,
+                                        unfocusedBorderColor = Color.Black,
                                     ),
                                 )
                                 Row {
                                     Button(onClick = {
                                         vuelta()
                                     }) {
-                                        Text("Volver")
+                                        Text(stringResource(R.string.back))
                                     }
                                     Button(onClick = {
                                         onLocationChange(cameraPositionState.position.target)
                                         toImages()
                                     }) {
-                                        Text("Confirmar ubicación")
+                                        Text(stringResource(R.string.confirm_location))
                                     }
                                 }
                             }

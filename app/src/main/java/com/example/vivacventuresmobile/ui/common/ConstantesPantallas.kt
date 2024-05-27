@@ -1,10 +1,8 @@
 package com.example.vivacventuresmobile.ui.common
 
 object ConstantesPantallas {
-    const val USER_OR_PASS_EMPTY = "Usuario o contraseña vacíos"
-    const val LOGIN = "login"
-    const val LOGOUT = "logout"
     const val REGISTER = "register"
+    const val LOGIN = "login"
     const val FORGOTPASSWORD = "forgotpassword"
     const val FAVOURITES = "favoritos/"
     const val FAVOURITES_USER = "favoritos/{username}"
@@ -13,7 +11,6 @@ object ConstantesPantallas {
     const val MYFRIENDS = "misamigos/"
     const val MYFRIENDS_USER = "misamigos/{username}"
     const val SEARCHUSERS = "buscarusuarios/"
-
     const val MAP = "Mapa"
     const val LUGARES = "Lugares"
     const val CUENTA = "Cuenta"
@@ -23,12 +20,9 @@ object ConstantesPantallas {
     const val LUGAR_ID = "lugarId"
     const val USERNAME = "username"
 
-    const val PELICULA_ID = "peliculaId"
-
     const val ADDLUGAR = "addlugar/"
     const val ADDLUGAR_EXISTS = "addlugar/{exists}"
     const val EXISTS = "exists"
-    const val VIVACPLACE = "vivacPlace"
 
     const val ELIMINADO = "Eliminado"
     const val ERRORCAMPOSVACIOS = "Rellene todos los campos"

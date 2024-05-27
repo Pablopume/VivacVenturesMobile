@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,21 +86,22 @@ fun PantallaFavourites(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Buscar usuarios") },
+                title = { Text(stringResource(R.string.search_users)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
         },
         bottomBar = bottomNavigationBar
     ) { innerPadding ->
+        val messageDismiss = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {
             state.error?.let {
                 snackbarHostState.showSnackbar(
                     message = state.error.toString(),
-                    actionLabel = Constantes.DISMISS,
+                    actionLabel = messageDismiss,
                     duration = SnackbarDuration.Short,
                 )
                 errorVisto()
@@ -125,18 +127,18 @@ fun PantallaFavourites(
                     OutlinedTextField(
                         value = state.search,
                         onValueChange = onSearchChange,
-                        label = { Text("Buscar usuario") },
+                        label = { Text(stringResource(R.string.search_user)) },
                         modifier = Modifier.weight(1f),
                         trailingIcon = {
                             if (state.search.isNotEmpty()) {
                                 IconButton(onClick = { onSearchChange("") }) {
-                                    Icon(Icons.Default.Clear, contentDescription = "Limpiar")
+                                    Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear))
                                 }
                             }
                         }
                     )
                     IconButton(onClick = doSearch) {
-                        Icon(Icons.Default.Search, contentDescription = "Buscar")
+                        Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -146,7 +148,7 @@ fun PantallaFavourites(
                         onClick = { sendFriendRequest() },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        Text("Enviar solicitud")
+                        Text(stringResource(R.string.send_request))
                     }
                 }
             }
@@ -181,9 +183,9 @@ fun MyFriendsListItem(
             )
             Text(
                 text = if (friend.count == 1) {
-                    "1 lugar creado"
+                    stringResource(R.string.one_place_created)
                 } else {
-                    "${friend.count} lugares creados"
+                    stringResource(R.string.places_created, friend.count)
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,

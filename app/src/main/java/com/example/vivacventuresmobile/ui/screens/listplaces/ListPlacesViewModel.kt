@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class ListPlacesViewModel @Inject constructor(
         MutableStateFlow(ListPlacesState())
     }
 
-    val uiState: MutableStateFlow<ListPlacesState> = _uiState
+    val uiState: StateFlow<ListPlacesState> = _uiState
 
     val locationAutofill = mutableStateListOf<AutocompleteResult>()
 

@@ -2,6 +2,7 @@ package com.example.vivacventuresmobile.ui.screens.detalleplace
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.Valoration
 import com.example.vivacventuresmobile.domain.usecases.AddFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.AddReportUseCase
@@ -11,9 +12,11 @@ import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,12 +32,13 @@ class DetallePlaceViewModel @Inject constructor(
     private val addValorationUseCase: AddValorationUseCase,
     private val deleteValorationUseCase: DeleteValorationUseCase,
     private val addReportUseCase: AddReportUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
         MutableStateFlow(DetallePlaceState())
     }
 
-    val uiState: MutableStateFlow<DetallePlaceState> = _uiState
+    val uiState: StateFlow<DetallePlaceState> = _uiState
 
     init {
         _uiState.value = DetallePlaceState(
@@ -96,13 +100,13 @@ class DetallePlaceViewModel @Inject constructor(
             storageReference.delete().addOnSuccessListener {
                 imagesDeleted++
 
-                _uiState.update { it.copy(error = "La imagen se ha eliminado correctamente.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
 
                 if (imagesDeleted == totalImages) {
                     deleteValoration(id)
                 }
             }.addOnFailureListener { e ->
-                _uiState.update { it.copy(error = "Ha ocurrido un error al eliminar la imagen.") }
+                _uiState.update { it.copy(error = stringProvider.getString(R.string.error_deleting_image)) }
             }
         }
     }
@@ -141,7 +145,7 @@ class DetallePlaceViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Report added",
+                                        error = stringProvider.getString(R.string.report_added),
                                         loading = false,
                                         descriptionReport = ""
                                     )
@@ -197,7 +201,7 @@ class DetallePlaceViewModel @Inject constructor(
                             is NetworkResult.Success -> {
                                 _uiState.update {
                                     it.copy(
-                                        error = "Valoration added",
+                                        error = stringProvider.getString(R.string.valoration_added),
                                         loading = false,
                                         score = 0,
                                         reviewValoration = ""
@@ -245,7 +249,7 @@ class DetallePlaceViewModel @Inject constructor(
                         is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(
-                                    error = "Valoration deleted",
+                                    error = stringProvider.getString(R.string.valoration_deleted),
                                     loading = false,
                                 )
                             }
@@ -428,7 +432,7 @@ class DetallePlaceViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         loading = false,
-                                        error = "Place deleted",
+                                        error = stringProvider.getString(R.string.place_deleted),
                                         deleted = true
                                     )
                                 }
