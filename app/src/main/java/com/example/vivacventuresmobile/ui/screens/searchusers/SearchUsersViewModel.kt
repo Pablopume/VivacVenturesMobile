@@ -2,7 +2,9 @@ package com.example.vivacventuresmobile.ui.screens.searchusers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.example.vivacventuresmobile.domain.usecases.SearchFriendUseCase
+import com.example.vivacventuresmobile.domain.usecases.SendFriendRequestUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchUsersViewModel @Inject constructor(
     private val searchFriendUseCase: SearchFriendUseCase,
+    private val sendFriendRequestUseCase: SendFriendRequestUseCase
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<SearchUsersState> by lazy {
         MutableStateFlow(SearchUsersState())
@@ -43,7 +46,55 @@ class SearchUsersViewModel @Inject constructor(
                 doSearch()
             }
 
-            else -> {}
+            SearchUsersEvent.SendFriendRequest -> {
+                sendFriendRequest()
+            }
+        }
+    }
+
+    private fun sendFriendRequest() {
+        if (_uiState.value.friend.username.isEmpty()) {
+            _uiState.value = _uiState.value.copy(error = "Busca un usuario antes.")
+        } else {
+            viewModelScope.launch {
+                sendFriendRequestUseCase(FriendRequest(0, uiState.value.username, uiState.value.friend.username, false))
+                    .catch { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message
+                            )
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(
+                                        error = "Friend request sent",
+                                        loading = false
+                                    )
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 

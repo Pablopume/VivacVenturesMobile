@@ -19,7 +19,7 @@ class ValorationsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error(response.message())
+                NetworkResult.Error("${response.errorBody()}")
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: "An error occurred")
@@ -32,7 +32,7 @@ class ValorationsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error(response.message())
+                NetworkResult.Error("${response.errorBody()}")
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: "An error occurred")

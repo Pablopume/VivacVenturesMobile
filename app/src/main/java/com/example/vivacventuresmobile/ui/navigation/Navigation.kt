@@ -186,11 +186,11 @@ fun Navigation(
         ) {
             MyFriendsScreen(
                 username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
-                onViewDetalle = {
-                    navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
-                },
                 toSearchFriendsScreen = {
                     navController.navigate(ConstantesPantallas.SEARCHUSERS)
+                },
+                onBack = {
+                    navController.popBackStack()
                 },
                 bottomNavigationBar = {
                     BottomBar(
@@ -204,6 +204,9 @@ fun Navigation(
         ) {
             SearchUsersScreen(
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                onBack = {
+                    navController.popBackStack()
+                },
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar

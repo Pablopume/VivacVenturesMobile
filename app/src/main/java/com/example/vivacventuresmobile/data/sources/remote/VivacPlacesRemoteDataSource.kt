@@ -21,7 +21,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlace() })
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -38,7 +38,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -55,7 +55,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.toVivacPlace())
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -72,7 +72,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -89,7 +89,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.toVivacPlace())
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -106,7 +106,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -123,7 +123,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlaceList() })
                 }
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -136,7 +136,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 return NetworkResult.Success(true)
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
@@ -150,7 +150,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 return NetworkResult.Success(Unit)
             } else {
-                return NetworkResult.Error("Error")
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())

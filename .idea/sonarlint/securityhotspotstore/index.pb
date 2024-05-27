@@ -342,3 +342,17 @@ Yapp/src/main/java/com/example/vivacventuresmobile/ui/screens/addimages/AddImage
 \app/src/main/java/com/example/vivacventuresmobile/ui/screens/searchusers/SearchUsersState.kt,9\8\98250d0d0cf5b90a6c84aa487153aa0cecfc4bc4
 å
 \app/src/main/java/com/example/vivacventuresmobile/ui/screens/searchusers/SearchUsersEvent.kt,f\2\f2aa3676f60161e9c1b3bf3ae6de3d301cc3df8e
+Ö
+Uapp/src/main/java/com/example/vivacventuresmobile/data/model/FriendRequestResponse.kt,2\3\23d7a76bef15321011d50a87a64e21935fd85060
+Ä
+Papp/src/main/java/com/example/vivacventuresmobile/domain/modelo/FriendRequest.kt,0\9\09b148b5ad9d24ebcb98dbcf5825ee3b53eb1358
+Ü
+Vapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetFriendsUseCase.kt,c\8\c8d735e03412629029e4c4f1540ff7f7ed0768a2
+ç
+]app/src/main/java/com/example/vivacventuresmobile/domain/usecases/SendFriendRequestUseCase.kt,0\5\05b20d7deeb4bcc302a7509b5833d467debc2288
+è
+_app/src/main/java/com/example/vivacventuresmobile/domain/usecases/AcceptFriendRequestUseCase.kt,6\3\63a955467f0b97ac382aea6910e72cb0821035de
+è
+_app/src/main/java/com/example/vivacventuresmobile/domain/usecases/RejectFriendRequestUseCase.kt,e\c\ec3004a52026bc10d7247d5392b15e8d5404c31b
+è
+_app/src/main/java/com/example/vivacventuresmobile/domain/usecases/DeleteFriendRequestUseCase.kt,8\8\88f10b26810bed3cc0c8b9029312a4a682202e4f

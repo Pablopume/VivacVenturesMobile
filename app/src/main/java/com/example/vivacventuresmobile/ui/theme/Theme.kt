@@ -20,19 +20,18 @@ private val DarkColorScheme = darkColorScheme(
     primary = GreenP,
     secondary = GreenS,
     tertiary = GreenT,
-
-    /* Other default colors to override*/
-//    background = Color.White,
-    surface = GreenP,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White,
-    primaryContainer = GreenP,
-    secondaryContainer = GreenS,
-    tertiaryContainer = GreenT,
-    surfaceTint = Color(0xFF1C1B1F),
+//
+//    /* Other default colors to override*/
+//    surface = GreenP,
+//    onPrimary = Color.White,
+//    onSecondary = Color.White,
+//    onTertiary = Color.White,
+//    onBackground = Color.White,
+//    onSurface = Color.White,
+//    primaryContainer = GreenP,
+//    secondaryContainer = GreenS,
+//    tertiaryContainer = GreenT,
+//    surfaceTint = Color(0xFF1C1B1F),
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -46,18 +45,18 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
+//    onBackground = Color(0xFF1C1B1F),
+//    onSurface = Color(0xFF1C1B1F),
     primaryContainer = GreenP,
     secondaryContainer = GreenS,
     tertiaryContainer = GreenT,
-    surfaceTint = Color(0xFF1C1B1F),
+//    surfaceTint = Color(0xFF1C1B1F),
 
     )
 
 @Composable
 fun VivacVenturesMobileTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
