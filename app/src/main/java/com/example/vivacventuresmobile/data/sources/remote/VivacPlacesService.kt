@@ -18,16 +18,16 @@ interface VivacPlacesService {
     @GET("/vivacplaces")
     suspend fun getVivacPlaces(): Response<List<VivacPlaceResponse>>
 
-    @GET("/vivacplaces/id/{id}/{username}")
+    @GET("/vivacplaces/id/{id}")
     suspend fun getVivacPlace(@Path("id") id: Int, @Path("username") username: String): Response<VivacPlaceResponse>
 
     @GET("/vivacplaces/user/{username}")
     suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplaces/{username}")
+    @GET("/vivacplaces")
     suspend fun getVivacPlacesWithFavourites(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplaces/type/{type}/{username}")
+    @GET("/vivacplaces/type/{type}")
     suspend fun getVivacPlaceByType(@Path("type") type: String, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @GET("/vivacplaces/id/{id}")
@@ -41,7 +41,7 @@ interface VivacPlacesService {
     @Headers("Content-Type: application/json")
     suspend fun updateVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<Boolean>
 
-    @GET("/nearby/{username}")
+    @GET("/nearby")
     suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @DELETE("/delete/{id}")
