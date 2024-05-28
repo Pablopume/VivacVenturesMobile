@@ -53,6 +53,7 @@ import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 @Composable
 fun MyFavouritesScreen(
     viewModel: MyFavouritesViewModel = hiltViewModel(),
+    listId: Int,
     username: String,
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},

@@ -140,14 +140,15 @@ fun Navigation(
             )
         }
         composable(
-            ConstantesPantallas.FAVOURITES_USER,
-            arguments = listOf(navArgument(name = ConstantesPantallas.USERNAME) {
-                type = NavType.StringType
-                defaultValue = ""
+            ConstantesPantallas.FAVOURITES_LIST,
+            arguments = listOf(navArgument(name = ConstantesPantallas.LISTID) {
+                type = NavType.IntType
+                defaultValue = 0
             })
         ) {
             MyFavouritesScreen(
-                username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                listId = it.arguments?.getInt(ConstantesPantallas.LISTID) ?: 0,
                 onViewDetalle = {
                     navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
                 },
@@ -159,14 +160,10 @@ fun Navigation(
             )
         }
         composable(
-            ConstantesPantallas.MYPLACES_USER,
-            arguments = listOf(navArgument(name = ConstantesPantallas.USERNAME) {
-                type = NavType.StringType
-                defaultValue = ""
-            })
+            ConstantesPantallas.MYPLACES,
         ) {
             MyPlacesScreen(
-                username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
                 onViewDetalle = {
                     navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
                 },
@@ -178,14 +175,10 @@ fun Navigation(
             )
         }
         composable(
-            ConstantesPantallas.MYFRIENDS_USER,
-            arguments = listOf(navArgument(name = ConstantesPantallas.USERNAME) {
-                type = NavType.StringType
-                defaultValue = ""
-            })
+            ConstantesPantallas.MYFRIENDS,
         ) {
             MyFriendsScreen(
-                username = it.arguments?.getString(ConstantesPantallas.USERNAME) ?: "",
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
                 toSearchFriendsScreen = {
                     navController.navigate(ConstantesPantallas.SEARCHUSERS)
                 },
@@ -221,14 +214,14 @@ fun Navigation(
                 toLoginScreen = {
                     navController.navigate(ConstantesPantallas.LOGIN)
                 },
-                toFavourites = {
-                    navController.navigate(ConstantesPantallas.FAVOURITES + "${it}")
+                toLists = {
+                    navController.navigate(ConstantesPantallas.LISTS)
                 },
                 toMyPlaces = {
-                    navController.navigate(ConstantesPantallas.MYPLACES + "${it}")
+                    navController.navigate(ConstantesPantallas.MYPLACES)
                 },
                 toMyFriends = {
-                    navController.navigate(ConstantesPantallas.MYFRIENDS + "${it}")
+                    navController.navigate(ConstantesPantallas.MYFRIENDS)
                 },
                 dataStore = dataStore,
                 bottomNavigationBar = {

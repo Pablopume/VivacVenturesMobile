@@ -38,16 +38,16 @@ import kotlinx.coroutines.launch
 fun AccountScreen(
     dataStore: DataStore<AppPreferences>,
     toLoginScreen: () -> Unit,
-    toMyPlaces: (String) -> Unit,
-    toMyFriends: (String) -> Unit,
-    toFavourites: (String) -> Unit,
+    toMyPlaces: () -> Unit,
+    toMyFriends: () -> Unit,
+    toLists: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
     PantallaAccount(
         dataStore = dataStore,
         toLoginScreen = toLoginScreen,
         toMyPlaces = toMyPlaces,
-        toFavourites = toFavourites,
+        toLists = toLists,
         toMyFriends = toMyFriends,
         bottomNavigationBar = bottomNavigationBar
     )
@@ -57,9 +57,9 @@ fun AccountScreen(
 fun PantallaAccount(
     dataStore: DataStore<AppPreferences>,
     toLoginScreen: () -> Unit,
-    toFavourites: (String) -> Unit,
-    toMyPlaces: (String) -> Unit,
-    toMyFriends: (String) -> Unit,
+    toLists: () -> Unit,
+    toMyPlaces: () -> Unit,
+    toMyFriends: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -88,19 +88,19 @@ fun PantallaAccount(
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
-                        onClick = { toMyPlaces(username) },
+                        onClick = { toMyPlaces() },
                         icon = { Icon(Icons.Filled.Place, stringResource(R.string.place)) },
                         text = { Text(text = stringResource(R.string.my_places)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
-                        onClick = { toFavourites(username) },
+                        onClick = { toLists() },
                         icon = { Icon(Icons.Filled.Favorite, stringResource(R.string.favourites)) },
                         text = { Text(text = stringResource(R.string.my_lists)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
-                        onClick = { toMyFriends(username) },
+                        onClick = { toMyFriends() },
                         icon = { Icon(Icons.Filled.SupervisorAccount, stringResource(R.string.friends)) },
                         text = { Text(text = stringResource(R.string.my_friends)) },
                     )
