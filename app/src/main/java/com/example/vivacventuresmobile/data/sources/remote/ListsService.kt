@@ -16,11 +16,11 @@ interface ListsService {
     @GET("/list/{id}")
     suspend fun getList(@Path("id") id: Int): Response<ListResponse>
 
-    @GET("/list/{id}/{username}")
-    suspend fun getListsOfVivacPlaceForUser(@Path("id") id: Int, @Path("username") username: String): Response<List<ListResponse>>
+    @GET("/list/user/userAndVivacPlace")
+    suspend fun getListsByUserAndVivacPlace(@Query("username") username: String, @Query("vivacPlaceId") id: Int): Response<List<ListResponse>>
 
-    @GET("/lists/shared")
-    suspend fun getListSharedWith(@Query("id") id: Int): Response<List<String>>
+    @GET("/list/shared")
+    suspend fun getWhoIsListShareWith(@Query("id") id: Int): Response<List<String>>
 
     @POST("/list")
     suspend fun saveList(@Body listResponse: ListResponse): Response<Unit>
@@ -32,7 +32,7 @@ interface ListsService {
     suspend fun deleteSharedList(@Query("id") id: Int, @Query("username") username: String): Response<Unit>
 
     @DELETE("/list/delete")
-    suspend fun deleteList(@Path("id") id: Int): Response<Unit>
+    suspend fun deleteList(@Query("id") id: Int): Response<Unit>
 
     @POST("/list/favorite")
     suspend fun addFavoriteToList(@Query("id") id: Int, @Query("vivacId") vivacId: Int): Response<Unit>

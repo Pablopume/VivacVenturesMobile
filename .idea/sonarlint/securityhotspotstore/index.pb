@@ -378,8 +378,6 @@ Lapp/src/main/java/com/example/vivacventuresmobile/data/model/ListResponse.kt,b
 Uapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/ListsService.kt,0\7\07997e9a8691ab8f918c5c51df18512aee7148b9
 Ž
 ^app/src/main/java/com/example/vivacventuresmobile/data/sources/remote/ListsRemoteDataSource.kt,4\9\49e021651bd41eb392d3a56a88241297e5587763
-w
-Gapp/src/main/java/com/example/vivacventuresmobile/domain/modelo/List.kt,0\c\0ca16a08f665616daef9143d54a2497adb787143
 †
 Vapp/src/main/java/com/example/vivacventuresmobile/data/repositories/ListsRepository.kt,0\2\024b9c86be0c53cb716201afef89c157c707d492
 „
@@ -396,3 +394,17 @@ Vapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/DeleteListUse
 `app/src/main/java/com/example/vivacventuresmobile/domain/usecases/DeleteListSharedWithUseCase.kt,a\f\afe5b080ac5d46675c9fc720ccc028d056b1a434
 {
 Kapp/src/main/java/com/example/vivacventuresmobile/domain/modelo/ListFavs.kt,f\d\fd31e48cb86f756307ab4b35219756be446250c7
+ƒ
+Sapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetListUseCase.kt,f\a\fa45d76c0b97ed2901aca840690c1cdb51afaef3
+…
+Uapp/src/main/java/com/example/vivacventuresmobile/ui/screens/mylists/MyListsScreen.kt,9\c\9c6d45e0a85cf5ff399a41e599d36a900308d816
+ˆ
+Xapp/src/main/java/com/example/vivacventuresmobile/ui/screens/mylists/MyListsViewModel.kt,f\8\f8e11ff4395141de8f98044ed69be2028cbbbac0
+–
+fapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetListByUserAndVivacPlaceUseCase.kt,f\3\f3631146004055381f5adf6765f3256f6348493c
+Ž
+^app/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetListsSharedWithUseCase.kt,e\0\e0edf2f442ba33a62358562d8c55a0a58a1e26e8
+„
+Tapp/src/main/java/com/example/vivacventuresmobile/ui/screens/mylists/MyListsState.kt,0\9\09d83538db5dafbcf5b5921e9309fd3c9c877a2f
+„
+Tapp/src/main/java/com/example/vivacventuresmobile/ui/screens/mylists/MyListsEvent.kt,f\a\fa19cbbbfeabfcf757538dbb260ddaa638adee1c

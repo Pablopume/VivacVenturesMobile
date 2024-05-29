@@ -18,19 +18,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,34 +67,151 @@ fun MyFavouritesScreen(
     viewModel: MyFavouritesViewModel = hiltViewModel(),
     listId: Int,
     username: String,
+    onBack: () -> Unit,
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
+
+
+    if (state.value.listId == 0) {
+        viewModel.handleEvent(MyFavouritesEvent.SaveListId(listId))
+    }
+
     if (state.value.username.isEmpty()) {
         viewModel.handleEvent(MyFavouritesEvent.SaveUsername(username))
+    }
+
+    LaunchedEffect(state.value.listDeleted) {
+        if (state.value.listDeleted) {
+            onBack()
+        }
     }
 
     PantallaFavourites(
         state.value,
         { viewModel.handleEvent(MyFavouritesEvent.ErrorVisto) },
+        { viewModel.handleEvent(MyFavouritesEvent.DeleteList()) },
+        username,
+        { viewModel.handleEvent(MyFavouritesEvent.ShareList(it)) },
+        { viewModel.handleEvent(MyFavouritesEvent.UnShareList(it)) },
+        onBack,
         onViewDetalle,
         bottomNavigationBar
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaFavourites(
     state: MyFavouritesState,
     errorVisto: () -> Unit,
+    deleteList: () -> Unit,
+    username: String,
+    onShare: (String) -> Unit,
+    onUnshare: (String) -> Unit,
+    onBack: () -> Unit,
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    var onShareDialogOpen by remember { mutableStateOf(false) }
+
+    if (onShareDialogOpen) {
+        var showFriends by remember { mutableStateOf(false) }
+        AlertDialog(
+            onDismissRequest = { onShareDialogOpen = false },
+            title = { Text(stringResource(R.string.create_list)) },
+            text = {
+                if (showFriends) {
+                    LazyColumn {
+                        items(state.friends) { friend ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = friend)
+                                Button(onClick = { onShare(friend) }) {
+                                    Text(text = "Compartir")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (state.sharedWith.isEmpty()) {
+                        Text(text = "No compartido con nadie")
+                    } else {
+                        LazyColumn {
+                            items(state.sharedWith) { username ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = username)
+                                    Button(onClick = { onUnshare(username) }) {
+                                        Text(text = "Dejar de compartir")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+
+            confirmButton = {
+                Button(
+                    onClick = { showFriends = !showFriends }
+                ) {
+                    Text(text = if (showFriends) "Ver compartidos" else "Ver amigos")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { onShareDialogOpen = false }
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            TopAppBar(
+                title = { Text(state.list.name) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onShareDialogOpen = true }) {
+                        Icon(
+                            Icons.Default.PersonAddAlt1,
+                            contentDescription = stringResource(R.string.share)
+                        )
+
+                    }
+                    if (state.list.username == username) {
+                        IconButton(onClick = { deleteList() }) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete)
+                            )
+                        }
+                    }
+                }
+            )
+        },
         bottomBar = bottomNavigationBar
     ) { innerPadding ->
         val messageDismiss = stringResource(R.string.dismiss)
@@ -107,7 +236,7 @@ fun PantallaFavourites(
                     LoadingAnimation(state.loading)
                 }
             } else {
-                if (state.vivacPlaces.isEmpty()) {
+                if (state.list.favoritos.isEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -127,7 +256,7 @@ fun PantallaFavourites(
                             .fillMaxSize()
                     ) {
                         items(
-                            items = state.vivacPlaces,
+                            items = state.list.favoritos,
                             key = { vivacPlace -> vivacPlace.id }
                         ) { vivacPlace ->
                             VivacPlaceListItem(

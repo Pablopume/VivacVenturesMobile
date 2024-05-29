@@ -59,6 +59,7 @@
     <string name="dismiss">Descartar</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="create">Crear</string>
     <string name="vivac">Vivac</string>
     <string name="refuge">Refugio</string>
     <string name="private_refuge">Refugio privado</string>
@@ -75,6 +76,7 @@
     <string name="favorite">Favorito</string>
     <string name="send">Enviar</string>
     <string name="report_description">Descripción reporte</string>
+    <string name="name_list">Nombre de la lista</string>
     <string name="add_valoration">Añadir valoración</string>
     <string name="valorations_average">Valoración media %s</string>
     <string name="score">Puntuación: %s</string>
@@ -105,6 +107,7 @@
     <string name="start_adding_friends">¡Empieza a añadir amigos!</string>
     <string name="friend_requests">Solicitudes de amistad</string>
     <string name="to_notifications">A notificaciones</string>
+    <string name="share">Compartir</string>
     <string name="accept">Aceptar</string>
     <string name="reject">Reject</string>
     <string name="start_creating_places">Empieza a crear lugares!</string>
@@ -116,6 +119,14 @@
     <string name="places_created">%s lugares creados</string>
     <string name="search_user_first">Busca un usuario antes.</string>
     <string name="friend_request_sent">Solicitud de amistad enviada.</string>
-    <string name="search_field_empty">Search field is empty</string>
+    <string name="search_field_empty">El campo de búsqueda está vacío</string>
     <string name="user_not_found">Usuario no encontrado</string>
+    <string name="error_empty_name">El nombre de la lista está vacío</string>
+    <string name="list_created">Lista creada</string>
+    <string name="create_list">Crea una lista</string>
+    <string name="you_have_no_lists_yet">No tienes listas creadas todavía, ¡empieza a crear!</string>
+    <string name="list_deleted">Lista borrada correctamente</string>
+    <string name="no_valorations">No hay valoraciones, ¡escribe la primera!</string>
+    <string name="list_shared">Lista compartida</string>
+    <string name="list_unshared">Has dejado de compartir esta lista</string>
 </resources>

@@ -4,5 +4,5 @@ data class ListFavs (
     val id: Int = 0,
     val name: String = "",
     val username: String = "",
-    val favoritos: List<VivacPlace> = emptyList(),
+    val favoritos: List<VivacPlaceList> = emptyList(),
 )

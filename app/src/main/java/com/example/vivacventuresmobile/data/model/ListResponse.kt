@@ -10,8 +10,8 @@ data class ListResponse(
     val name: String = "",
     @SerializedName("count")
     val username: String = "",
-    @SerializedName("favoritos")
-    val favoritos: List<VivacPlaceResponse> = emptyList(),
+    @SerializedName("vivacPlaces")
+    val vivacPlaces: List<FavouritesVivacPlaceResponse> = emptyList(),
 )
 
 fun ListResponse.toListFavs(): ListFavs {
@@ -19,7 +19,7 @@ fun ListResponse.toListFavs(): ListFavs {
         id = id,
         name = name,
         username = username,
-        favoritos = favoritos.map { it.toVivacPlace() },
+        favoritos = vivacPlaces.map { it.toVivacPlaceList() },
     )
 }
 
@@ -28,6 +28,6 @@ fun ListFavs.toListResponse(): ListResponse {
         id = id,
         name = name,
         username = username,
-        favoritos = favoritos.map { it.toVivacPlaceResponse() },
+        vivacPlaces = favoritos.map { it.toFavouritesVivacPlaceResponse() },
     )
 }

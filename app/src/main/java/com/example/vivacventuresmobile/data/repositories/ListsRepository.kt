@@ -26,6 +26,22 @@ class ListsRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    fun getList(id: Int): Flow<NetworkResult<ListFavs>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.getList(id)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
+    fun getListsByUserAndVivacPlace(username: String, id: Int): Flow<NetworkResult<List<ListFavs>>> {
+        return flow {
+            emit(NetworkResult.Loading())
+            val result = remoteDataSource.getListsByUserAndVivacPlace(username, id)
+            emit(result)
+        }.flowOn(dispatcher)
+    }
+
     fun getListSharedWith(id: Int): Flow<NetworkResult<List<String>>> {
         return flow {
             emit(NetworkResult.Loading())

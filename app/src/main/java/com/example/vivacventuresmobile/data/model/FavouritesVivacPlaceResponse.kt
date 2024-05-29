@@ -27,3 +27,12 @@ fun FavouritesVivacPlaceResponse.toVivacPlaceList(): VivacPlaceList = VivacPlace
     images,
     favorite
 )
+
+fun VivacPlaceList.toFavouritesVivacPlaceResponse(): FavouritesVivacPlaceResponse = FavouritesVivacPlaceResponse(
+    id,
+    name,
+    type,
+    valorations,
+    images,
+    favorite
+)

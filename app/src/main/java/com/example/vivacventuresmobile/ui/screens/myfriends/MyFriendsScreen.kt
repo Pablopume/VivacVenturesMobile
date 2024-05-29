@@ -101,15 +101,25 @@ fun PantallaMyFriends(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { if (seePendingRequests.value) Text(stringResource(R.string.friend_requests)) else Text(stringResource(R.string.my_friends)) },
+                title = {
+                    if (seePendingRequests.value) Text(stringResource(R.string.friend_requests)) else Text(
+                        stringResource(R.string.my_friends)
+                    )
+                },
                 navigationIcon = {
                     if (seePendingRequests.value) {
                         IconButton(onClick = { seePendingRequests.value = false }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
                     } else {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
                     }
                 },
@@ -180,7 +190,12 @@ fun PantallaMyFriends(
                                 items = state.pendingFriends,
                                 key = { friend -> friend.id }
                             ) { friend ->
-                                PendingFriendRequestListItem(friend, onAccept, onReject)
+                                PendingFriendRequestListItem(
+                                    friend,
+                                    state.username,
+                                    onAccept,
+                                    onReject
+                                )
                             }
                         }
                     } else {
@@ -192,7 +207,7 @@ fun PantallaMyFriends(
                                 items = state.friends,
                                 key = { friend -> friend.id }
                             ) { friend ->
-                                MyFriendRequestListItem(friend, onDeleteFriend)
+                                MyFriendRequestListItem(friend, state.username, onDeleteFriend)
                             }
                         }
                     }
@@ -205,6 +220,7 @@ fun PantallaMyFriends(
 @Composable
 fun MyFriendRequestListItem(
     friend: FriendRequest,
+    username: String,
     onDeleteFriend: (FriendRequest) -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -228,7 +244,7 @@ fun MyFriendRequestListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = friend.requester,
+                    text = if (friend.requester == username) friend.requested else friend.requester,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f),
                     color = Color.Black
@@ -261,6 +277,7 @@ fun MyFriendRequestListItem(
 @Composable
 fun PendingFriendRequestListItem(
     friend: FriendRequest,
+    username: String,
     onAccept: (FriendRequest) -> Unit,
     onReject: (FriendRequest) -> Unit,
 ) {
@@ -281,7 +298,7 @@ fun PendingFriendRequestListItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = friend.requester,
+                text = if (friend.requester == username) friend.requested else friend.requester,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
@@ -306,7 +323,8 @@ fun PreviewFriendCard() {
             "username",
             false
         ),
-        onDeleteFriend = {}
+        onDeleteFriend = {},
+        username = "username"
     )
 }
 
@@ -321,6 +339,7 @@ fun PreviewPendingFriendCard() {
             false
         ),
         onAccept = {},
-        onReject = {}
+        onReject = {},
+        username = "juan"
     )
 }

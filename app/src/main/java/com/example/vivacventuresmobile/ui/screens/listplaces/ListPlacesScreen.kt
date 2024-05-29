@@ -106,7 +106,6 @@ fun ListPlaces(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.add)
                 )
-
             }
         }
     ) { innerPadding ->

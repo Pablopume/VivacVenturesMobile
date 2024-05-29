@@ -31,7 +31,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
 
     suspend fun getVivacPlacesWithFavourites(username: String): NetworkResult<List<VivacPlaceList>> {
         try {
-            val response = vivacPlacesService.getVivacPlacesWithFavourites(username)
+            val response = vivacPlacesService.getVivacPlacesWithFavourites()
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
@@ -48,7 +48,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
 
     suspend fun getVivacPlace(id: Int, username: String): NetworkResult<VivacPlace> {
         try {
-            val response = vivacPlacesService.getVivacPlace(id, username)
+            val response = vivacPlacesService.getVivacPlace(id)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
@@ -65,7 +65,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
 
     suspend fun getVivacPlaceByType(type: String, username: String): NetworkResult<List<VivacPlaceList>> {
         try {
-            val response = vivacPlacesService.getVivacPlaceByType(type, username)
+            val response = vivacPlacesService.getVivacPlaceByType(type)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
@@ -99,7 +99,7 @@ class VivacPlacesRemoteDataSource @Inject constructor(
 
     suspend fun getNearbyPlaces(latLong: LatLng, username: String): NetworkResult<List<VivacPlaceList>> {
         try {
-            val response = vivacPlacesService.getNearbyPlaces(latLong.latitude, latLong.longitude, username)
+            val response = vivacPlacesService.getNearbyPlaces(latLong.latitude, latLong.longitude)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {

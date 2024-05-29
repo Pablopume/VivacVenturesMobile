@@ -9,22 +9,20 @@ import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
 import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
 import com.example.vivacventuresmobile.data.sources.remote.FavouritesService
 import com.example.vivacventuresmobile.data.sources.remote.FriendsService
+import com.example.vivacventuresmobile.data.sources.remote.ListsService
 import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.ReportsService
 import com.example.vivacventuresmobile.data.sources.remote.ValorationsService
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
 import com.example.vivacventuresmobile.utils.Constants.BASE_URL
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -109,6 +107,15 @@ object NetworkModule {
     fun provideFriendsService(retrofit: Retrofit): FriendsService =
         retrofit.create(FriendsService::class.java)
 
+    @Singleton
+    @Provides
+    fun provideListsService(retrofit: Retrofit): ListsService =
+        retrofit.create(ListsService::class.java)
+
+    @Provides
+    fun provideStringProvider(@ApplicationContext context: Context): StringProvider {
+        return StringProvider(context)
+    }
 
     @Singleton
     @Provides

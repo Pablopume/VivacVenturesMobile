@@ -19,16 +19,16 @@ interface VivacPlacesService {
     suspend fun getVivacPlaces(): Response<List<VivacPlaceResponse>>
 
     @GET("/vivacplaces/id/{id}")
-    suspend fun getVivacPlace(@Path("id") id: Int, @Path("username") username: String): Response<VivacPlaceResponse>
+    suspend fun getVivacPlace(@Path("id") id: Int): Response<VivacPlaceResponse>
 
     @GET("/vivacplaces/user/{username}")
     suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @GET("/vivacplaces")
-    suspend fun getVivacPlacesWithFavourites(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+    suspend fun getVivacPlacesWithFavourites(): Response<List<FavouritesVivacPlaceResponse>>
 
     @GET("/vivacplaces/type/{type}")
-    suspend fun getVivacPlaceByType(@Path("type") type: String, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+    suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<FavouritesVivacPlaceResponse>>
 
     @GET("/vivacplaces/id/{id}")
     suspend fun getVivacPlaceById(@Path("id") id: Int): Response<VivacPlaceResponse>
@@ -42,7 +42,7 @@ interface VivacPlacesService {
     suspend fun updateVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<Boolean>
 
     @GET("/nearby")
-    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double): Response<List<FavouritesVivacPlaceResponse>>
 
     @DELETE("/delete/{id}")
     suspend fun deleteVivacPlace(@Path("id") id: Int): Response<Unit>

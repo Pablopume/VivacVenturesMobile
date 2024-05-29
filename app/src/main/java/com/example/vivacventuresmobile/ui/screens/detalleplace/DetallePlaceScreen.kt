@@ -69,9 +69,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.Valoration
-import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesEvent
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -158,30 +156,48 @@ fun DetallePlace(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 },
                 title = { Text(text = state.vivacPlace?.type ?: "") },
                 actions = {
                     if (state.vivacPlace?.username == state.username) {
                         IconButton(onClick = { delete() }) {
-                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
+                            Icon(
+                                Icons.Filled.Delete,
+                                contentDescription = stringResource(R.string.delete)
+                            )
                         }
                         IconButton(onClick = { onUpdatePlace(state.vivacPlace.id) }) {
-                            Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit))
+                            Icon(
+                                Icons.Filled.Edit,
+                                contentDescription = stringResource(R.string.edit)
+                            )
                         }
                     } else {
                         IconButton(onClick = { reportDialogOpen = true }) {
-                            Icon(Icons.Filled.Report, contentDescription = stringResource(R.string.report))
+                            Icon(
+                                Icons.Filled.Report,
+                                contentDescription = stringResource(R.string.report)
+                            )
                         }
                     }
                     if (state.vivacPlace?.favorite == true) {
                         IconButton(onClick = { unfavourite() }) {
-                            Icon(Icons.Filled.Favorite, contentDescription = stringResource(R.string.unfavorite))
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = stringResource(R.string.unfavorite)
+                            )
                         }
                     } else {
                         IconButton(onClick = { favourite() }) {
-                            Icon(Icons.Filled.FavoriteBorder, contentDescription = stringResource(R.string.favorite))
+                            Icon(
+                                Icons.Filled.FavoriteBorder,
+                                contentDescription = stringResource(R.string.favorite)
+                            )
                         }
                     }
                 }
@@ -291,9 +307,54 @@ fun ValorationsList(
     score: Int,
     review: String
 ) {
+    var valorationDialogOpen by remember { mutableStateOf(false) }
+    if (valorationDialogOpen) {
+        AlertDialog(
+            onDismissRequest = { valorationDialogOpen = false },
+            title = { Text(stringResource(R.string.add_valoration)) },
+            text = {
+                Column {
+                    Column {
+                        Slider(
+                            value = score.toFloat(),
+                            onValueChange = {
+                                onScoreChange(it.toInt())
+                            },
+                            valueRange = 1f..5f,
+                            steps = 5
+                        )
+                        Text(text = stringResource(R.string.score, score))
+                    }
+                    TextField(
+                        value = review,
+                        onValueChange = {
+                            onReviewValorationChange(it)
+                        },
+                        label = { Text(stringResource(R.string.review)) }
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onAddValoration()
+                        valorationDialogOpen = false
+                    }
+                ) {
+                    Text(stringResource(R.string.add))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { valorationDialogOpen = false }
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
     if (valoration.isNotEmpty()) {
         val mediatotal = valoration.map { it.score }.average()
-        var valorationDialogOpen by remember { mutableStateOf(false) }
         Row(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -305,52 +366,6 @@ fun ValorationsList(
             Button(onClick = { valorationDialogOpen = true }) {
                 Text(stringResource(R.string.add))
             }
-        }
-
-        if (valorationDialogOpen) {
-            AlertDialog(
-                onDismissRequest = { valorationDialogOpen = false },
-                title = { Text(stringResource(R.string.add_valoration)) },
-                text = {
-                    Column {
-                        Column {
-                            Slider(
-                                value = score.toFloat(),
-                                onValueChange = {
-                                    onScoreChange(it.toInt())
-                                },
-                                valueRange = 1f..5f,
-                                steps = 5
-                            )
-                            Text(text = stringResource(R.string.score, score))
-                        }
-                        TextField(
-                            value = review,
-                            onValueChange = {
-                                onReviewValorationChange(it)
-                            },
-                            label = { Text(stringResource(R.string.review)) }
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            onAddValoration()
-                            valorationDialogOpen = false
-                        }
-                    ) {
-                        Text(stringResource(R.string.add))
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = { valorationDialogOpen = false }
-                    ) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                }
-            )
         }
         Column {
             val sortedValorations = valoration.sortedByDescending { it.date }
@@ -407,6 +422,19 @@ fun ValorationsList(
                         )
                     }
                 }
+            }
+        }
+    } else {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.no_valorations),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Button(onClick = { valorationDialogOpen = true }) {
+                Text(stringResource(R.string.add))
             }
         }
     }

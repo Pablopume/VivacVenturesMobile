@@ -44,9 +44,26 @@ class ListsRemoteDataSource @Inject constructor(
         return NetworkResult.Error("Error")
     }
 
+    suspend fun getListsByUserAndVivacPlace(username: String, id: Int): NetworkResult<List<ListFavs>> {
+        try {
+            val response = listsService.getListsByUserAndVivacPlace(username, id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    return NetworkResult.Success(body.map { it.toListFavs() })
+                }
+            } else {
+                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+            }
+        } catch (e: Exception) {
+            return NetworkResult.Error(e.message ?: e.toString())
+        }
+        return NetworkResult.Error("Error")
+    }
+
     suspend fun getListSharedWith(id: Int): NetworkResult<List<String>> {
         try {
-            val response = listsService.getListSharedWith(id)
+            val response = listsService.getWhoIsListShareWith(id)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {

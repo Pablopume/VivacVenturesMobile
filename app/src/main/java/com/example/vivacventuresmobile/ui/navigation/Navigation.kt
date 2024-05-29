@@ -20,6 +20,7 @@ import com.example.vivacventuresmobile.ui.screens.login.LoginScreen
 import com.example.vivacventuresmobile.ui.screens.map.MapScreen
 import com.example.vivacventuresmobile.ui.screens.myfavourites.MyFavouritesScreen
 import com.example.vivacventuresmobile.ui.screens.myfriends.MyFriendsScreen
+import com.example.vivacventuresmobile.ui.screens.mylists.MyListsScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
 import com.example.vivacventuresmobile.ui.screens.searchusers.SearchUsersScreen
@@ -149,8 +150,29 @@ fun Navigation(
             MyFavouritesScreen(
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
                 listId = it.arguments?.getInt(ConstantesPantallas.LISTID) ?: 0,
+                onBack = {
+                    navController.popBackStack()
+                },
                 onViewDetalle = {
                     navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
+                },
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
+            )
+        }
+        composable(
+            ConstantesPantallas.LISTS,
+        ) {
+            MyListsScreen(
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onListSelected = {
+                    navController.navigate(ConstantesPantallas.FAVOURITES + "${it}")
                 },
                 bottomNavigationBar = {
                     BottomBar(
