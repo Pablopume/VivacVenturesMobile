@@ -14,6 +14,7 @@ data class VivacPlace(
     val valorations: List<Valoration> = emptyList(),
     val type: String = "",
     val price: Double = 0.0,
-    val images: List<String> = emptyList(),
+    val images: List<String> = emptyList(
+    ),
     val favorite: Boolean = false
 )

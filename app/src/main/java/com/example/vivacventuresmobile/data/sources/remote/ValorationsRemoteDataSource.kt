@@ -19,7 +19,11 @@ class ValorationsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.errorBody()}")
+                if (response.code() == 400) {
+                    NetworkResult.Error("You have already rated this place")
+                } else {
+                    NetworkResult.Error("${response.errorBody()}")
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: "An error occurred")
