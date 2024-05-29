@@ -24,6 +24,7 @@ import com.example.vivacventuresmobile.ui.screens.myfriends.MyFriendsScreen
 import com.example.vivacventuresmobile.ui.screens.mylists.MyListsScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
+import com.example.vivacventuresmobile.ui.screens.searchusers.SearchUsersScreen
 
 
 @Composable
@@ -270,6 +271,21 @@ fun Navigation(
                     navController.popBackStack()
                 },
                 username = dataStore.data.collectAsState(initial = AppPreferences()).value.username
+            )
+        }
+        composable(
+            ConstantesPantallas.SEARCHUSERS
+        ){
+            SearchUsersScreen(
+                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                onBack = {
+                    navController.popBackStack()
+                },
+                bottomNavigationBar = {
+                    BottomBar(
+                        navController = navController, screens = screensBottomBar
+                    )
+                }
             )
         }
 

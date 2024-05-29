@@ -121,7 +121,7 @@ fun PantallaFavourites(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(innerPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
