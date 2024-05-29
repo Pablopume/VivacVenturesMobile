@@ -30,9 +30,6 @@ interface VivacPlacesService {
     @GET("/vivacplaces/type/{type}")
     suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplaces/id/{id}")
-    suspend fun getVivacPlaceById(@Path("id") id: Int): Response<VivacPlaceResponse>
-
     @POST("/vivacplace")
     @Headers("Content-Type: application/json")
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<VivacPlaceResponse>

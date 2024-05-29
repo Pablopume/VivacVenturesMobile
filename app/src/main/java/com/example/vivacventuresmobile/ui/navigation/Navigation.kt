@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
+import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.common.BottomBar
 import com.example.vivacventuresmobile.ui.common.ConstantesPantallas
 import com.example.vivacventuresmobile.ui.screens.account.AccountScreen
@@ -23,7 +24,6 @@ import com.example.vivacventuresmobile.ui.screens.myfriends.MyFriendsScreen
 import com.example.vivacventuresmobile.ui.screens.mylists.MyListsScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
-import com.example.vivacventuresmobile.ui.screens.searchusers.SearchUsersScreen
 
 
 @Composable
@@ -38,9 +38,12 @@ fun Navigation(
 
     val userName = appPreferences.username
 
+    val cryptoManager = CryptoManager()
+
     NavHost(
         navController = navController,
         startDestination = if (userName.isNotBlank() && !userName.equals("")) ConstantesPantallas.MAP else ConstantesPantallas.LOGIN,
+//        startDestination = "AddImagesScreen",
     ) {
         composable(
             ConstantesPantallas.LOGIN
@@ -59,7 +62,8 @@ fun Navigation(
                 onForgotPassword = {
                     navController.navigate(ConstantesPantallas.FORGOTPASSWORD)
                 },
-                dataStore = dataStore
+                dataStore = dataStore,
+                cryptoManager = cryptoManager
             )
         }
         composable(
@@ -97,7 +101,11 @@ fun Navigation(
                 BottomBar(
                     navController = navController, screens = screensBottomBar
                 )
-            })
+            },
+                username =  dataStore.data.collectAsState(initial = AppPreferences()).value.username,
+                password =  dataStore.data.collectAsState(initial = AppPreferences()).value.password,
+                cryptoManager = cryptoManager
+            )
         }
         composable(
             ConstantesPantallas.LUGARES
@@ -204,21 +212,6 @@ fun Navigation(
                 toSearchFriendsScreen = {
                     navController.navigate(ConstantesPantallas.SEARCHUSERS)
                 },
-                onBack = {
-                    navController.popBackStack()
-                },
-                bottomNavigationBar = {
-                    BottomBar(
-                        navController = navController, screens = screensBottomBar
-                    )
-                }
-            )
-        }
-        composable(
-            ConstantesPantallas.SEARCHUSERS
-        ) {
-            SearchUsersScreen(
-                username = dataStore.data.collectAsState(initial = AppPreferences()).value.username,
                 onBack = {
                     navController.popBackStack()
                 },

@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
+import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesEvent
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 
@@ -13,4 +14,6 @@ sealed class MapEvent {
     object LocationOn: MapEvent()
     object LocationOff: MapEvent()
     object ErrorVisto : MapEvent()
+
+    class reLogin(val username: String, val password: String) : MapEvent()
 }

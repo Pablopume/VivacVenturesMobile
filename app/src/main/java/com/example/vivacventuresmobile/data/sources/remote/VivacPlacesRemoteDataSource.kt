@@ -21,7 +21,13 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toVivacPlace() })
                 }
             } else {
-                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                val responseMessage = response.code()
+                if (responseMessage == 401) {
+                    return NetworkResult.Error("Relogin")
+                }
+                else {
+                    return NetworkResult.Error("Error")
+                }
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())

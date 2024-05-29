@@ -40,8 +40,8 @@ import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
+import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import kotlinx.coroutines.launch
 
 @Composable
@@ -50,7 +50,8 @@ fun LoginScreen(
     onLoginDone: (String) -> Unit,
     onRegisterClick: () -> Unit,
     onForgotPassword: () -> Unit,
-    dataStore: DataStore<AppPreferences>
+    dataStore: DataStore<AppPreferences>,
+    cryptoManager: CryptoManager
 ) {
     PantallaLogin(
         state = viewModel.uiState.collectAsStateWithLifecycle().value,
@@ -60,7 +61,8 @@ fun LoginScreen(
         { viewModel.handleEvent(LoginEvent.OnLoginEvent()) },
         onRegisterClick,
         onForgotPassword,
-        dataStore
+        dataStore,
+        cryptoManager
     )
 }
 
@@ -73,7 +75,8 @@ fun PantallaLogin(
     onLogin: () -> Unit,
     onRegister: () -> Unit,
     onForgotPassword: () -> Unit,
-    dataStore: DataStore<AppPreferences>
+    dataStore: DataStore<AppPreferences>,
+    cryptoManager: CryptoManager
 
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -96,13 +99,24 @@ fun PantallaLogin(
             if (state.loginSuccess) {
                 coroutineScope.launch {
                     dataStore.updateData {
+                        val password = cryptoManager.encriptar(state.password)
                         it.copy(
-                            username = state.user ?: "",
-                            password = state.password ?: ""
+                            username = state.user,
+                            password = password
                         )
                     }
+
                 }
-                onLoginDone(state.user ?: "")
+//                coroutineScope2.launch {
+//                    dataStore2.updateData {
+//                        it.copy(
+//                            username = cryptoManager.encriptar(state.user),
+//                            password = cryptoManager.encriptar(state.password)
+//                        )
+//                    }
+//
+//                }
+                onLoginDone(state.user)
             }
         }
 

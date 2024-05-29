@@ -14,4 +14,5 @@ data class MapState(
     val currentLocation: LatLng? = null,
     val currentLatLng: LatLng = LatLng(0.toDouble(), 0.toDouble()),
     val isDarkMap: Boolean = false,
+    val relogin: Boolean = false,
 )

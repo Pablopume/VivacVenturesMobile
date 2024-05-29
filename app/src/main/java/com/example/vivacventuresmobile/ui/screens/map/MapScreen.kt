@@ -1,7 +1,9 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -38,10 +40,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
+import com.example.vivacventuresmobile.data.preferences.AppPreferences
+import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.MainActivity
 import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceEvent
 import com.example.vivacventuresmobile.ui.theme.GreenS
@@ -54,18 +59,23 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private var locationRequired: Boolean = false
 private val permissions = arrayOf(
     android.Manifest.permission.ACCESS_FINE_LOCATION,
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
 )
-
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = hiltViewModel(),
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
+    username: String,
+    password: String,
+    cryptoManager: CryptoManager
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -74,6 +84,20 @@ fun MapScreen(
     }
 
     viewModel.handleEvent(MapEvent.StartLocationUpdates(LocationServices.getFusedLocationProviderClient(LocalContext.current)))
+
+    LaunchedEffect(state.value.relogin) {
+        if (state.value.relogin) {
+            val passworddecrypted = cryptoManager.desencriptar(password)
+            if (username != ""  && passworddecrypted != "") {
+                viewModel.handleEvent(
+                    MapEvent.reLogin(
+                        username,
+                        passworddecrypted
+                    )
+                )
+            }
+        }
+    }
 
     Maps(
         state.value,
@@ -177,7 +201,7 @@ fun Maps(
                 ) {
                     Icon(
                         imageVector = if (state.isDarkMap) Icons.Default.ModeNight else Icons.Default.LightMode,
-                        contentDescription = stringResource(R.string.toggle_dark_map)
+                        contentDescription = "Toggle Dark map"
                     )
                 }
             }

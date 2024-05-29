@@ -3,29 +3,33 @@ package com.example.vivacventuresmobile.ui
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.dataStore
 import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
+import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.navigation.Navigation
 import com.example.vivacventuresmobile.ui.theme.VivacVenturesMobileTheme
 import com.google.android.libraries.places.api.Places
 import dagger.hilt.android.AndroidEntryPoint
 
 val Context.dataStore by dataStore("app.settings.json", AppPreferencesSerialize)
-
+@RequiresApi(Build.VERSION_CODES.M)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+
 
     private val viewModel by viewModels<MainViewModel> ()
     override fun onCreate(savedInstanceState: Bundle?) {

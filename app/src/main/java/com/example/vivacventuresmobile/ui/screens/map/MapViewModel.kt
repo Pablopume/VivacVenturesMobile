@@ -5,7 +5,9 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vivacventuresmobile.R
+import com.example.vivacventuresmobile.domain.modelo.Credentials
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlacesUseCase
+import com.example.vivacventuresmobile.domain.usecases.LoginUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -23,12 +25,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.logging.Logger
 import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val getVivacPlacesRepository: GetVivacPlacesUseCase,
-    private val stringProvider: StringProvider
+    private val loginUseCase: LoginUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MapState> by lazy {
@@ -99,6 +103,8 @@ class MapViewModel @Inject constructor(
                     currentLatLng = event.latLng
                 )
             }
+
+            is MapEvent.reLogin -> doReLogin(event.username, event.password)
         }
     }
 
@@ -118,10 +124,17 @@ class MapViewModel @Inject constructor(
                     when (result) {
                         is NetworkResult.Error -> {
                             _uiState.update {
-                                it.copy(
-                                    error = result.message,
-                                    loading = false
-                                )
+                                if (result.message == "Relogin") {
+                                    it.copy(
+                                        loading = false,
+                                        relogin = true
+                                    )
+                                } else {
+                                    it.copy(
+                                        error = result.message,
+                                        loading = false
+                                    )
+                                }
                             }
                         }
 
@@ -188,9 +201,48 @@ class MapViewModel @Inject constructor(
                 )
             }
         } else {
-            locationCallback.let {
+            locationCallback?.let {
                 fusedLocationCLient.removeLocationUpdates(it)
             }
+        }
+    }
+
+    private fun doReLogin(username: String, password: String) {
+        viewModelScope.launch {
+            loginUseCase(Credentials("", username, password))
+                .catch(action = { cause ->
+                    _uiState.update { it.copy(error = cause.message, loading = false) }
+                })
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = false,
+                                    relogin = false
+                                )
+                            }
+                            getVivacPlaces()
+                        }
+
+                        is NetworkResult.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = true
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+                    }
+                }
         }
     }
 }
