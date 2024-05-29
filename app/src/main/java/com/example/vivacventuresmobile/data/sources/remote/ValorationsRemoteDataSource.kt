@@ -20,7 +20,7 @@ class ValorationsRemoteDataSource @Inject constructor(
                 NetworkResult.Success(Unit)
             } else {
                 if (response.code() == 400) {
-                    NetworkResult.Error("You have already rated this place")
+                    NetworkResult.Error("Ya has valorado este sitio")
                 } else {
                     NetworkResult.Error("${response.errorBody()}")
                 }
