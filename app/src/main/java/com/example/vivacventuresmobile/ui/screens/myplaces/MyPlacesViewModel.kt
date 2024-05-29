@@ -42,6 +42,7 @@ class MyPlacesViewModel @Inject constructor(
     }
 
     private fun getVivacPlaces() {
+        if (_uiState.value.username.isEmpty()) return
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             getVivacPlacesUseCase(_uiState.value.username)

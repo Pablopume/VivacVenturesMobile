@@ -35,7 +35,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -122,11 +121,12 @@ fun PantallaFavourites(
         var showFriends by remember { mutableStateOf(false) }
         AlertDialog(
             onDismissRequest = { onShareDialogOpen = false },
-            title = { Text(stringResource(R.string.create_list)) },
+            title = { Text(stringResource(R.string.share)) },
             text = {
                 if (showFriends) {
                     LazyColumn {
-                        items(state.friends) { friend ->
+                        val friendsWithoutAccess = state.friends.filter { it !in state.sharedWith }
+                        items(friendsWithoutAccess) { friend ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -138,6 +138,7 @@ fun PantallaFavourites(
                                     Text(text = "Compartir")
                                 }
                             }
+
                         }
                     }
                 } else {
@@ -145,16 +146,18 @@ fun PantallaFavourites(
                         Text(text = "No compartido con nadie")
                     } else {
                         LazyColumn {
-                            items(state.sharedWith) { username ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(text = username)
-                                    Button(onClick = { onUnshare(username) }) {
-                                        Text(text = "Dejar de compartir")
+                            items(state.sharedWith) { sharedWith ->
+                                if (sharedWith != username) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(text = sharedWith)
+                                        Button(onClick = { onUnshare(username) }) {
+                                            Text(text = "Dejar de compartir")
+                                        }
                                     }
                                 }
                             }
@@ -372,7 +375,7 @@ fun VivacPlaceListItem(
 
 @Composable
 fun FavouriteTag() {
-    ChipView(isFavourite = stringResource(R.string.valorations), colorResource = Color.Green)
+    ChipView(isFavourite = stringResource(R.string.favorite), colorResource = Color.Green)
 }
 
 @Composable

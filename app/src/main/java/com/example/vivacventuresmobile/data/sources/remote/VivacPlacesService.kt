@@ -24,7 +24,7 @@ interface VivacPlacesService {
     @GET("/vivacplaces/user/{username}")
     suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplaces")
+    @GET("/vivacplacesmy")
     suspend fun getVivacPlacesWithFavourites(): Response<List<FavouritesVivacPlaceResponse>>
 
     @GET("/vivacplaces/type/{type}")

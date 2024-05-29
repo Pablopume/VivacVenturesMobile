@@ -110,8 +110,8 @@ fun DetallePlaceScreen(
         state.value,
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
         bottomNavigationBar,
-        { viewModel.handleEvent(DetallePlaceEvent.AddFavourite()) },
-        { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite()) },
+        { viewModel.handleEvent(DetallePlaceEvent.AddFavourite(it)) },
+        { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite(it)) },
         { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
         { id -> viewModel.handleEvent(DetallePlaceEvent.DeleteValoration(id)) },
         { description ->
@@ -136,8 +136,8 @@ fun DetallePlace(
     state: DetallePlaceState,
     errorVisto: () -> Unit,
     bottomNavigationBar: @Composable () -> Unit,
-    favourite: () -> Unit,
-    unfavourite: () -> Unit,
+    favourite: (Int) -> Unit,
+    unfavourite: (Int) -> Unit,
     delete: () -> Unit,
     deleteValoration: (Int) -> Unit,
     onDescriptionReportChange: (String) -> Unit,
@@ -150,6 +150,10 @@ fun DetallePlace(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var reportDialogOpen by remember { mutableStateOf(false) }
+    var favsDialogOpen by remember { mutableStateOf(false) }
+    if (favsDialogOpen) {
+
+    }
 
     Scaffold(
         topBar = {
@@ -186,14 +190,14 @@ fun DetallePlace(
                         }
                     }
                     if (state.vivacPlace?.favorite == true) {
-                        IconButton(onClick = { unfavourite() }) {
+                        IconButton(onClick = { favsDialogOpen= true }) {
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = stringResource(R.string.unfavorite)
                             )
                         }
                     } else {
-                        IconButton(onClick = { favourite() }) {
+                        IconButton(onClick = { favsDialogOpen = false }) {
                             Icon(
                                 Icons.Filled.FavoriteBorder,
                                 contentDescription = stringResource(R.string.favorite)

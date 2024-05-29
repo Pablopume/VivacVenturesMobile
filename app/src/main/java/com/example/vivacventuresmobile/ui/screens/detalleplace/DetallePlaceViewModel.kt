@@ -10,6 +10,7 @@ import com.example.vivacventuresmobile.domain.usecases.AddValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
+import com.example.vivacventuresmobile.domain.usecases.GetListByUserAndVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
@@ -32,6 +33,7 @@ class DetallePlaceViewModel @Inject constructor(
     private val addValorationUseCase: AddValorationUseCase,
     private val deleteValorationUseCase: DeleteValorationUseCase,
     private val addReportUseCase: AddReportUseCase,
+    private val getListByUserAndVivacPlaceUseCase: GetListByUserAndVivacPlaceUseCase,
     private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
@@ -51,12 +53,13 @@ class DetallePlaceViewModel @Inject constructor(
         when (event) {
             DetallePlaceEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
             is DetallePlaceEvent.GetDetalle -> getVivacPlace(event.id)
-            is DetallePlaceEvent.AddFavourite -> addFavourite()
-            is DetallePlaceEvent.DeleteFavourite -> deleteFavourite()
+            is DetallePlaceEvent.AddFavourite -> addFavourite(event.id)
+            is DetallePlaceEvent.DeleteFavourite -> deleteFavourite(event.id)
             is DetallePlaceEvent.SaveUsernameAndId -> {
                 _uiState.value =
                     _uiState.value.copy(username = event.username)
                 getVivacPlace(event.vivacId ?: 0)
+//                getLists()
             }
 
             is DetallePlaceEvent.DeletePlace -> deletePlace()
@@ -316,93 +319,93 @@ class DetallePlaceViewModel @Inject constructor(
         }
     }
 
-    private fun addFavourite() {
-//        viewModelScope.launch {
-//            addFavouriteUseCase(_uiState.value.username ?: "", _uiState.value.vivacPlace?.id ?: 0)
-//                .catch { cause ->
-//                    _uiState.update {
-//                        it.copy(
-//                            error = cause.message,
-//                            loading = false
-//                        )
-//                    }
-//                }
-//                .collect { result ->
-//                    when (result) {
-//                        is NetworkResult.Error -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    error = result.message,
-//                                    loading = false
-//                                )
-//                            }
-//                        }
-//
-//                        is NetworkResult.Success -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    loading = false,
-//                                )
-//                            }
-//                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
-//                        }
-//
-//                        is NetworkResult.Loading -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    loading = true
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//        }
+    private fun addFavourite(listId: Int) {
+        viewModelScope.launch {
+            addFavouriteUseCase(listId, _uiState.value.vivacPlace?.id ?: 0)
+                .catch { cause ->
+                    _uiState.update {
+                        it.copy(
+                            error = cause.message,
+                            loading = false
+                        )
+                    }
+                }
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = false,
+                                )
+                            }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                        }
+
+                        is NetworkResult.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = true
+                                )
+                            }
+                        }
+                    }
+                }
+        }
     }
 
-    private fun deleteFavourite() {
-//        viewModelScope.launch {
-//            deleteFavouriteUseCase(
-//                _uiState.value.username ?: "",
-//                _uiState.value.vivacPlace?.id ?: 0
-//            )
-//                .catch { cause ->
-//                    _uiState.update {
-//                        it.copy(
-//                            error = cause.message,
-//                            loading = false
-//                        )
-//                    }
-//                }
-//                .collect { result ->
-//                    when (result) {
-//                        is NetworkResult.Error -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    error = result.message,
-//                                    loading = false
-//                                )
-//                            }
-//                        }
-//
-//                        is NetworkResult.Success -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    loading = false,
-//                                )
-//                            }
-//                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
-//                        }
-//
-//                        is NetworkResult.Loading -> {
-//                            _uiState.update {
-//                                it.copy(
-//                                    loading = true
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//        }
+    private fun deleteFavourite(listId: Int) {
+        viewModelScope.launch {
+            deleteFavouriteUseCase(
+                listId,
+                _uiState.value.vivacPlace?.id ?: 0
+            )
+                .catch { cause ->
+                    _uiState.update {
+                        it.copy(
+                            error = cause.message,
+                            loading = false
+                        )
+                    }
+                }
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = false,
+                                )
+                            }
+                            getVivacPlace(_uiState.value.vivacPlace?.id ?: 0)
+                        }
+
+                        is NetworkResult.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    loading = true
+                                )
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     private fun deletePlace() {

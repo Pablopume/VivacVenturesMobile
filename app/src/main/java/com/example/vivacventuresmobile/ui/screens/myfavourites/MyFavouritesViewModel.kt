@@ -97,6 +97,7 @@ class MyFavouritesViewModel @Inject constructor(
                                         loading = false
                                     )
                                 }
+                                getListSharedWith()
                             }
                         }
 
@@ -143,6 +144,7 @@ class MyFavouritesViewModel @Inject constructor(
                                         loading = false
                                     )
                                 }
+                                getListSharedWith()
                             }
                         }
 
@@ -231,8 +233,7 @@ class MyFavouritesViewModel @Inject constructor(
                                 result.data?.let { friends ->
                                     _uiState.update {
                                         val acceptedFriends = friends.filter { it.status }
-                                        val requesterNames: List<String> = acceptedFriends.map { it.requester }
-
+                                        val requesterNames: List<String> = acceptedFriends.map { if (it.requested == _uiState.value.username) it.requester else it.requested }
                                         it.copy(
                                             friends = requesterNames,
                                             loading = false
