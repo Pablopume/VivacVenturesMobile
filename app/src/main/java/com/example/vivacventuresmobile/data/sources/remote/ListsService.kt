@@ -16,7 +16,7 @@ interface ListsService {
     @GET("/list/{id}")
     suspend fun getList(@Path("id") id: Int): Response<ListResponse>
 
-    @GET("/list/user/userAndVivacPlace")
+    @GET("/list/userAndVivacPlace")
     suspend fun getListsByUserAndVivacPlace(@Query("username") username: String, @Query("vivacPlaceId") id: Int): Response<List<ListResponse>>
 
     @GET("/list/shared")

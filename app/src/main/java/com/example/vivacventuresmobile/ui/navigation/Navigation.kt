@@ -197,6 +197,9 @@ fun Navigation(
                 onViewDetalle = {
                     navController.navigate(ConstantesPantallas.DETALLELUGAR + "${it}")
                 },
+                onBack = {
+                    navController.popBackStack()
+                },
                 bottomNavigationBar = {
                     BottomBar(
                         navController = navController, screens = screensBottomBar

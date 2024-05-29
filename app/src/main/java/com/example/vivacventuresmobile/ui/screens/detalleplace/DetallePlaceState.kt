@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.detalleplace
 
+import com.example.vivacventuresmobile.domain.modelo.ListFavs
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 
 data class DetallePlaceState(
@@ -9,6 +10,8 @@ data class DetallePlaceState(
     val score: Int = 0,
     val reviewValoration: String = "",
     val descriptionReport: String = "",
+    val listsUser: List<ListFavs> = emptyList(),
+    val listsVivacPlace: List<ListFavs> = emptyList(),
     val error: String? = null,
     val loading: Boolean = false,
 )

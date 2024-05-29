@@ -124,26 +124,30 @@ fun PantallaFavourites(
             title = { Text(stringResource(R.string.share)) },
             text = {
                 if (showFriends) {
-                    LazyColumn {
-                        val friendsWithoutAccess = state.friends.filter { it !in state.sharedWith }
-                        items(friendsWithoutAccess) { friend ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = friend)
-                                Button(onClick = { onShare(friend) }) {
-                                    Text(text = "Compartir")
+                    val friendsWithoutAccess = state.friends.filter { it !in state.sharedWith }
+                    if (friendsWithoutAccess.isEmpty()) {
+                        Text(text = stringResource(R.string.no_friends_without_access))
+                    } else {
+                        LazyColumn {
+                            items(friendsWithoutAccess) { friend ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = friend)
+                                    Button(onClick = { onShare(friend) }) {
+                                        Text(text = stringResource(R.string.share))
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
                 } else {
-                    if (state.sharedWith.isEmpty()) {
-                        Text(text = "No compartido con nadie")
+                    if (state.sharedWith.isEmpty() || state.sharedWith.size == 1 && state.sharedWith[0] == username) {
+                        Text(text = stringResource(R.string.shared_with_noone))
                     } else {
                         LazyColumn {
                             items(state.sharedWith) { sharedWith ->
@@ -155,8 +159,8 @@ fun PantallaFavourites(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(text = sharedWith)
-                                        Button(onClick = { onUnshare(username) }) {
-                                            Text(text = "Dejar de compartir")
+                                        Button(onClick = { onUnshare(sharedWith) }) {
+                                            Text(text = stringResource(R.string.unshare))
                                         }
                                     }
                                 }
@@ -170,7 +174,7 @@ fun PantallaFavourites(
                 Button(
                     onClick = { showFriends = !showFriends }
                 ) {
-                    Text(text = if (showFriends) "Ver compartidos" else "Ver amigos")
+                    Text(text = if (showFriends) stringResource(R.string.shared_with) else stringResource(R.string.friends))
                 }
             },
             dismissButton = {

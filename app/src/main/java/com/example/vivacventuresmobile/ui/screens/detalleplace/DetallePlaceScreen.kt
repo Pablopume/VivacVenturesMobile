@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -152,6 +154,56 @@ fun DetallePlace(
     var reportDialogOpen by remember { mutableStateOf(false) }
     var favsDialogOpen by remember { mutableStateOf(false) }
     if (favsDialogOpen) {
+        AlertDialog(
+            onDismissRequest = { favsDialogOpen = false },
+            title = { Text(stringResource(R.string.favourites)) },
+            text = {
+                LazyColumn {
+                    items(state.listsUser) { list ->
+                        val isFavourite = state.listsVivacPlace.any { it.id == list.id }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = list.name,
+                                modifier = Modifier.weight(1f)
+                            )
+                            if (isFavourite){
+                                IconButton(onClick = { unfavourite(list.id) }) {
+                                    Icon(
+                                        Icons.Filled.Favorite,
+                                        contentDescription = stringResource(R.string.unfavorite)
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = { favourite(list.id) }) {
+                                    Icon(
+                                        Icons.Filled.FavoriteBorder,
+                                        contentDescription = stringResource(R.string.favorite)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+            },
+            confirmButton = {
+                Button(
+                    onClick = { favsDialogOpen = false }
+                ) {
+                    Text(stringResource(R.string.done))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { favsDialogOpen = false }
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
 
     }
 
@@ -197,7 +249,7 @@ fun DetallePlace(
                             )
                         }
                     } else {
-                        IconButton(onClick = { favsDialogOpen = false }) {
+                        IconButton(onClick = { favsDialogOpen = true }) {
                             Icon(
                                 Icons.Filled.FavoriteBorder,
                                 contentDescription = stringResource(R.string.favorite)

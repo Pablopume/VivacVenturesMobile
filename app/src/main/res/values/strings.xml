@@ -2,14 +2,14 @@
     <string name="app_name">VivacVentures</string>
     <string name="loadinganimation">LoadingAnimation</string>
     <string name="loadinganimationalpha">LoadingAnimationAlpha</string>
-    <string name="username">Username</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="temppassword">Temporal password</string>
-    <string name="newpassword">New password</string>
-    <string name="add">Add</string>
-    <string name="addplace">Add place</string>
-    <string name="updateplace">Update place</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="temppassword">Contraseña temporal</string>
+    <string name="newpassword">Nueva contraseña</string>
+    <string name="add">Añadir</string>
+    <string name="addplace">Añadir lugar</string>
+    <string name="updateplace">Actualizar lugar</string>
     <string name="nombre">NOMBRE</string>
     <string name="nombre_">Nombre</string>
     <string name="descripcion">DESCRIPCIÓN DEL LUGAR</string>
@@ -23,12 +23,12 @@
     <string name="precio_">Precio</string>
     <string name="fecha">FECHA:</string>
     <string name="select_date">Selecciona una fecha</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
-    <string name="forgot_password">Forgot password</string>
-    <string name="change_password">Change password</string>
-    <string name="send_password">Send new password</string>
-    <string name="password_visibility_toggle">Password visibility toggle</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrase</string>
+    <string name="forgot_password">He olvidado mi contraseña</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="send_password">Enviar nueva contraseña</string>
+    <string name="password_visibility_toggle">Visibilidad contraseña</string>
     <string name="continuar">Continuar</string>
     <string name="back">Volver</string>
     <string name="user_or_pass_empty">Usuario o contraseña vacíos</string>
@@ -60,6 +60,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="create">Crear</string>
+    <string name="done">Hecho</string>
     <string name="vivac">Vivac</string>
     <string name="refuge">Refugio</string>
     <string name="private_refuge">Refugio privado</string>
@@ -129,4 +130,11 @@
     <string name="no_valorations">No hay valoraciones, ¡escribe la primera!</string>
     <string name="list_shared">Lista compartida</string>
     <string name="list_unshared">Has dejado de compartir esta lista</string>
+    <string name="no_friends_without_access">No tienes amigos sin acceso</string>
+    <string name="shared_with_noone">No tienes amigos sin acceso</string>
+    <string name="unshare">Dejar de compartir</string>
+    <string name="shared_with">Compartidos</string>
+    <string name="favourite_added_to_list">Sitio añadido a lista</string>
+    <string name="favourite_removed_from_list">Sitio eliminado de lista</string>
+
 </resources>

@@ -11,6 +11,7 @@ import com.example.vivacventuresmobile.domain.usecases.DeleteFavouriteUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteValorationUseCase
 import com.example.vivacventuresmobile.domain.usecases.DeleteVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetListByUserAndVivacPlaceUseCase
+import com.example.vivacventuresmobile.domain.usecases.GetListsUseCase
 import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
@@ -34,6 +35,7 @@ class DetallePlaceViewModel @Inject constructor(
     private val deleteValorationUseCase: DeleteValorationUseCase,
     private val addReportUseCase: AddReportUseCase,
     private val getListByUserAndVivacPlaceUseCase: GetListByUserAndVivacPlaceUseCase,
+    private val getListsUseCase: GetListsUseCase,
     private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetallePlaceState> by lazy {
@@ -58,8 +60,7 @@ class DetallePlaceViewModel @Inject constructor(
             is DetallePlaceEvent.SaveUsernameAndId -> {
                 _uiState.value =
                     _uiState.value.copy(username = event.username)
-                getVivacPlace(event.vivacId ?: 0)
-//                getLists()
+                getVivacPlace(event.vivacId)
             }
 
             is DetallePlaceEvent.DeletePlace -> deletePlace()
@@ -303,6 +304,7 @@ class DetallePlaceViewModel @Inject constructor(
                                             loading = false
                                         )
                                     }
+                                    getLists()
                                 }
                             }
 
@@ -316,6 +318,83 @@ class DetallePlaceViewModel @Inject constructor(
                         }
                     }
             }
+        }
+    }
+
+    private fun getLists() {
+        viewModelScope.launch {
+            getListsUseCase(_uiState.value.username)
+                .catch { cause ->
+                    _uiState.update {
+                        it.copy(
+                            error = cause.message,
+                            loading = false
+                        )
+                    }
+                }
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    listsUser = result.data ?: emptyList(),
+                                    loading = false
+                                )
+                            }
+                            getListsByUserAndVivacPlace()
+                        }
+
+                        is NetworkResult.Loading -> {
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getListsByUserAndVivacPlace() {
+        viewModelScope.launch {
+            getListByUserAndVivacPlaceUseCase(_uiState.value.vivacPlace?.id ?: 0, _uiState.value.username)
+                .catch { cause ->
+                    _uiState.update {
+                        it.copy(
+                            error = cause.message,
+                            loading = false
+                        )
+                    }
+                }
+                .collect { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    error = result.message,
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    listsVivacPlace = result.data ?: emptyList(),
+                                    loading = false
+                                )
+                            }
+                        }
+
+                        is NetworkResult.Loading -> {
+                        }
+                    }
+                }
         }
     }
 
@@ -344,6 +423,7 @@ class DetallePlaceViewModel @Inject constructor(
                         is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(
+                                    error = stringProvider.getString(R.string.favourite_added_to_list),
                                     loading = false,
                                 )
                             }
@@ -390,6 +470,7 @@ class DetallePlaceViewModel @Inject constructor(
                         is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(
+                                    error = stringProvider.getString(R.string.favourite_removed_from_list),
                                     loading = false,
                                 )
                             }

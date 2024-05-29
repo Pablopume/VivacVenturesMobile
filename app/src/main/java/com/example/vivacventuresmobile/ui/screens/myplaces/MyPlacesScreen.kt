@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -26,6 +28,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +53,7 @@ import kotlinx.coroutines.delay
 fun MyPlacesScreen(
     viewModel: MyPlacesViewModel = hiltViewModel(),
     username: String,
+    onBack: () -> Unit,
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit = {},
 ) {
@@ -62,15 +66,18 @@ fun MyPlacesScreen(
     PantallaMyPlaces(
         state.value,
         { viewModel.handleEvent(MyPlacesEvent.ErrorVisto) },
+        onBack,
         onViewDetalle,
         bottomNavigationBar
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaMyPlaces(
     state: MyPlacesState,
     errorVisto: () -> Unit,
+    onBack: () -> Unit,
     onViewDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit
 ) {
@@ -78,6 +85,19 @@ fun PantallaMyPlaces(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.my_places)) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = bottomNavigationBar
     ) { innerPadding ->
         val messageDismiss = stringResource(R.string.dismiss)
