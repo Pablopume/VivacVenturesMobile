@@ -5,6 +5,7 @@ import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 data class MyPlacesState(
     val vivacPlaces: List<VivacPlaceList> = emptyList(),
     val username: String = "",
+    val firstTime: Boolean = true,
     val error: String? = null,
     val loading: Boolean = false,
 )

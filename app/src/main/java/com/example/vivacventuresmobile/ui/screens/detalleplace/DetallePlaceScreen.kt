@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -24,20 +25,26 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,14 +72,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.Valoration
-import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -111,6 +121,7 @@ fun DetallePlaceScreen(
     DetallePlace(
         state.value,
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
+        { viewModel.handleEvent(DetallePlaceEvent.GetDetalle(it)) },
         bottomNavigationBar,
         { viewModel.handleEvent(DetallePlaceEvent.AddFavourite(it)) },
         { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite(it)) },
@@ -137,6 +148,7 @@ fun DetallePlaceScreen(
 fun DetallePlace(
     state: DetallePlaceState,
     errorVisto: () -> Unit,
+    getDetalle: (Int) -> Unit,
     bottomNavigationBar: @Composable () -> Unit,
     favourite: (Int) -> Unit,
     unfavourite: (Int) -> Unit,
@@ -158,30 +170,34 @@ fun DetallePlace(
             onDismissRequest = { favsDialogOpen = false },
             title = { Text(stringResource(R.string.favourites)) },
             text = {
-                LazyColumn {
-                    items(state.listsUser) { list ->
-                        val isFavourite = state.listsVivacPlace.any { it.id == list.id }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = list.name,
-                                modifier = Modifier.weight(1f)
-                            )
-                            if (isFavourite){
-                                IconButton(onClick = { unfavourite(list.id) }) {
-                                    Icon(
-                                        Icons.Filled.Favorite,
-                                        contentDescription = stringResource(R.string.unfavorite)
-                                    )
-                                }
-                            } else {
-                                IconButton(onClick = { favourite(list.id) }) {
-                                    Icon(
-                                        Icons.Filled.FavoriteBorder,
-                                        contentDescription = stringResource(R.string.favorite)
-                                    )
+                if (state.listsUser.isEmpty()) {
+                    Text(stringResource(R.string.you_have_no_lists_yet))
+                } else {
+                    LazyColumn {
+                        items(state.listsUser) { list ->
+                            val isFavourite = state.listsVivacPlace.any { it.id == list.id }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = list.name,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (isFavourite) {
+                                    IconButton(onClick = { unfavourite(list.id) }) {
+                                        Icon(
+                                            Icons.Filled.Favorite,
+                                            contentDescription = stringResource(R.string.unfavorite)
+                                        )
+                                    }
+                                } else {
+                                    IconButton(onClick = { favourite(list.id) }) {
+                                        Icon(
+                                            Icons.Filled.FavoriteBorder,
+                                            contentDescription = stringResource(R.string.favorite)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -218,7 +234,7 @@ fun DetallePlace(
                         )
                     }
                 },
-                title = { Text(text = state.vivacPlace?.type ?: "") },
+                title = { Text(text = state.vivacPlace?.type?.uppercase() ?: "") },
                 actions = {
                     if (state.vivacPlace?.username == state.username) {
                         IconButton(onClick = { delete() }) {
@@ -242,7 +258,7 @@ fun DetallePlace(
                         }
                     }
                     if (state.vivacPlace?.favorite == true) {
-                        IconButton(onClick = { favsDialogOpen= true }) {
+                        IconButton(onClick = { favsDialogOpen = true }) {
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = stringResource(R.string.unfavorite)
@@ -273,9 +289,11 @@ fun DetallePlace(
                 errorVisto()
             }
         }
-        if (state.loading) {
-            LoadingAnimation(state.loading)
-        } else {
+        val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = { getDetalle(state.vivacPlace?.id ?: 0) }
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -298,11 +316,12 @@ fun DetallePlace(
                         lon = state.vivacPlace?.lon ?: 0.0
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    CapacidadText(capacidad = state.vivacPlace?.capacity ?: 0)
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    DateText(date = state.vivacPlace?.date.toString())
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    PriceText(price = state.vivacPlace?.price ?: 0.0)
+                    InfoTable(
+                        price = state.vivacPlace?.price ?: 0.0,
+                        capacity = state.vivacPlace?.capacity ?: 0,
+                        date = state.vivacPlace?.date.toString(),
+                        valorations = state.vivacPlace?.valorations ?: emptyList()
+                    )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ValorationsList(
                         valoration = state.vivacPlace?.valorations ?: emptyList(),
@@ -350,6 +369,78 @@ fun DetallePlace(
 
     }
 
+}
+
+@Composable
+fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valoration>) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.AttachMoney, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.price_),
+                    modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
+                )
+            }
+            Text(text = "$price")
+        }
+        Divider()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.People, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.capacity_),
+                    modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
+                )
+            }
+            Text(text = "$capacity")
+        }
+        Divider()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.DateRange, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.date_),
+                    modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
+                )
+            }
+            Text(text = date)
+        }
+        if (valorations.isNotEmpty()) {
+            Divider()
+            val averageRating = valorations.map { it.score }.average()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Star, contentDescription = null)
+                    Text(
+                        text = stringResource(R.string.average_rating),
+                        modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
+                    )
+                }
+                Text(text = "$averageRating")
+            }
+        }
+    }
 }
 
 @Composable
@@ -410,18 +501,19 @@ fun ValorationsList(
         )
     }
     if (valoration.isNotEmpty()) {
-        val mediatotal = valoration.map { it.score }.average()
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.medium_padding)),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(R.string.valorations_average, mediatotal),
-                style = MaterialTheme.typography.titleMedium
+            Spacer(Modifier.weight(1f))
+
+            ExtendedFloatingActionButton(
+                onClick = { valorationDialogOpen = true },
+                icon = { Icon(Icons.Default.Edit, stringResource(R.string.write_review)) },
+                text = { Text(text = stringResource(R.string.write_review)) },
             )
-            Button(onClick = { valorationDialogOpen = true }) {
-                Text(stringResource(R.string.add))
-            }
         }
         Column {
             val sortedValorations = valoration.sortedByDescending { it.date }
@@ -430,7 +522,7 @@ fun ValorationsList(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                        .padding(vertical = 8.dp),
                     shape = RoundedCornerShape(8.dp),
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -438,14 +530,14 @@ fun ValorationsList(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = valoration.username,
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                            Text(
-                                text = valoration.date.toString(),
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Person, contentDescription = null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = valoration.username,
+//                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
                             Box {
                                 if (valoration.username == username) {
                                     IconButton(onClick = { showMenu = true }) {
@@ -468,6 +560,11 @@ fun ValorationsList(
                                 }
                             }
                         }
+                        Text(
+                            text = valoration.date.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
                         RatingBar(
                             rating = valoration.score.toFloat(),
                             modifier = Modifier.padding(vertical = 8.dp)
@@ -487,11 +584,21 @@ fun ValorationsList(
         ) {
             Text(
                 text = stringResource(R.string.no_valorations),
-                style = MaterialTheme.typography.titleMedium
             )
-            Button(onClick = { valorationDialogOpen = true }) {
-                Text(stringResource(R.string.add))
-            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Spacer(Modifier.weight(1f))
+
+            ExtendedFloatingActionButton(
+                onClick = { valorationDialogOpen = true },
+                icon = { Icon(Icons.Default.Edit, stringResource(R.string.write_review)) },
+                text = { Text(text = stringResource(R.string.write_review)) },
+            )
         }
     }
 }
@@ -587,11 +694,20 @@ fun ImageCarousel(images: List<String>) {
 
 @Composable
 fun TextDescription(description: String) {
-    Text(
-        text = description,
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(16.dp)
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.description),
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = description,
+        )
+    }
 }
 
 @Composable
@@ -602,8 +718,11 @@ fun TextTitle(title: String) {
     ) {
         Text(
             text = title,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge
+            modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontSize = 30.sp,
+                fontWeight = FontWeight.W200
+            )
         )
     }
 }
@@ -625,7 +744,8 @@ fun MapLocation(lat: Double, lon: Double) {
     GoogleMap(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(dimensionResource(R.dimen.map_height))
+            .clip(RoundedCornerShape(dimensionResource(R.dimen.medium_padding))),
         uiSettings = uiSettings,
         cameraPositionState = CameraPositionState(cameraPosition.value),
         onMapClick = {
@@ -640,35 +760,6 @@ fun MapLocation(lat: Double, lon: Double) {
         Marker(
             state = MarkerState(position = LatLng(lat, lon)),
             icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
-        )
-    }
-}
-
-@Composable
-fun CapacidadText(capacidad: Int) {
-    Text(
-        text = "Capacidad: $capacidad",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(16.dp)
-    )
-}
-
-@Composable
-fun DateText(date: String) {
-    Text(
-        text = "Fecha: $date",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(16.dp)
-    )
-}
-
-@Composable
-fun PriceText(price: Double) {
-    if (price != 0.0) {
-        Text(
-            text = "Precio: $price",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(16.dp)
         )
     }
 }

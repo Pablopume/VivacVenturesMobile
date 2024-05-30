@@ -47,9 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.libraries.places.api.Places
 
 @Composable
@@ -123,7 +123,9 @@ fun ListPlaces(
 
         Column {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
             ) {
 
                 var searchText by remember { mutableStateOf("") }
@@ -167,16 +169,11 @@ fun ListPlaces(
                     Spacer(Modifier.height(16.dp))
                 }
             }
-            if (state.loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.8f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LoadingAnimation(state.loading)
-                }
-            } else {
+            val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {}
+            ) {
                 LazyColumn(
                     modifier = Modifier
                         .padding(innerPadding)
@@ -208,7 +205,13 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
         mutableStateOf("")
     }
 
-    val list = listOf(stringResource(R.string.vivac), stringResource(R.string.refuge), stringResource(R.string.hostel), stringResource(R.string.private_refuge), stringResource(R.string.all))
+    val list = listOf(
+        stringResource(R.string.vivac),
+        stringResource(R.string.refuge),
+        stringResource(R.string.hostel),
+        stringResource(R.string.private_refuge),
+        stringResource(R.string.all)
+    )
 
     Column(
         modifier = Modifier
@@ -226,7 +229,10 @@ fun DropDown(onGetVivacPlacesByType: (String) -> Unit) {
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
-                    Icon(Icons.Filled.FilterAlt, contentDescription = stringResource(R.string.place))
+                    Icon(
+                        Icons.Filled.FilterAlt,
+                        contentDescription = stringResource(R.string.place)
+                    )
                 },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)

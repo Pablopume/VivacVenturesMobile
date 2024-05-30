@@ -52,6 +52,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun MyFriendsScreen(
@@ -69,6 +71,7 @@ fun MyFriendsScreen(
 
     PantallaMyFriends(
         state.value,
+        { viewModel.handleEvent(MyFriendsEvent.GetFriends) },
         { viewModel.handleEvent(MyFriendsEvent.ErrorVisto) },
         { viewModel.handleEvent(MyFriendsEvent.AcceptFriendRequest(it)) },
         { viewModel.handleEvent(MyFriendsEvent.RejectFriendRequest(it)) },
@@ -83,6 +86,7 @@ fun MyFriendsScreen(
 @Composable
 fun PantallaMyFriends(
     state: MyFriendsState,
+    getFriends: () -> Unit,
     errorVisto: () -> Unit,
     onAccept: (FriendRequest) -> Unit,
     onReject: (FriendRequest) -> Unit,
@@ -157,33 +161,26 @@ fun PantallaMyFriends(
             }
         }
         Column {
-            if (state.loading) {
+            if (state.friends.isEmpty() && state.pendingFriends.isEmpty() && !state.firstTime) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.8f),
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    LoadingAnimation(state.loading)
+                    Text(
+                        text = stringResource(R.string.start_adding_friends),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             } else {
-                if (state.friends.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.start_adding_friends),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                } else {
-                    if (seePendingRequests.value) {
+                val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+                if (seePendingRequests.value) {
+                    SwipeRefresh(state = swipeRefreshState, onRefresh = { getFriends() }) {
                         LazyColumn(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .padding(innerPadding)
                         ) {
                             items(
@@ -198,7 +195,9 @@ fun PantallaMyFriends(
                                 )
                             }
                         }
-                    } else {
+                    }
+                } else {
+                    SwipeRefresh(state = swipeRefreshState, onRefresh = { getFriends() }) {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(innerPadding)
@@ -213,6 +212,7 @@ fun PantallaMyFriends(
                     }
                 }
             }
+
         }
     }
 }
@@ -231,9 +231,6 @@ fun MyFriendRequestListItem(
             .padding(dimensionResource(id = R.dimen.smallmedium_padding))
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding))),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
@@ -287,9 +284,6 @@ fun PendingFriendRequestListItem(
             .padding(dimensionResource(id = R.dimen.smallmedium_padding))
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding))),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
     ) {
         Row(
             modifier = Modifier

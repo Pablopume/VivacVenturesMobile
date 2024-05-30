@@ -1,5 +1,8 @@
 package com.example.vivacventuresmobile.ui.screens.map
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,33 +43,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.MainActivity
-import com.example.vivacventuresmobile.ui.screens.detalleplace.DetallePlaceEvent
-import com.example.vivacventuresmobile.ui.theme.GreenS
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 private var locationRequired: Boolean = false
 private val permissions = arrayOf(
     android.Manifest.permission.ACCESS_FINE_LOCATION,
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
 )
+
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun MapScreen(
@@ -83,12 +83,18 @@ fun MapScreen(
         viewModel.handleEvent(MapEvent.GetAll)
     }
 
-    viewModel.handleEvent(MapEvent.StartLocationUpdates(LocationServices.getFusedLocationProviderClient(LocalContext.current)))
+    viewModel.handleEvent(
+        MapEvent.StartLocationUpdates(
+            LocationServices.getFusedLocationProviderClient(
+                LocalContext.current
+            )
+        )
+    )
 
     LaunchedEffect(state.value.relogin) {
         if (state.value.relogin) {
             val passworddecrypted = cryptoManager.desencriptar(password)
-            if (username != ""  && passworddecrypted != "") {
+            if (username != "" && passworddecrypted != "") {
                 viewModel.handleEvent(
                     MapEvent.reLogin(
                         username,
@@ -166,7 +172,6 @@ fun Maps(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(16.dp),
-                        containerColor = GreenS
                     ) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
@@ -201,7 +206,7 @@ fun Maps(
                 ) {
                     Icon(
                         imageVector = if (state.isDarkMap) Icons.Default.ModeNight else Icons.Default.LightMode,
-                        contentDescription = "Toggle Dark map"
+                        contentDescription = stringResource(R.string.toggle_dark_map)
                     )
                 }
             }
@@ -226,15 +231,35 @@ fun Maps(
         } else {
             val cameraPositionState = remember { CameraPositionState() }
             LaunchedEffect(state.currentLatLng) {
-                if (!state.isLocationEnabled && state.currentLocation != state.currentLatLng){
-                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 10f))
-                } else if (state.isLocationEnabled && state.currentLocation == state.currentLatLng){
-                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 15f))
-                } else if (state.isLocationEnabled){
-                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 10f))
+                if (!state.isLocationEnabled && state.currentLocation != state.currentLatLng) {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            state.currentLatLng,
+                            10f
+                        )
+                    )
+                } else if (state.isLocationEnabled && state.currentLocation == state.currentLatLng) {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            state.currentLatLng,
+                            15f
+                        )
+                    )
+                } else if (state.isLocationEnabled) {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            state.currentLatLng,
+                            10f
+                        )
+                    )
                 }
-                if (state.currentLatLng == LatLng(40.42966863252524, -3.6797065289867783)){
-                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(state.currentLatLng, 5.5f))
+                if (state.currentLatLng == LatLng(40.42966863252524, -3.6797065289867783)) {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            state.currentLatLng,
+                            5.5f
+                        )
+                    )
                 }
             }
             GoogleMap(
@@ -268,24 +293,29 @@ fun Maps(
                             true
                         },
                         icon = when (place.type) {
-                            stringResource(R.string.vivac) -> BitmapDescriptorFactory.defaultMarker(
-                                BitmapDescriptorFactory.HUE_GREEN
+                            stringResource(R.string.vivac) -> bitmapDescriptorFromVector(
+                                LocalContext.current,
+                                R.drawable.pin1
                             )
 
-                            stringResource(R.string.refuge) -> BitmapDescriptorFactory.defaultMarker(
-                                BitmapDescriptorFactory.HUE_BLUE
+                            stringResource(R.string.refuge) -> bitmapDescriptorFromVector(
+                                LocalContext.current,
+                                R.drawable.pin2
                             )
 
-                            stringResource(R.string.private_refuge) -> BitmapDescriptorFactory.defaultMarker(
-                                BitmapDescriptorFactory.HUE_ORANGE
+                            stringResource(R.string.private_refuge) -> bitmapDescriptorFromVector(
+                                LocalContext.current,
+                                R.drawable.pin3
                             )
 
-                            stringResource(R.string.hostel) -> BitmapDescriptorFactory.defaultMarker(
-                                BitmapDescriptorFactory.HUE_MAGENTA
+                            stringResource(R.string.hostel) -> bitmapDescriptorFromVector(
+                                LocalContext.current,
+                                R.drawable.pin4
                             )
 
-                            else -> BitmapDescriptorFactory.defaultMarker(
-                                BitmapDescriptorFactory.HUE_YELLOW
+                            else -> bitmapDescriptorFromVector(
+                                LocalContext.current,
+                                R.drawable.pin5
                             ) // default color
                         }
                     )
@@ -323,4 +353,17 @@ fun LoadingAnimation(visible: Boolean) {
             CircularProgressIndicator()
         }
     }
+}
+
+fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+    val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+    vectorDrawable?.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+    val bitmap = Bitmap.createBitmap(
+        vectorDrawable!!.intrinsicWidth,
+        vectorDrawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888
+    )
+    val canvas = Canvas(bitmap)
+    vectorDrawable.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

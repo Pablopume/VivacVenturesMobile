@@ -382,8 +382,6 @@ Uapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/ListsServ
 Vapp/src/main/java/com/example/vivacventuresmobile/data/repositories/ListsRepository.kt,0\2\024b9c86be0c53cb716201afef89c157c707d492
 „
 Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetListsUseCase.kt,d\8\d84ae8ed2227cb43a66658f51b7119b542387323
-‡
-Wapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/GetListsSharedWith.kt,c\4\c4ac1a78b3741b117a8a6c456d700350bd1559d1
 „
 Tapp/src/main/java/com/example/vivacventuresmobile/domain/usecases/SaveListUseCase.kt,8\9\8907a9ffd959246f0acb090165b923d293e0fe73
 …

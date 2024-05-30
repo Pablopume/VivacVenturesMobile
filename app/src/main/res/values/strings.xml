@@ -10,18 +10,19 @@
     <string name="add">Añadir</string>
     <string name="addplace">Añadir lugar</string>
     <string name="updateplace">Actualizar lugar</string>
-    <string name="nombre">NOMBRE</string>
-    <string name="nombre_">Nombre</string>
-    <string name="descripcion">DESCRIPCIÓN DEL LUGAR</string>
-    <string name="descripcion_">Descripción</string>
-    <string name="fotos">FOTOS DEL LUGAR</string>
-    <string name="tipo">TIPO</string>
-    <string name="tipo_">Tipo</string>
-    <string name="capacidad">CAPACIDAD</string>
-    <string name="capacidad_">Capacidad</string>
-    <string name="precio">PRECIO</string>
-    <string name="precio_">Precio</string>
-    <string name="fecha">FECHA:</string>
+    <string name="name">NOMBRE</string>
+    <string name="name_">Nombre</string>
+    <string name="description">DESCRIPCIÓN DEL LUGAR</string>
+    <string name="description_">Descripción</string>
+    <string name="pictures">FOTOS DEL LUGAR</string>
+    <string name="type">TIPO</string>
+    <string name="type_">Tipo</string>
+    <string name="capacity">CAPACIDAD</string>
+    <string name="capacity_">Capacidad</string>
+    <string name="price">PRECIO</string>
+    <string name="price_">Precio</string>
+    <string name="date">FECHA:</string>
+    <string name="date_">Fecha</string>
     <string name="select_date">Selecciona una fecha</string>
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrase</string>
@@ -80,6 +81,7 @@
     <string name="name_list">Nombre de la lista</string>
     <string name="add_valoration">Añadir valoración</string>
     <string name="valorations_average">Valoración media %s</string>
+    <string name="average_rating">Valoración media</string>
     <string name="score">Puntuación: %s</string>
     <string name="review">Reseña</string>
     <string name="previous_image">Imagen anterior</string>
@@ -131,10 +133,11 @@
     <string name="list_shared">Lista compartida</string>
     <string name="list_unshared">Has dejado de compartir esta lista</string>
     <string name="no_friends_without_access">No tienes amigos sin acceso</string>
-    <string name="shared_with_noone">No tienes amigos sin acceso</string>
+    <string name="shared_with_noone">Solo tu tienes acceso a esta lista</string>
     <string name="unshare">Dejar de compartir</string>
     <string name="shared_with">Compartidos</string>
     <string name="favourite_added_to_list">Sitio añadido a lista</string>
     <string name="favourite_removed_from_list">Sitio eliminado de lista</string>
+    <string name="write_review">Escribir valoración</string>
 
 </resources>

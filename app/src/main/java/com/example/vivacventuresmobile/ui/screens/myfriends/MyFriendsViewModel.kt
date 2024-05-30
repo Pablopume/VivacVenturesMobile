@@ -193,7 +193,8 @@ class MyFriendsViewModel @Inject constructor(
                             is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        loading = false
+                                        loading = false,
+                                        firstTime = false,
                                     )
                                 }
                             }
@@ -205,7 +206,8 @@ class MyFriendsViewModel @Inject constructor(
                                         it.copy(
                                             friends = acceptedFriends,
                                             pendingFriends = pendingFriends,
-                                            loading = false
+                                            loading = false,
+                                            firstTime = false,
                                         )
                                     }
                                 }

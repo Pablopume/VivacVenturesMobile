@@ -6,6 +6,7 @@ data class MyListsState(
     val list: List<ListFavs> = emptyList(),
     val username: String = "",
     val nameList: String = "",
+    val firstTime: Boolean = true,
     val error: String? = null,
     val loading: Boolean = false,
 )

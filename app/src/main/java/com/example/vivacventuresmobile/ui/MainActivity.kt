@@ -18,20 +18,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.dataStore
 import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
-import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.navigation.Navigation
 import com.example.vivacventuresmobile.ui.theme.VivacVenturesMobileTheme
 import com.google.android.libraries.places.api.Places
 import dagger.hilt.android.AndroidEntryPoint
 
 val Context.dataStore by dataStore("app.settings.json", AppPreferencesSerialize)
+
 @RequiresApi(Build.VERSION_CODES.M)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
-
-    private val viewModel by viewModels<MainViewModel> ()
+    private val viewModel by viewModels<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -75,6 +75,8 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
     // Coil (picture loading)
     implementation ("io.coil-kt:coil:2.2.0")

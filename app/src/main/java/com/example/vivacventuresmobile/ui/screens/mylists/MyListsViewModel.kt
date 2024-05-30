@@ -131,7 +131,8 @@ class MyListsViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     error = result.message,
-                                    loading = false
+                                    loading = false,
+                                    firstTime = false
                                 )
                             }
                         }
@@ -141,7 +142,8 @@ class MyListsViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         list = places,
-                                        loading = false
+                                        loading = false,
+                                        firstTime = false
                                     )
                                 }
                             }

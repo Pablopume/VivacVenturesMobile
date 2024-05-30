@@ -166,9 +166,6 @@ fun MyFriendsListItem(
             .padding(dimensionResource(id = R.dimen.smallmedium_padding))
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding))),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface
-        ),
     ) {
         Row(
             modifier = Modifier

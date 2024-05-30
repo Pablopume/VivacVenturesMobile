@@ -10,6 +10,7 @@ data class MyFavouritesState(
     val sharedWith: List<String> = emptyList(),
     val friends: List<String> = emptyList(),
     val listDeleted: Boolean = false,
+    val firstTime: Boolean = true,
     val error: String? = null,
     val loading: Boolean = false,
 )

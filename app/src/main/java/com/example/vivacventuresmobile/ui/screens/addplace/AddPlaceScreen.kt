@@ -158,25 +158,25 @@ fun AddPlace(
                     .padding(innerPadding)
             ) {
                 Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
-                    Text(text = stringResource(id = R.string.nombre))
+                    Text(text = stringResource(id = R.string.name))
                     NameField(state.place.name, onNameChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.descripcion))
+                    Text(text = stringResource(id = R.string.description))
                     DescriptionField(state.place.description, onDesciptionChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
-                    Text(text = stringResource(id = R.string.tipo))
+                    Text(text = stringResource(id = R.string.type))
                     TipoPicker(state.place.type, onTypeChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.fecha))
+                    Text(text = stringResource(id = R.string.date))
                     DatePickerField(state.place.date, onDateChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
                     Row {
-                        Text(text = stringResource(id = R.string.capacidad))
+                        Text(text = stringResource(id = R.string.capacity))
                         CapacityField(state.place.capacity, Modifier.weight(1f), onCapacityChange)
                         Spacer(modifier = Modifier.weight(0.1f))
-                        Text(text = stringResource(id = R.string.precio))
+                        Text(text = stringResource(id = R.string.price))
                         PriceField(state.place.price, Modifier.weight(1f), onPriceChange)
                     }
                 }
@@ -260,7 +260,7 @@ fun PriceField(price: Double, modifier: Modifier, onPriceChange: (String) -> Uni
             }
         },
         modifier = modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.precio)) },
+        placeholder = { Text(stringResource(id = R.string.price)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
     )
@@ -279,7 +279,7 @@ fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> 
             }
         },
         modifier = modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.capacidad)) },
+        placeholder = { Text(stringResource(id = R.string.price)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
     )
@@ -326,7 +326,7 @@ fun DescriptionField(description: String, onDesciptionChange: (String) -> Unit) 
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
-        placeholder = { Text(stringResource(id = R.string.descripcion_)) },
+        placeholder = { Text(stringResource(id = R.string.description_)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         singleLine = false,
         maxLines = 5,
@@ -339,7 +339,7 @@ fun NameField(name: String, onNameChange: (String) -> Unit) {
         value = name,
         onValueChange = onNameChange,
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.nombre_)) },
+        placeholder = { Text(stringResource(id = R.string.name_)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         singleLine = true,
         maxLines = 1,

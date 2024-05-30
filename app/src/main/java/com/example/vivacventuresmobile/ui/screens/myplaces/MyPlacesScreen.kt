@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,9 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.example.vivacventuresmobile.ui.screens.myfavourites.VivacPlaceListItem
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -65,6 +64,8 @@ fun MyPlacesScreen(
 
     PantallaMyPlaces(
         state.value,
+        { viewModel.handleEvent(MyPlacesEvent.GetVivacPlaces()) },
+        { viewModel.handleEvent(MyPlacesEvent.DeleteVivacPlace(it)) },
         { viewModel.handleEvent(MyPlacesEvent.ErrorVisto) },
         onBack,
         onViewDetalle,
@@ -76,6 +77,8 @@ fun MyPlacesScreen(
 @Composable
 fun PantallaMyPlaces(
     state: MyPlacesState,
+    getVivacPlaces: () -> Unit,
+    deleteVivacPlace: (Int) -> Unit,
     errorVisto: () -> Unit,
     onBack: () -> Unit,
     onViewDetalle: (Int) -> Unit,
@@ -112,30 +115,22 @@ fun PantallaMyPlaces(
             }
         }
         Column {
-            if (state.loading) {
+            if (state.vivacPlaces.isEmpty() && !state.firstTime) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.8f),
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    LoadingAnimation(state.loading)
+                    Text(
+                        text = stringResource(R.string.start_creating_places),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             } else {
-                if (state.vivacPlaces.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.start_creating_places),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                } else {
+                val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+                SwipeRefresh(state = swipeRefreshState, onRefresh = { getVivacPlaces() }) {
                     LazyColumn(
                         modifier = Modifier
                             .padding(innerPadding)
@@ -147,7 +142,7 @@ fun PantallaMyPlaces(
                         ) { vivacPlace ->
                             SwipeToDeleteContainer(
                                 item = vivacPlace,
-                                onDelete = {}
+                                onDelete = { deleteVivacPlace(vivacPlace.id) }
                             ) {
                                 VivacPlaceListItem(
                                     vivacPlace = vivacPlace,

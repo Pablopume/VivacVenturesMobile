@@ -48,6 +48,13 @@ class ListPlacesViewModel @Inject constructor(
     fun handleEvent(event: ListPlacesEvent) {
         when (event) {
             ListPlacesEvent.ErrorVisto -> _uiState.value = _uiState.value.copy(error = null)
+            is ListPlacesEvent.Refresh -> {
+                if (uiState.value.lastCall == 0) {
+                    getVivacPlaces()
+                } else {
+                    getVivacPlacesByType(uiState.value.lastCall.toString())
+                }
+            }
             is ListPlacesEvent.GetVivacPlaces -> getVivacPlaces()
             is ListPlacesEvent.GetVivacPlacesByType -> getVivacPlacesByType(event.type)
             is ListPlacesEvent.SearchPlaces -> searchPlaces(event.query)

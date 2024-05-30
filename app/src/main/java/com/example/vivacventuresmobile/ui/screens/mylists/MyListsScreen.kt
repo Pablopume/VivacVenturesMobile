@@ -47,6 +47,8 @@ import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.ListFavs
 import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesEvent
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun MyListsScreen(
@@ -69,6 +71,7 @@ fun MyListsScreen(
     MyListsContent(
         state = state.value,
         onNameChange = { viewModel.handleEvent(MyListsEvent.OnNameChanged(it)) },
+        getLists = { viewModel.handleEvent(MyListsEvent.GetLists()) },
         onCreateList = { viewModel.handleEvent(MyListsEvent.CreateList()) },
         errorVisto = { viewModel.handleEvent(MyListsEvent.ErrorVisto) },
         onListSelected = onListSelected,
@@ -82,6 +85,7 @@ fun MyListsScreen(
 private fun MyListsContent(
     state: MyListsState,
     onNameChange: (String) -> Unit,
+    getLists: () -> Unit,
     onCreateList: () -> Unit,
     errorVisto: () -> Unit,
     onListSelected: (Int) -> Unit,
@@ -158,17 +162,7 @@ private fun MyListsContent(
             }
         }
         Column {
-            if (state.loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.8f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LoadingAnimation(state.loading)
-                }
-            } else {
-                if (state.list.isEmpty()) {
+                if (state.list.isEmpty() && !state.firstTime) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -182,23 +176,26 @@ private fun MyListsContent(
                         )
                     }
                 } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
-                    ) {
-                        items(
-                            items = state.list,
-                            key = { list -> list.id }
-                        ) { list ->
-                            ListItem(
-                                list = list,
-                                onListSelected = onListSelected
-                            )
+                    val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+                    SwipeRefresh(state = swipeRefreshState, onRefresh = { getLists() }) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize()
+                        ) {
+                            items(
+                                items = state.list,
+                                key = { list -> list.id }
+                            ) { list ->
+                                ListItem(
+                                    list = list,
+                                    onListSelected = onListSelected
+                                )
+                            }
                         }
                     }
                 }
-            }
+
         }
 
     }

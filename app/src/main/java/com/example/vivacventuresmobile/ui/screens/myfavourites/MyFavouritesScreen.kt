@@ -60,6 +60,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun MyFavouritesScreen(
@@ -90,6 +92,7 @@ fun MyFavouritesScreen(
 
     PantallaFavourites(
         state.value,
+        { viewModel.handleEvent(MyFavouritesEvent.GetVivacPlaces()) },
         { viewModel.handleEvent(MyFavouritesEvent.ErrorVisto) },
         { viewModel.handleEvent(MyFavouritesEvent.DeleteList()) },
         username,
@@ -105,6 +108,7 @@ fun MyFavouritesScreen(
 @Composable
 fun PantallaFavourites(
     state: MyFavouritesState,
+    getVivacPlaces: () -> Unit,
     errorVisto: () -> Unit,
     deleteList: () -> Unit,
     username: String,
@@ -174,7 +178,11 @@ fun PantallaFavourites(
                 Button(
                     onClick = { showFriends = !showFriends }
                 ) {
-                    Text(text = if (showFriends) stringResource(R.string.shared_with) else stringResource(R.string.friends))
+                    Text(
+                        text = if (showFriends) stringResource(R.string.shared_with) else stringResource(
+                            R.string.friends
+                        )
+                    )
                 }
             },
             dismissButton = {
@@ -233,30 +241,22 @@ fun PantallaFavourites(
             }
         }
         Column {
-            if (state.loading) {
+            if (state.list.favoritos.isEmpty() && !state.firstTime) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.8f),
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    LoadingAnimation(state.loading)
+                    Text(
+                        text = stringResource(R.string.no_places_fav),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             } else {
-                if (state.list.favoritos.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_places_fav),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                } else {
+                val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+                SwipeRefresh(state = swipeRefreshState, onRefresh = { getVivacPlaces() }) {
                     LazyColumn(
                         modifier = Modifier
                             .padding(innerPadding)
@@ -274,6 +274,7 @@ fun PantallaFavourites(
                     }
                 }
             }
+
         }
     }
 }
@@ -291,9 +292,6 @@ fun VivacPlaceListItem(
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.medium_padding)))
             .clickable { onViewDetalle(vivacPlace.id) },
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface
-        ),
     ) {
         Row(
             modifier = Modifier
