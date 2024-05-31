@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -171,14 +172,11 @@ fun AddPlace(
                     Text(text = stringResource(id = R.string.date))
                     DatePickerField(state.place.date, onDateChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-
-                    Row {
-                        Text(text = stringResource(id = R.string.capacity))
-                        CapacityField(state.place.capacity, Modifier.weight(1f), onCapacityChange)
-                        Spacer(modifier = Modifier.weight(0.1f))
-                        Text(text = stringResource(id = R.string.price))
-                        PriceField(state.place.price, Modifier.weight(1f), onPriceChange)
-                    }
+                    Text(text = stringResource(id = R.string.capacity))
+                    CapacityField(state.place.capacity, onCapacityChange)
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                    Text(text = stringResource(id = R.string.price))
+                    PriceField(state.place.price, onPriceChange)
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Column(
@@ -248,9 +246,9 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
 }
 
 @Composable
-fun PriceField(price: Double, modifier: Modifier, onPriceChange: (String) -> Unit) {
+fun PriceField(price: Double, onPriceChange: (String) -> Unit) {
     val priceStr = if (price == 0.0) "" else price.toString()
-    TextField(
+    OutlinedTextField(
         value = priceStr,
         onValueChange = {
             if (it.toDoubleOrNull() != null) {
@@ -259,17 +257,16 @@ fun PriceField(price: Double, modifier: Modifier, onPriceChange: (String) -> Uni
                 onPriceChange("0")
             }
         },
-        modifier = modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.price)) },
+        placeholder = { Text(stringResource(id = R.string.price_)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
     )
 }
 
 @Composable
-fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> Unit) {
+fun CapacityField(capacity: Int, onCapacityChange: (Int) -> Unit) {
     val capacityStr = if (capacity == 0) "" else capacity.toString()
-    TextField(
+    OutlinedTextField(
         value = capacityStr,
         onValueChange = {
             if (it.isNotEmpty()) {
@@ -278,18 +275,18 @@ fun CapacityField(capacity: Int, modifier: Modifier, onCapacityChange: (Int) -> 
                 onCapacityChange(0)
             }
         },
-        modifier = modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(id = R.string.price)) },
+        placeholder = { Text(stringResource(id = R.string.capacity_)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
     )
 }
 
 @Composable
-fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
+fun TipoPicker(type: String, onTypeChange: (String) -> Unit, defaultValue: String = stringResource(R.string.select_type)) {
     val options = listOf(stringResource(R.string.vivac), stringResource(R.string.refuge), stringResource(R.string.private_refuge), stringResource(R.string.hostel), stringResource(R.string.other))
 
     var expanded by remember { mutableStateOf(false) }
+    var selectedType by remember { mutableStateOf(type.ifEmpty { defaultValue }) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -298,7 +295,7 @@ fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = null
         )
-        Text(text = type, modifier = Modifier.clickable { expanded = true })
+        Text(text = selectedType, modifier = Modifier.clickable { expanded = true })
     }
     DropdownMenu(
         expanded = expanded,
@@ -309,6 +306,7 @@ fun TipoPicker(type: String, onTypeChange: (String) -> Unit) {
         options.forEach { selectionOption ->
             DropdownMenuItem(
                 onClick = {
+                    selectedType = selectionOption
                     onTypeChange(selectionOption)
                     expanded = false
                 },
@@ -387,4 +385,21 @@ fun AddButton(
         }
 
     }
+}
+
+@Preview
+@Composable
+fun AddPlacePreview() {
+    AddPlace(
+        state = AddPlaceState(),
+        errorVisto = {},
+        bottomNavigationBar = {},
+        onDetailsCompleted = {},
+        onNameChange = {},
+        onDesciptionChange = {},
+        onTypeChange = {},
+        onDateChange = {},
+        onCapacityChange = {},
+        onPriceChange = {},
+    )
 }

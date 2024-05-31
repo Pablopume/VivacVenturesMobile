@@ -737,7 +737,7 @@ fun MapLocation(lat: Double, lon: Double) {
             scrollGesturesEnabled = false
         )
     }
-    val cameraPosition = remember {
+    val cameraPosition = remember(lat, lon) {
         mutableStateOf(CameraPosition(LatLng(lat, lon), 13f, 0f, 0f))
     }
     val context = LocalContext.current

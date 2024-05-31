@@ -1,9 +1,9 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
 
+import com.example.vivacventuresmobile.BuildConfig
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.LoginToken
-import com.example.vivacventuresmobile.utils.Constants
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
@@ -45,7 +45,7 @@ class AuthAuthenticator @Inject constructor(
         val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

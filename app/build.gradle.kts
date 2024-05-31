@@ -24,6 +24,18 @@ android {
         }
     }
 
+    flavorDimensions += "env"
+    productFlavors {
+        create("development") {
+            dimension = "env"
+            buildConfigField("String", "API_URL", "\"http://192.168.1.92:8764\"")
+        }
+        create("production") {
+            dimension = "env"
+            buildConfigField("String", "API_URL", "\"http://informatica.iesquevedo.es\"")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -42,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

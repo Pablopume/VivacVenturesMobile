@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.vivacventuresmobile.BuildConfig
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.sources.remote.AuthAuthenticator
 import com.example.vivacventuresmobile.data.sources.remote.AuthInterceptor
@@ -14,7 +15,6 @@ import com.example.vivacventuresmobile.data.sources.remote.LoginService
 import com.example.vivacventuresmobile.data.sources.remote.ReportsService
 import com.example.vivacventuresmobile.data.sources.remote.ValorationsService
 import com.example.vivacventuresmobile.data.sources.remote.VivacPlacesService
-import com.example.vivacventuresmobile.utils.Constants.BASE_URL
 import com.example.vivacventuresmobile.utils.StringProvider
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
@@ -71,7 +71,7 @@ object NetworkModule {
         moshiConverterFactory: MoshiConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.API_URL)
             .client(okHttpClient)
             .addConverterFactory(moshiConverterFactory)
             .build()

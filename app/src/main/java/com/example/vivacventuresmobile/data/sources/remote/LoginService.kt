@@ -23,6 +23,6 @@ interface LoginService {
     @PUT(Constantes.FORGOTPASSWORDPATH)
     suspend fun forgotPassword(@Query(Constantes.EMAIL) email: String): Response<Unit>
 
-    @PUT(Constantes.RESETPATH)
+    @PUT(Constantes.RESETPASS)
     suspend fun resetPassword(@Query(Constantes.EMAIL) email: String, @Query(Constantes.NEWPASSWORD) newPassword: String, @Query(Constantes.TEMPORALPASSWORD) temporalPassword: String): Response<Unit>
 }

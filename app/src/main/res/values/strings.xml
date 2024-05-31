@@ -24,6 +24,7 @@
     <string name="date">FECHA:</string>
     <string name="date_">Fecha</string>
     <string name="select_date">Selecciona una fecha</string>
+    <string name="select_type">Selecciona un tipo de lugar</string>
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrase</string>
     <string name="forgot_password">He olvidado mi contraseña</string>

@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
+import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.FavouritesVivacPlaceResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -12,14 +13,14 @@ import retrofit2.http.Query
 
 interface FavouritesService {
 
-    @POST("/favorito")
-    @Headers("Content-Type: application/json")
-    suspend fun saveFavorito(@Query("username") username: String, @Query("vivacId") vivacId: Int): Response<Unit>
+    @POST(Constantes.FAVORITO)
+    @Headers(Constantes.CONTENT_TYPE)
+    suspend fun saveFavorito(@Query(Constantes.USERNAME) username: String, @Query(Constantes.VIVACID) vivacId: Int): Response<Unit>
 
-    @GET("/favoritos/{username}")
-    suspend fun getFavoritos(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+    @GET(Constantes.FAVORITOS)
+    suspend fun getFavoritos(@Path(Constantes.USERNAME) username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @DELETE("/favorito/delete")
-    @Headers("Content-Type: application/json")
-    suspend fun deleteFavorito(@Query("username") username: String, @Query("vivacId") vivacId: Int): Response<Unit>
+    @DELETE(Constantes.DELETE_FAVORITO)
+    @Headers(Constantes.CONTENT_TYPE)
+    suspend fun deleteFavorito(@Query(Constantes.USERNAME) username: String, @Query(Constantes.VIVACID) vivacId: Int): Response<Unit>
 }

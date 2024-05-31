@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
+import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.FavouritesVivacPlaceResponse
 import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
@@ -15,32 +16,32 @@ import retrofit2.http.Query
 
 
 interface VivacPlacesService {
-    @GET("/vivacplaces")
+    @GET(Constantes.VIVACPLACES)
     suspend fun getVivacPlaces(): Response<List<VivacPlaceResponse>>
 
-    @GET("/vivacplaces/id/{id}")
-    suspend fun getVivacPlace(@Path("id") id: Int): Response<VivacPlaceResponse>
+    @GET(Constantes.VIVACPLACES_ID)
+    suspend fun getVivacPlace(@Path(Constantes.ID) id: Int): Response<VivacPlaceResponse>
 
-    @GET("/vivacplaces/user/{username}")
-    suspend fun getVivacPlacesByUsername(@Path("username") username: String): Response<List<FavouritesVivacPlaceResponse>>
+    @GET(Constantes.VIVACPLACES_USER)
+    suspend fun getVivacPlacesByUsername(@Path(Constantes.USERNAME) username: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplacesmy")
+    @GET(Constantes.VIVACPLACESMY)
     suspend fun getVivacPlacesWithFavourites(): Response<List<FavouritesVivacPlaceResponse>>
 
-    @GET("/vivacplaces/type/{type}")
-    suspend fun getVivacPlaceByType(@Path("type") type: String): Response<List<FavouritesVivacPlaceResponse>>
+    @GET(Constantes.VIVACPLACES_TYPE)
+    suspend fun getVivacPlaceByType(@Path(Constantes.TYPE) type: String): Response<List<FavouritesVivacPlaceResponse>>
 
-    @POST("/vivacplace")
-    @Headers("Content-Type: application/json")
+    @POST(Constantes.VIVACPLACE)
+    @Headers(Constantes.CONTENT_TYPE)
     suspend fun saveVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<VivacPlaceResponse>
 
-    @PUT("/vivacplace")
-    @Headers("Content-Type: application/json")
+    @PUT(Constantes.VIVACPLACE)
+    @Headers(Constantes.CONTENT_TYPE)
     suspend fun updateVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<Boolean>
 
-    @GET("/nearby")
-    suspend fun getNearbyPlaces(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double): Response<List<FavouritesVivacPlaceResponse>>
+    @GET(Constantes.NEARBY)
+    suspend fun getNearbyPlaces(@Query(Constantes.LATITUDE) latitude: Double, @Query(Constantes.LONGITUDE) longitude: Double): Response<List<FavouritesVivacPlaceResponse>>
 
-    @DELETE("/delete/{id}")
-    suspend fun deleteVivacPlace(@Path("id") id: Int): Response<Unit>
+    @DELETE(Constantes.DELETE)
+    suspend fun deleteVivacPlace(@Path(Constantes.ID) id: Int): Response<Unit>
 }

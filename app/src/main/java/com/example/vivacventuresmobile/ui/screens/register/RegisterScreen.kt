@@ -117,7 +117,7 @@ fun BotonRegister(onRegister: () -> Unit) {
         onClick = onRegister,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(Constantes.REGISTER)
+        Text(stringResource(R.string.register))
     }
 }
 
