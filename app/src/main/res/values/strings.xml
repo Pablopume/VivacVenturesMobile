@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VivacVentures</string>
+    <string name="app_name">Vivacventures</string>
     <string name="loadinganimation">LoadingAnimation</string>
     <string name="loadinganimationalpha">LoadingAnimationAlpha</string>
     <string name="username">Nombre de usuario</string>
@@ -140,5 +140,8 @@
     <string name="favourite_added_to_list">Sitio añadido a lista</string>
     <string name="favourite_removed_from_list">Sitio eliminado de lista</string>
     <string name="write_review">Escribir valoración</string>
+    <string name="places">Lugares</string>
+    <string name="map">Mapa</string>
+    <string name="account">Cuenta</string>
 
 </resources>

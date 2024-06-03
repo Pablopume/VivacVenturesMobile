@@ -57,6 +57,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -226,6 +227,9 @@ fun DetallePlace(
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
@@ -381,7 +385,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.AttachMoney, contentDescription = null)
+                Icon(Icons.Filled.AttachMoney, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
                 Text(
                     text = stringResource(R.string.price_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -397,7 +401,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.People, contentDescription = null)
+                Icon(Icons.Filled.People, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
                 Text(
                     text = stringResource(R.string.capacity_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -413,7 +417,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.DateRange, contentDescription = null)
+                Icon(Icons.Filled.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
                 Text(
                     text = stringResource(R.string.date_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -431,7 +435,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Star, contentDescription = null)
+                    Icon(Icons.Filled.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
                     Text(
                         text = stringResource(R.string.average_rating),
                         modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -701,7 +705,10 @@ fun TextDescription(description: String) {
     ) {
         Text(
             text = stringResource(R.string.description),
-            style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp)
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(

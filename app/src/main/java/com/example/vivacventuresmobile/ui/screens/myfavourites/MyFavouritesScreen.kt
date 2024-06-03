@@ -250,7 +250,7 @@ fun PantallaFavourites(
                 ) {
                     Text(
                         text = stringResource(R.string.no_places_fav),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -314,7 +314,7 @@ fun VivacPlaceListItem(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
 
-            val columnWeight = if (vivacPlace.favorite) 0.8f else 1f
+            val columnWeight = if (vivacPlace.favorite) 0.78f else 1f
 
             Column(
                 modifier = Modifier
@@ -325,9 +325,9 @@ fun VivacPlaceListItem(
                 Text(
                     text = vivacPlace.name,
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -339,14 +339,14 @@ fun VivacPlaceListItem(
                     Text(
                         text = vivacPlace.type,
                         modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelMedium
                     )
                     if (vivacPlace.valorations != -1.0) {
                         Text(
                             text = vivacPlace.valorations.toString(),
                             modifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp),
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.labelMedium
                         )
 

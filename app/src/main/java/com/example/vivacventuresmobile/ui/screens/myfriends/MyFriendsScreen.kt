@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -170,7 +171,7 @@ fun PantallaMyFriends(
                 ) {
                     Text(
                         text = stringResource(R.string.start_adding_friends),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -242,7 +243,7 @@ fun MyFriendRequestListItem(
             ) {
                 Text(
                     text = if (friend.requester == username) friend.requested else friend.requester,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f),
                     color = Color.Black
                 )
@@ -293,7 +294,7 @@ fun PendingFriendRequestListItem(
         ) {
             Text(
                 text = if (friend.requester == username) friend.requested else friend.requester,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.weight(1f)
             )
             Button(onClick = { onAccept(friend) }) {

@@ -35,8 +35,6 @@ Mapp/src/main/java/com/example/vivacventuresmobile/ui/navigation/Navigation.kt,
 Yapp/src/main/java/com/example/vivacventuresmobile/data/sources/remote/di/NetworkModule.kt,2\0\205b235f9d8b17b83f5d1c8caf165c3424c57e6f
 ‹
 [app/src/main/java/com/example/vivacventuresmobile/data/sources/remote/ServiceInterceptor.kt,a\2\a2ba37bd949379b60afd22d29a2f0244302f595a
-t
-Dapp/src/main/java/com/example/vivacventuresmobile/utils/Constants.kt,5\e\5e7d71ae8376c918bdbe9ed17e50245ee443de2c
 x
 Happ/src/main/java/com/example/vivacventuresmobile/utils/NetworkResult.kt,c\a\ca1d45b316a5e0d51076bd774b763da848241800
 }
