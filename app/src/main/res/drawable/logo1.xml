@@ -1,9 +1,6 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="50dp" android:viewportHeight="1024" android:viewportWidth="1024" android:width="50dp">
 
-    <group
-        android:name="animationGroup"
-        android:pivotX="512"
-        android:pivotY="512">
+
         <path android:fillColor="#000000" android:pathData="M511.3,117c-9.9,2.3 -15.1,13.3 -10.7,22.7 4.1,8.5 15,11.6 22.7,6.3 4.6,-3.1 8.2,-10.8 7.3,-15.5 -1.7,-9.1 -10.9,-15.5 -19.3,-13.5z" android:strokeColor="#00000000"/>
 
         <path android:fillColor="#000000" android:pathData="M455.9,130.4c-8.5,5.8 -8.3,19.5 0.4,26 3.9,2.9 12.5,2.9 16.3,-0 7,-5.2 9,-12.1 5.6,-19.7 -2.6,-6 -7,-8.7 -13.7,-8.7 -3.7,-0 -6,0.7 -8.6,2.4z" android:strokeColor="#00000000"/>
@@ -142,6 +139,6 @@
 
         <path android:fillColor="#000000" android:pathData="M503,905.2c0,0.9 -1.6,7 -3.5,13.5 -4.5,14.8 -11.8,29.9 -18.5,38l-5.1,6.3 28.1,-0 28,-0 -4.4,-5.4c-8.2,-10.1 -15.2,-25.1 -20.6,-44.1 -2.3,-7.9 -4,-11.5 -4,-8.3z" android:strokeColor="#00000000"/>
 
-    </group>
+
 
 </vector>

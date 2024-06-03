@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     0.0f
                 )
                 zoomY.interpolator = OvershootInterpolator()
-                zoomY.duration = 500L
+                zoomY.duration = 1000L
                 zoomY.doOnEnd { screen.remove() }
 
                 zoomX.start()

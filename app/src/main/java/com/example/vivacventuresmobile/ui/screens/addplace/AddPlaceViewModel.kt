@@ -101,7 +101,7 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.VueltaLocation -> {
-                _uiState.update { it.copy(cambioPantalla = 1) }
+                _uiState.update { it.copy(cambioPantalla = 0) }
             }
 
             is AddPlaceEvent.LocationCompleted -> {
@@ -109,7 +109,7 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.Vuelta -> {
-                _uiState.update { it.copy(cambioPantalla = 0) }
+                _uiState.update { it.copy(cambioPantalla = 1) }
             }
 
             is AddPlaceEvent.UpdatePlace -> {
