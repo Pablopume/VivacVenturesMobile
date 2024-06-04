@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -212,7 +213,7 @@ fun ListItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onListSelected(list.id) }
-            .padding(dimensionResource(R.dimen.smallmedium_padding))
+            .padding(dimensionResource(R.dimen.medium_padding))
     ) {
         Text(
             text = list.name,
@@ -234,6 +235,7 @@ fun ListItem(
             )
         }
     }
+    Divider(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.medium_padding)))
 }
 
 @Preview

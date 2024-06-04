@@ -228,7 +228,7 @@ fun DetallePlace(
         topBar = {
             TopAppBar(
                 colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.secondary,
                 ),
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
@@ -240,7 +240,7 @@ fun DetallePlace(
                 },
                 title = { Text(text = state.vivacPlace?.type?.uppercase() ?: "") },
                 actions = {
-                    if (state.vivacPlace?.username == state.username) {
+                    if (state.vivacPlace?.username?.lowercase() == state.username.lowercase()) {
                         IconButton(onClick = { delete() }) {
                             Icon(
                                 Icons.Filled.Delete,
@@ -385,7 +385,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.AttachMoney, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
+                Icon(Icons.Filled.AttachMoney, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Text(
                     text = stringResource(R.string.price_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -401,7 +401,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.People, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
+                Icon(Icons.Filled.People, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Text(
                     text = stringResource(R.string.capacity_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -417,7 +417,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
+                Icon(Icons.Filled.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Text(
                     text = stringResource(R.string.date_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -435,7 +435,7 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primaryContainer)
+                    Icon(Icons.Filled.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Text(
                         text = stringResource(R.string.average_rating),
                         modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -539,11 +539,10 @@ fun ValorationsList(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = valoration.username,
-//                                    style = MaterialTheme.typography.labelMedium
                                 )
                             }
                             Box {
-                                if (valoration.username == username) {
+                                if (valoration.username.lowercase() == username.lowercase()) {
                                     IconButton(onClick = { showMenu = true }) {
                                         Icon(Icons.Filled.MoreVert, contentDescription = null)
                                     }

@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
+import com.example.vivacventuresmobile.ui.screens.login.HeaderImage
 import com.example.vivacventuresmobile.ui.screens.register.EmailField
 
 @Composable
@@ -99,6 +100,7 @@ fun PantallaForgotPassword(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
+                        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
                         if (!state.emailsend) {
                             EmailField(state.correoElectronico, OnEmailChange)
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))

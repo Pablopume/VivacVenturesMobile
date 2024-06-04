@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.domain.modelo.Friend
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 
@@ -90,7 +89,10 @@ fun PantallaFavourites(
                 title = { Text(stringResource(R.string.search_users)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 }
             )
@@ -119,10 +121,15 @@ fun PantallaFavourites(
                     LoadingAnimation(state.loading)
                 }
             } else {
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(innerPadding),
+                        .padding(
+                            top = innerPadding.calculateTopPadding(), end = dimensionResource(
+                                id =R.dimen.smallmedium_padding
+                            ), start = dimensionResource(id = R.dimen.smallmedium_padding)
+                        ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
@@ -133,13 +140,19 @@ fun PantallaFavourites(
                         trailingIcon = {
                             if (state.search.isNotEmpty()) {
                                 IconButton(onClick = { onSearchChange("") }) {
-                                    Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear))
+                                    Icon(
+                                        Icons.Default.Clear,
+                                        contentDescription = stringResource(R.string.clear)
+                                    )
                                 }
                             }
                         }
                     )
                     IconButton(onClick = doSearch) {
-                        Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = stringResource(R.string.search)
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +184,7 @@ fun MyFriendsListItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.smallmedium_padding))
+                .padding(dimensionResource(id = R.dimen.medium_padding)),
         ) {
             Text(
                 text = friend.username,

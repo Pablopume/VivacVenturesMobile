@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,10 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -107,15 +110,6 @@ fun PantallaLogin(
                     }
 
                 }
-//                coroutineScope2.launch {
-//                    dataStore2.updateData {
-//                        it.copy(
-//                            username = cryptoManager.encriptar(state.user),
-//                            password = cryptoManager.encriptar(state.password)
-//                        )
-//                    }
-//
-//                }
                 onLoginDone(state.user)
             }
         }
@@ -134,9 +128,10 @@ fun PantallaLogin(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
-                        Nombre(state.user ?: "", onNombreChanged)
+                        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
+                        Nombre(state.user, onNombreChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                        Password(state.password ?: "", onPasswordChanged)
+                        Password(state.password, onPasswordChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                         BotonLogin(onLogin)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
@@ -148,9 +143,16 @@ fun PantallaLogin(
                 }
             }
         }
-
-
     }
+}
+
+@Composable
+fun HeaderImage(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.logo_con_nombre),
+        contentDescription = "Header",
+        modifier = modifier
+    )
 }
 
 @Composable

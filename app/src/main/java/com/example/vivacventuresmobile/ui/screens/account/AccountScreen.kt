@@ -1,5 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.account
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,7 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
@@ -82,9 +86,10 @@ fun PantallaAccount(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
+                    HeaderImageName(Modifier.align(Alignment.CenterHorizontally))
                     Text(
-                        text = stringResource(R.string.welcome_user, username)
+                        text = stringResource(R.string.welcome_user, username),
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
@@ -101,7 +106,12 @@ fun PantallaAccount(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     ExtendedFloatingActionButton(
                         onClick = { toMyFriends() },
-                        icon = { Icon(Icons.Filled.SupervisorAccount, stringResource(R.string.friends)) },
+                        icon = {
+                            Icon(
+                                Icons.Filled.SupervisorAccount,
+                                stringResource(R.string.friends)
+                            )
+                        },
                         text = { Text(text = stringResource(R.string.my_friends)) },
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
@@ -147,4 +157,13 @@ fun PantallaAccount(
         }
     }
 
+}
+
+@Composable
+fun HeaderImageName(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.letras_logo),
+        contentDescription = "Header",
+        modifier = modifier
+    )
 }

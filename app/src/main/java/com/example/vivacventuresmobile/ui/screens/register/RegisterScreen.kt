@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
+import com.example.vivacventuresmobile.ui.screens.login.HeaderImage
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 
 @Composable
@@ -94,6 +95,7 @@ fun PantallaRegister(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
+                        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
                         EmailField(state.correoElectronico, onEmailChanged)
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                         NombreField(state.user, onNombreChanged)

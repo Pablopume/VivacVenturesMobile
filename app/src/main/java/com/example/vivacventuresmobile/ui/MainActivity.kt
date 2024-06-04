@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 val Context.dataStore by dataStore("app.settings.json", AppPreferencesSerialize)
 
-@RequiresApi(Build.VERSION_CODES.M)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

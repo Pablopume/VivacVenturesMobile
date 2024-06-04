@@ -20,7 +20,7 @@ fun BottomBar(
 
     ) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.secondary,
     ){
         val state = navController.currentBackStackEntryAsState()
         val currentDestination = state.value?.destination
@@ -30,7 +30,7 @@ fun BottomBar(
                 label = { Text(screen.route) },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
                 onClick = {
                     navController.navigate(screen.route) {
