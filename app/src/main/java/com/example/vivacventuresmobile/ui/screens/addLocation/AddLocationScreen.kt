@@ -22,8 +22,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -33,7 +33,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,22 +43,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceState
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
@@ -76,6 +78,7 @@ fun AddLocationScreen(
     toImages: () -> Unit,
     onLocationChange: (LatLng) -> Unit,
     bottomNavigationBar: @Composable () -> Unit,
+    exists: Boolean
 ) {
     val locationstate = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -107,7 +110,13 @@ fun AddLocationScreen(
     ) { state ->
         when (state) {
             is LocationState.NoPermission -> {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.medium_padding)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(stringResource(R.string.permission_needed))
                     Button(onClick = { launcherMultiplePermissions.launch(permissions) }) {
                         Text(stringResource(R.string.request_permission))
@@ -116,7 +125,13 @@ fun AddLocationScreen(
             }
 
             is LocationState.LocationDisabled -> {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.medium_padding)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(stringResource(R.string.permission_needed))
                     Button(onClick = {
                         viewModel.requestLocationEnable(context as Activity)
@@ -137,7 +152,13 @@ fun AddLocationScreen(
             }
 
             is LocationState.Error -> {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.medium_padding)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(stringResource(R.string.error_fetching_location))
                     Button(onClick = { viewModel.getCurrentLocation() }) {
                         Text(stringResource(R.string.retry))
@@ -147,13 +168,7 @@ fun AddLocationScreen(
 
             is LocationState.LocationAvailable -> {
                 val cameraPositionState = rememberCameraPositionState {
-                    if (addplacestate.place.lat != 0.0) {
-                        val defaultLocation =
-                            LatLng(addplacestate.place.lat, addplacestate.place.lon)
-                        position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
-                    } else {
-                        position = CameraPosition.fromLatLngZoom(state.cameraLatLang, 15f)
-                    }
+                    position = CameraPosition.fromLatLngZoom(state.cameraLatLang, 15f)
                 }
 
                 val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
@@ -200,9 +215,29 @@ fun AddLocationScreen(
                                 scope.launch {
                                     cameraPositionState.animate(CameraUpdateFactory.newLatLng(it))
                                 }
-                            })
+                            }
+                        ) {
+                            if (exists) {
+                                val position =
+                                    LatLng(addplacestate.place.lat, addplacestate.place.lon)
+                                Marker(
+                                    state = MarkerState(position = position),
+                                    title = stringResource(R.string.last_location),
+                                    snippet = stringResource(R.string.this_is_last_location),
+                                    icon = BitmapDescriptorFactory.defaultMarker(
+                                        BitmapDescriptorFactory.HUE_RED
+                                    ),
+                                    onClick = {
+                                        it.showInfoWindow()
+                                        true
+                                    },
+                                )
+
+                            }
+                        }
                         Icon(
-                            imageVector = Icons.Default.LocationOn,
+                            imageVector = Icons.Default.PushPin,
+                            tint = Color.Black,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(24.dp)

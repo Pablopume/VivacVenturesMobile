@@ -63,13 +63,15 @@ class DetallePlaceViewModel @Inject constructor(
                 getVivacPlace(event.vivacId)
             }
 
-            is DetallePlaceEvent.DeletePlace -> deletePlace()
+            is DetallePlaceEvent.DeletePlace -> {
+                deleteImages()
+            }
             is DetallePlaceEvent.AddValoration -> {
                 addValoration()
             }
 
             is DetallePlaceEvent.DeleteValoration -> {
-                deleteImages(event.id)
+                deleteValoration(event.id)
             }
 
             is DetallePlaceEvent.OnDescriptionReportChange -> {
@@ -88,11 +90,11 @@ class DetallePlaceViewModel @Inject constructor(
         }
     }
 
-    private fun deleteImages(id: Int) {
+    private fun deleteImages() {
         val images = uiState.value.vivacPlace?.images ?: emptyList()
 
         if (images.isEmpty()) {
-            deleteValoration(id)
+            deletePlace()
             return
         }
 
@@ -107,7 +109,7 @@ class DetallePlaceViewModel @Inject constructor(
                 _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
 
                 if (imagesDeleted == totalImages) {
-                    deleteValoration(id)
+                    deletePlace()
                 }
             }.addOnFailureListener { e ->
                 _uiState.update { it.copy(error = stringProvider.getString(R.string.error_deleting_image)) }

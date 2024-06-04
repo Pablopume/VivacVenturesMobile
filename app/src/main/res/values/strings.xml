@@ -99,7 +99,9 @@
     <string name="toggle_location">Activar ubicación</string>
     <string name="toggle_dark_map">Activar modo oscuro mapa</string>
     <string name="current_location">Ubicación actual</string>
+    <string name="last_location">Ubicación anterior</string>
     <string name="this_is_current_location">Esta es tu ubicación actual</string>
+    <string name="this_is_last_location">Esta es la ubicación anterior</string>
     <string name="click_to_details">Click para ver los detalles</string>
     <string name="location_on">La ubicación está activa</string>
     <string name="location_off">Ubicación desactivada</string>

@@ -67,7 +67,6 @@ private val permissions = arrayOf(
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
 )
 
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = hiltViewModel(),

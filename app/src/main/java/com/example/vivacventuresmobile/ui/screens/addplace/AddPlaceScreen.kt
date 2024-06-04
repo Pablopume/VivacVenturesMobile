@@ -93,6 +93,7 @@ fun AddPlaceScreen(
                 toImages = { viewModel.handleEvent(AddPlaceEvent.LocationCompleted()) },
                 onLocationChange = { viewModel.handleEvent(AddPlaceEvent.OnLocationChange(it)) },
                 bottomNavigationBar = bottomNavigationBar,
+                exists = state.value.exists
             )
 
         } else {
