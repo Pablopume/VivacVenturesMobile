@@ -1,5 +1,8 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
+import com.example.vivacventuresmobile.BuildConfig
+import com.example.vivacventuresmobile.R
+import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.data.model.toVivacPlace
 import com.example.vivacventuresmobile.data.model.toVivacPlaceList
@@ -7,11 +10,13 @@ import com.example.vivacventuresmobile.data.model.toVivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.Valoration
 import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
 
 class ValorationsRemoteDataSource @Inject constructor(
-    private val valorationsService: ValorationsService
+    private val valorationsService: ValorationsService,
+    private val stringProvider: StringProvider,
 ) {
     suspend fun addValoration(valoration: Valoration): NetworkResult<Unit> {
         return try {
@@ -20,13 +25,17 @@ class ValorationsRemoteDataSource @Inject constructor(
                 NetworkResult.Success(Unit)
             } else {
                 if (response.code() == 400) {
-                    NetworkResult.Error("Ya has valorado este sitio")
+                    NetworkResult.Error(stringProvider.getString(R.string.already_reviewed))
                 } else {
-                    NetworkResult.Error("${response.errorBody()}")
+                    return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                        NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                    } else {
+                        NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                    }
                 }
             }
         } catch (e: Exception) {
-            NetworkResult.Error(e.message ?: "An error occurred")
+            NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
         }
     }
 
@@ -36,10 +45,14 @@ class ValorationsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
-            NetworkResult.Error(e.message ?: "An error occurred")
+            NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
         }
     }
 }

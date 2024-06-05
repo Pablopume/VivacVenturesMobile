@@ -145,5 +145,10 @@
     <string name="places">Lugares</string>
     <string name="map">Mapa</string>
     <string name="account">Cuenta</string>
+    <string name="already_reviewed">Ya has valorado este lugar</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="incorrect_temporal_password">La contraseña temporal introducida es incorrecta</string>
+    <string name="no_account_for_that_mail">No existe una cuenta con ese correo</string>
+    <string name="relogin">Relogin</string>
 
 </resources>

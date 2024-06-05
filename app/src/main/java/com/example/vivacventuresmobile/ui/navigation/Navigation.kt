@@ -1,5 +1,9 @@
 package com.example.vivacventuresmobile.ui.navigation
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.datastore.core.DataStore
@@ -8,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
 import com.example.vivacventuresmobile.data.preferences.CryptoManager
 import com.example.vivacventuresmobile.ui.common.BottomBar
@@ -25,12 +30,20 @@ import com.example.vivacventuresmobile.ui.screens.mylists.MyListsScreen
 import com.example.vivacventuresmobile.ui.screens.myplaces.MyPlacesScreen
 import com.example.vivacventuresmobile.ui.screens.register.RegisterScreen
 import com.example.vivacventuresmobile.ui.screens.searchusers.SearchUsersScreen
+import com.example.vivacventuresmobile.utils.StringProvider
 
 
 @Composable
 fun Navigation(
-    dataStore: DataStore<AppPreferences>
+    dataStore: DataStore<AppPreferences>,
+    stringProvider: StringProvider
 ) {
+    val screensBottomBar = listOf(
+        Screens(stringProvider.getString(R.string.places), Icons.Filled.Terrain),
+        Screens(stringProvider.getString(R.string.map), Icons.Filled.Map),
+        Screens(stringProvider.getString(R.string.account), Icons.Filled.Person),
+    )
+
     val navController = rememberNavController()
 
     val appPreferences = dataStore.data.collectAsState(
@@ -44,7 +57,6 @@ fun Navigation(
     NavHost(
         navController = navController,
         startDestination = if (userName.isNotBlank() && !userName.equals("")) ConstantesPantallas.MAP else ConstantesPantallas.LOGIN,
-//        startDestination = "AddImagesScreen",
     ) {
         composable(
             ConstantesPantallas.LOGIN

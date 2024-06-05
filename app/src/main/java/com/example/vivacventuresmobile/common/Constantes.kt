@@ -20,6 +20,7 @@ object Constantes {
     const val PASSWORD = "password"
     const val NEWPASSWORD = "newPassword"
     const val TEMPORALPASSWORD = "temporalPassword"
+    const val DEVELOPMENT = "development"
 
     const val USERNAME = "username"
     const val ID = "id"

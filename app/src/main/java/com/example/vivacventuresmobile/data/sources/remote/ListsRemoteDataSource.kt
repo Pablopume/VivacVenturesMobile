@@ -1,13 +1,18 @@
 package com.example.vivacventuresmobile.data.sources.remote
 
+import com.example.vivacventuresmobile.BuildConfig
+import com.example.vivacventuresmobile.R
+import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.toListFavs
 import com.example.vivacventuresmobile.data.model.toListResponse
 import com.example.vivacventuresmobile.domain.modelo.ListFavs
 import com.example.vivacventuresmobile.utils.NetworkResult
+import com.example.vivacventuresmobile.utils.StringProvider
 import javax.inject.Inject
 
 class ListsRemoteDataSource @Inject constructor(
-    private val listsService: ListsService
+    private val listsService: ListsService,
+    private val stringProvider: StringProvider,
 ) {
     suspend fun getLists(username: String): NetworkResult<List<ListFavs>> {
         try {
@@ -18,13 +23,16 @@ class ListsRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toListFavs() })
                 }
             } else {
-                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
-
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
         }
-        return NetworkResult.Error("Error")
+        return NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
     }
 
     suspend fun getList(id: Int): NetworkResult<ListFavs> {
@@ -36,12 +44,16 @@ class ListsRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.toListFavs())
                 }
             } else {
-                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
         }
-        return NetworkResult.Error("Error")
+        return NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
     }
 
     suspend fun getListsByUserAndVivacPlace(username: String, id: Int): NetworkResult<List<ListFavs>> {
@@ -53,12 +65,16 @@ class ListsRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body.map { it.toListFavs() })
                 }
             } else {
-                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
         }
-        return NetworkResult.Error("Error")
+        return NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
     }
 
     suspend fun getListSharedWith(id: Int): NetworkResult<List<String>> {
@@ -70,12 +86,16 @@ class ListsRemoteDataSource @Inject constructor(
                     return NetworkResult.Success(body)
                 }
             } else {
-                return NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             return NetworkResult.Error(e.message ?: e.toString())
         }
-        return NetworkResult.Error("Error")
+        return NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
     }
 
     suspend fun saveList(listFavs: ListFavs): NetworkResult<Unit> {
@@ -84,7 +104,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -97,7 +121,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -110,7 +138,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -123,7 +155,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -136,7 +172,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())
@@ -149,7 +189,11 @@ class ListsRemoteDataSource @Inject constructor(
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {
-                NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
+                    NetworkResult.Error("${response.code()} ${response.errorBody()}")
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                }
             }
         } catch (e: Exception) {
             NetworkResult.Error(e.message ?: e.toString())

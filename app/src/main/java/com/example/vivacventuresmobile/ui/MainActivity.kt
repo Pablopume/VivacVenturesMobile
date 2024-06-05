@@ -20,6 +20,7 @@ import androidx.datastore.dataStore
 import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
 import com.example.vivacventuresmobile.ui.navigation.Navigation
 import com.example.vivacventuresmobile.ui.theme.VivacVenturesMobileTheme
+import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.android.libraries.places.api.Places
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(dataStore)
+                    Navigation(dataStore, StringProvider(this))
                 }
             }
         }

@@ -13,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
-//    private val loginService: LoginService,
     private val tokenManager: TokenManager
 ) : Authenticator {
 
@@ -22,8 +21,6 @@ class AuthAuthenticator @Inject constructor(
             tokenManager.getRefreshToken().first()
         }
         return runBlocking {
-            //TODO mirar
-//            val newToken = loginService.refreshToken("$token")
             val newToken = getNewToken("$token")
 
             if (newToken.isSuccessful) {
