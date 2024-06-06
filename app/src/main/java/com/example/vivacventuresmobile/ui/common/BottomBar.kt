@@ -7,9 +7,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.ui.navigation.Screens
 
 @Composable
@@ -26,18 +28,28 @@ fun BottomBar(
         screens.forEach { screen ->
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = null) },
-                label = { Text(screen.route) },
+                label = {
+                    when (screen.route) {
+                        ConstantesPantallas.LUGARES -> Text(
+                            stringResource(R.string.places)
+                        )
+                        ConstantesPantallas.MAP -> Text(
+                            stringResource(R.string.map)
+                        )
+                        ConstantesPantallas.CUENTA -> Text(
+                            stringResource(id = R.string.account)
+                        )
+                        else -> Text(
+                            stringResource(R.string.app_name)
+                        )
+                    }
+                },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
                 onClick = {
                     navController.navigate(screen.route) {
-//                        popUpTo(navController.graph.findStartDestination().id) {
-//                            saveState = true
-//                        }
-//                        launchSingleTop = true
-//                        restoreState = true
                         popUpTo(screen.route) {
                             inclusive = true
                         }

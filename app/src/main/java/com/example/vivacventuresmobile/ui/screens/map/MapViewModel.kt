@@ -15,17 +15,14 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.CameraPositionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.logging.Logger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -177,7 +174,7 @@ class MapViewModel @Inject constructor(
         )
 
         //stop location updates
-        locationCallback?.let {
+        locationCallback.let {
             fusedLocationCLient.removeLocationUpdates(it)
         }
     }
@@ -201,7 +198,7 @@ class MapViewModel @Inject constructor(
                 )
             }
         } else {
-            locationCallback?.let {
+            locationCallback.let {
                 fusedLocationCLient.removeLocationUpdates(it)
             }
         }

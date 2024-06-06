@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class SaveListUseCase @Inject constructor(private var repository: ListsRepository) {
 
-    suspend operator fun invoke(listFavs: ListFavs) =
+    operator fun invoke(listFavs: ListFavs) =
         repository.saveList(listFavs)
 }

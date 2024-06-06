@@ -61,7 +61,7 @@ fun PantallaForgotPassword(
     state: ForgotPasswordState,
     onTempPasswordChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    OnEmailChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
     onSendEmail: () -> Unit,
     onChangePassword: () -> Unit,
     onPasswordReset: () -> Unit
@@ -102,7 +102,7 @@ fun PantallaForgotPassword(
                     Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding))) {
                         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
                         if (!state.emailsend) {
-                            EmailField(state.correoElectronico, OnEmailChange)
+                            EmailField(state.correoElectronico, onEmailChange)
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                             BotonSendPassword(onSendEmail)
                         } else {

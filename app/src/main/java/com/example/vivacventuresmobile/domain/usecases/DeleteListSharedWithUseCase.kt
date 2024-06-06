@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class DeleteListSharedWithUseCase @Inject constructor(private var repository: ListsRepository) {
 
-    suspend operator fun invoke(vivacId: Int, username: String) =
+    operator fun invoke(vivacId: Int, username: String) =
         repository.deleteListSharedWith(vivacId, username)
 }

@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class DeleteVivacPlaceUseCase @Inject constructor(private var repository: VivacPlacesRepository) {
 
-    suspend operator fun invoke(vivacId: Int) =
+    operator fun invoke(vivacId: Int) =
         repository.deleteVivacPlace(vivacId)
 }

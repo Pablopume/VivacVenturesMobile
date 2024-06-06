@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vivacventures</string>
+    <string name="app_name">Vivacventur</string>
     <string name="loadinganimation">LoadingAnimation</string>
     <string name="loadinganimationalpha">LoadingAnimationAlpha</string>
     <string name="username">Nombre de usuario</string>
@@ -150,5 +150,6 @@
     <string name="incorrect_temporal_password">La contraseña temporal introducida es incorrecta</string>
     <string name="no_account_for_that_mail">No existe una cuenta con ese correo</string>
     <string name="relogin">Relogin</string>
+    <string name="add_images">Añade Imágenes del lugar</string>
 
 </resources>

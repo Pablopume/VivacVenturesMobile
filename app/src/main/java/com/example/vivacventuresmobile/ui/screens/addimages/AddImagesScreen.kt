@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,13 +40,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.ui.screens.addplace.AddPlaceState
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
-
 
 
 @Composable
@@ -58,12 +54,12 @@ fun AddImages(
     bottomNavigationBar: @Composable () -> Unit,
     onAddDone: () -> Unit,
     onUpdateDone: () -> Unit,
-    AddUri: (List<Uri>) -> Unit,
-    DeleteUri: (Int, Boolean) -> Unit,
-    AddPlace: () -> Unit,
-    UpdatePlace: () -> Unit,
-    Vuelta: () -> Unit,
-    exists : Boolean
+    addUri: (List<Uri>) -> Unit,
+    deleteUri: (Int, Boolean) -> Unit,
+    addPlace: () -> Unit,
+    updatePlace: () -> Unit,
+    vuelta: () -> Unit,
+    exists: Boolean
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -105,11 +101,11 @@ fun AddImages(
                 verticalArrangement = Arrangement.SpaceBetween // Distributes space evenly
             ) {
                 ImagesPicker2(
-                    AddUri,
-                    DeleteUri,
-                    Vuelta,
-                    AddPlace,
-                    UpdatePlace,
+                    addUri,
+                    deleteUri,
+                    vuelta,
+                    addPlace,
+                    updatePlace,
                     state,
                     exists
                 )
@@ -119,14 +115,13 @@ fun AddImages(
 }
 
 
-
 @Composable
 fun ImagesPicker2(
     onPicturesChange: (List<Uri>) -> Unit,
-    DeleteUri: (Int, Boolean) -> Unit,
-    Vuelta: () -> Unit,
-    AddPlace: () -> Unit,
-    UpdatePlace: () -> Unit,
+    deleteUri: (Int, Boolean) -> Unit,
+    vuelta: () -> Unit,
+    addPlace: () -> Unit,
+    updatePlace: () -> Unit,
     state: AddPlaceState,
     exists: Boolean
 ) {
@@ -138,20 +133,20 @@ fun ImagesPicker2(
     Column(
         modifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.medium_padding))
-    )  {
+    ) {
         Text(
-            text = "Añade Imágenes del lugar",
+            text = stringResource(R.string.add_images),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .padding(bottom = dimensionResource(id = R.dimen.medium_padding))
                 .align(Alignment.CenterHorizontally)
         )
-        Column  {
+        Column {
             repeat(3) { index ->
                 ImageN(
                     index = index,
-                    onDelete = { idx, isImage -> DeleteUri(idx, isImage) },
+                    onDelete = { idx, isImage -> deleteUri(idx, isImage) },
                     uris = state.uris,
                     images = state.place.images,
                     onImageClick = {
@@ -169,9 +164,9 @@ fun ImagesPicker2(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        AddButton(AddPlace, UpdatePlace, exists)
+        AddButton(addPlace, updatePlace, exists)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-        Button(onClick = { Vuelta() }) {
+        Button(onClick = { vuelta() }) {
             Text(text = stringResource(id = R.string.back))
         }
 
@@ -204,7 +199,7 @@ fun ImageN(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onImageClick() } // Añadido clickable para lanzar el selector de imágenes
+            .clickable { onImageClick() }
     ) {
         Image(
             modifier = Modifier
@@ -229,7 +224,7 @@ fun ImageN(
 }
 
 @Composable
-fun AddButton(onAddPlaceClick: () -> Unit, onUpdatePlace:() -> Unit , exists: Boolean) {
+fun AddButton(onAddPlaceClick: () -> Unit, onUpdatePlace: () -> Unit, exists: Boolean) {
     FloatingActionButton(onClick = {
         if (exists) {
             onUpdatePlace()

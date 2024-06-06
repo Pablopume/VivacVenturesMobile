@@ -1,10 +1,7 @@
 package com.example.vivacventuresmobile.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Celebration
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.ui.graphics.vector.ImageVector

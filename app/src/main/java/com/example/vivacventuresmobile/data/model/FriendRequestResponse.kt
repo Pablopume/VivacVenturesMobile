@@ -1,6 +1,5 @@
 package com.example.vivacventuresmobile.data.model
 
-import com.example.vivacventuresmobile.domain.modelo.Friend
 import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.google.gson.annotations.SerializedName
 

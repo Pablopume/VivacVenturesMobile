@@ -1,6 +1,5 @@
 package com.example.vivacventuresmobile.ui.screens.myfavourites
 
-import com.example.vivacventuresmobile.domain.modelo.FriendRequest
 import com.example.vivacventuresmobile.domain.modelo.ListFavs
 
 data class MyFavouritesState(

@@ -3,15 +3,9 @@ package com.example.vivacventuresmobile.data.sources.remote
 import com.example.vivacventuresmobile.BuildConfig
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.common.Constantes
-import com.example.vivacventuresmobile.utils.NetworkResult
-import com.example.vivacventuresmobile.data.model.toVivacPlace
-import com.example.vivacventuresmobile.data.model.toVivacPlaceList
-import com.example.vivacventuresmobile.data.model.toVivacPlaceResponse
 import com.example.vivacventuresmobile.domain.modelo.Valoration
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
-import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
+import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
-import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
 
 class ValorationsRemoteDataSource @Inject constructor(

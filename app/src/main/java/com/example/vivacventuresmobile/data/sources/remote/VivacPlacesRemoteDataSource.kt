@@ -27,11 +27,10 @@ class VivacPlacesRemoteDataSource @Inject constructor(
                 }
             } else {
                 val responseMessage = response.code()
-                if (responseMessage == 401) {
-                    return NetworkResult.Error(stringProvider.getString(R.string.relogin))
-                }
-                else {
-                    return NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                return if (responseMessage == 401) {
+                    NetworkResult.Error(stringProvider.getString(R.string.relogin))
+                } else {
+                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
                 }
             }
         } catch (e: Exception) {

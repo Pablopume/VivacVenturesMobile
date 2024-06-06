@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -73,7 +72,12 @@ class AddPlaceViewModel @Inject constructor(
 
             is AddPlaceEvent.OnLocationChange -> {
                 _uiState.update {
-                    it.copy(place = it.place.copy(lat = event.location.latitude, lon = event.location.longitude))
+                    it.copy(
+                        place = it.place.copy(
+                            lat = event.location.latitude,
+                            lon = event.location.longitude
+                        )
+                    )
                 }
             }
 
@@ -180,7 +184,8 @@ class AddPlaceViewModel @Inject constructor(
         val place = uiState.value.place
 
         if (place.name.isEmpty() || place.description.isEmpty() || place.type.isEmpty()) {
-            _uiState.value = _uiState.value.copy(error = stringProvider.getString(R.string.fill_all_fields))
+            _uiState.value =
+                _uiState.value.copy(error = stringProvider.getString(R.string.fill_all_fields))
             return false
         }
 
@@ -213,7 +218,7 @@ class AddPlaceViewModel @Inject constructor(
                         if (uiState.value.exists) updateVivacPlace()
                         else saveVivacPlace()
                     }
-                }.addOnFailureListener { e ->
+                }.addOnFailureListener {
                     _uiState.update {
                         it.copy(error = stringProvider.getString(R.string.error_uploading_image))
                     }
@@ -221,68 +226,6 @@ class AddPlaceViewModel @Inject constructor(
             }
         }
     }
-
-
-//    private suspend fun uploadImages(imageUris: List<Uri>) {
-////        val user = AppPreferences.username
-////        storageReference = FirebaseStorage.getInstance().getReference("images/$user.$fileName")
-//
-//        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMAN)
-//        val imageUrls = mutableListOf<String>()
-//
-////        val uploadTasks = mutableListOf<Task<Uri>>()
-//        for (uri in imageUris) {
-//            if (uiState.value.place.images.size >= 3) {
-//                _uiState.update { it.copy(error = "Solo se pueden subir 3 imágenes.") }
-//            } else {
-//                val now = Date()
-//                val fileName: String = formatter.format(now)
-//                val storageReference =
-//                    FirebaseStorage.getInstance().getReference("images/${uiState.value.place.username}"+ "_" +"$fileName")
-//
-//                storageReference.putFile(uri).addOnSuccessListener { taskSnapshot ->
-//                    taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-//                        val downloadUrl = uri.toString()
-//                        imageUrls.add(downloadUrl)
-////                    _uiState.update { it.copy(place = it.place.copy(images = imageUrls)) }
-//                        _uiState.update { it.copy(place = it.place.copy(images = it.place.images + imageUrls)) }
-//
-//                    }.addOnFailureListener { e ->
-//                        _uiState.update {
-//                            it.copy(error = "Error al subir la imagen")
-//                        }
-//                    }
-//                }
-//            }
-//
-////            val uploadTask = storageReference.putFile(uri).continueWithTask { task ->
-////                if (!task.isSuccessful) {
-////                    task.exception?.let {
-////                        throw it
-////                    }
-////                }
-////                storageReference.downloadUrl
-////            }
-////            uploadTasks.add(uploadTask)
-////            Tasks.whenAllSuccess<Uri>(uploadTasks).addOnSuccessListener { urls ->
-////                val imageUrls = urls.map { it.toString() }
-////                _uiState.update { it.copy(place = it.place.copy(images = it.place.images + imageUrls)) }
-////            }
-//        }
-//    }
-
-/////// -----  ELIMINAR IMAGEN CON URL  -------  /////////
-
-//    val imageUrl = it.place.images.last()
-//
-//
-//    val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
-//
-//    storageReference.delete().addOnSuccessListener {
-//        _uiState.update { it.copy(success = "La imagen se ha eliminado correctamente.") }
-//    }.addOnFailureListener { e ->
-//        _uiState.update { it.copy(error = "Ha ocurrido un error al eliminar la imagen.") }
-//    }
 
     private fun saveVivacPlace() {
         viewModelScope.launch {
@@ -401,7 +344,7 @@ class AddPlaceViewModel @Inject constructor(
                 if (imagesDeleted == totalImages) {
                     uploadImages(_uiState.value.uris)
                 }
-            }.addOnFailureListener { e ->
+            }.addOnFailureListener {
                 _uiState.update { it.copy(error = stringProvider.getString(R.string.error_deleting_image)) }
             }
         }

@@ -1,7 +1,6 @@
 package com.example.vivacventuresmobile.ui.screens.addplace
 
 import android.net.Uri
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDate
 

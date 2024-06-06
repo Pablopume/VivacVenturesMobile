@@ -3,7 +3,6 @@ package com.example.vivacventuresmobile.data.sources.remote
 import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.FavouritesVivacPlaceResponse
 import com.example.vivacventuresmobile.data.model.VivacPlaceResponse
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -40,7 +39,10 @@ interface VivacPlacesService {
     suspend fun updateVivacPlace(@Body vivacPlace: VivacPlaceResponse): Response<Boolean>
 
     @GET(Constantes.NEARBY)
-    suspend fun getNearbyPlaces(@Query(Constantes.LATITUDE) latitude: Double, @Query(Constantes.LONGITUDE) longitude: Double): Response<List<FavouritesVivacPlaceResponse>>
+    suspend fun getNearbyPlaces(
+        @Query(Constantes.LATITUDE) latitude: Double,
+        @Query(Constantes.LONGITUDE) longitude: Double
+    ): Response<List<FavouritesVivacPlaceResponse>>
 
     @DELETE(Constantes.DELETE)
     suspend fun deleteVivacPlace(@Path(Constantes.ID) id: Int): Response<Unit>

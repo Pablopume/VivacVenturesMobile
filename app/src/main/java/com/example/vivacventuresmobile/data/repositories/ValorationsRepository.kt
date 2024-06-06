@@ -1,10 +1,7 @@
 package com.example.vivacventuresmobile.data.repositories
 
-import com.example.vivacventuresmobile.data.sources.remote.FavouritesRemoteDataSource
 import com.example.vivacventuresmobile.data.sources.remote.ValorationsRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.Valoration
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
-import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.utils.NetworkResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

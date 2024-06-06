@@ -90,7 +90,7 @@ class MyFavouritesViewModel @Inject constructor(
                         }
 
                         is NetworkResult.Success -> {
-                            result.data?.let { friends ->
+                            result.data?.let {
                                 _uiState.update {
                                     it.copy(
                                         error = stringProvider.getString(R.string.list_unshared),
@@ -137,7 +137,7 @@ class MyFavouritesViewModel @Inject constructor(
                         }
 
                         is NetworkResult.Success -> {
-                            result.data?.let { friends ->
+                            result.data?.let {
                                 _uiState.update {
                                     it.copy(
                                         error = stringProvider.getString(R.string.list_shared),
@@ -279,7 +279,7 @@ class MyFavouritesViewModel @Inject constructor(
                         }
 
                         is NetworkResult.Success -> {
-                            result.data?.let { places ->
+                            result.data?.let {
                                 _uiState.update {
                                     it.copy(
                                         error = stringProvider.getString(R.string.list_deleted),

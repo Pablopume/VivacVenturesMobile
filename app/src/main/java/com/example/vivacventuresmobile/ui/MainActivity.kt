@@ -3,14 +3,12 @@ package com.example.vivacventuresmobile.ui
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.core.animation.doOnEnd
@@ -18,9 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.dataStore
 import com.example.vivacventuresmobile.data.preferences.AppPreferencesSerialize
+import com.example.vivacventuresmobile.ui.common.ConstantesPantallas.API_KEY
 import com.example.vivacventuresmobile.ui.navigation.Navigation
 import com.example.vivacventuresmobile.ui.theme.VivacVenturesMobileTheme
-import com.example.vivacventuresmobile.utils.StringProvider
 import com.google.android.libraries.places.api.Places
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 val zoomX = ObjectAnimator.ofFloat(
                     screen.iconView,
                     View.SCALE_X,
-                    0.4f,
+                    0.6f,
                     0.0f
                 )
                 zoomX.interpolator = OvershootInterpolator()
@@ -53,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val zoomY = ObjectAnimator.ofFloat(
                     screen.iconView,
                     View.SCALE_Y,
-                    0.4f,
+                    0.6f,
                     0.0f
                 )
                 zoomY.interpolator = OvershootInterpolator()
@@ -65,14 +63,14 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyAJhTuHWdTmBCIsJkZ-_QrwxmfPvw3Qx5I")
+            Places.initialize(applicationContext, API_KEY)
         }
         setContent {
             VivacVenturesMobileTheme {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(dataStore, StringProvider(this))
+                    Navigation(dataStore)
                 }
             }
         }

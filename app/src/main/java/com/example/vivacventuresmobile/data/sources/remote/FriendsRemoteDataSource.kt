@@ -6,11 +6,8 @@ import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.data.model.toFriend
 import com.example.vivacventuresmobile.data.model.toFriendRequest
 import com.example.vivacventuresmobile.data.model.toFriendRequestResponse
-import com.example.vivacventuresmobile.data.model.toVivacPlace
 import com.example.vivacventuresmobile.domain.modelo.Friend
 import com.example.vivacventuresmobile.domain.modelo.FriendRequest
-import com.example.vivacventuresmobile.domain.modelo.Report
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
 import javax.inject.Inject
@@ -80,7 +77,8 @@ class FriendsRemoteDataSource @Inject constructor(
 
     suspend fun acceptFriendRequest(friendRequest: FriendRequest): NetworkResult<Unit> {
         return try {
-            val response = friendsService.acceptFriendRequest(friendRequest.toFriendRequestResponse())
+            val response =
+                friendsService.acceptFriendRequest(friendRequest.toFriendRequestResponse())
             if (response.isSuccessful) {
                 NetworkResult.Success(Unit)
             } else {

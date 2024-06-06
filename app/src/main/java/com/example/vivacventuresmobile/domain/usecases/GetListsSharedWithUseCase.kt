@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class GetListsSharedWithUseCase @Inject constructor(private var repository: ListsRepository) {
 
-    suspend operator fun invoke(listId: Int) =
+    operator fun invoke(listId: Int) =
         repository.getListSharedWith(listId)
 }

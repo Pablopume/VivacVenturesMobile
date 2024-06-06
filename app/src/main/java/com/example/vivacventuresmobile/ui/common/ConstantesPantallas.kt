@@ -22,4 +22,6 @@ object ConstantesPantallas {
     const val ADDLUGAR = "addlugar/"
     const val ADDLUGAR_EXISTS = "addlugar/{exists}"
     const val EXISTS = "exists"
+
+    const val API_KEY = "AIzaSyAJhTuHWdTmBCIsJkZ-_QrwxmfPvw3Qx5I"
 }

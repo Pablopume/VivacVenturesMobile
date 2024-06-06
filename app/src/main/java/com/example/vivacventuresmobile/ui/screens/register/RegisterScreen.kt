@@ -36,7 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
-import com.example.vivacventuresmobile.common.Constantes
 import com.example.vivacventuresmobile.ui.screens.login.HeaderImage
 import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 

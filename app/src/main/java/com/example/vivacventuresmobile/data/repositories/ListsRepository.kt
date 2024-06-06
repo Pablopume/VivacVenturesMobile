@@ -1,10 +1,7 @@
 package com.example.vivacventuresmobile.data.repositories
 
-import com.example.vivacventuresmobile.data.sources.remote.FavouritesRemoteDataSource
 import com.example.vivacventuresmobile.data.sources.remote.ListsRemoteDataSource
 import com.example.vivacventuresmobile.domain.modelo.ListFavs
-import com.example.vivacventuresmobile.domain.modelo.VivacPlace
-import com.example.vivacventuresmobile.domain.modelo.VivacPlaceList
 import com.example.vivacventuresmobile.utils.NetworkResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +31,10 @@ class ListsRepository @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    fun getListsByUserAndVivacPlace(username: String, id: Int): Flow<NetworkResult<List<ListFavs>>> {
+    fun getListsByUserAndVivacPlace(
+        username: String,
+        id: Int
+    ): Flow<NetworkResult<List<ListFavs>>> {
         return flow {
             emit(NetworkResult.Loading())
             val result = remoteDataSource.getListsByUserAndVivacPlace(username, id)

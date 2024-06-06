@@ -111,7 +111,7 @@ class DetallePlaceViewModel @Inject constructor(
                 if (imagesDeleted == totalImages) {
                     deletePlace()
                 }
-            }.addOnFailureListener { e ->
+            }.addOnFailureListener {
                 _uiState.update { it.copy(error = stringProvider.getString(R.string.error_deleting_image)) }
             }
         }
@@ -356,6 +356,7 @@ class DetallePlaceViewModel @Inject constructor(
                         }
 
                         is NetworkResult.Loading -> {
+                            //do nothing
                         }
                     }
                 }
@@ -394,6 +395,7 @@ class DetallePlaceViewModel @Inject constructor(
                         }
 
                         is NetworkResult.Loading -> {
+                            //do nothing
                         }
                     }
                 }

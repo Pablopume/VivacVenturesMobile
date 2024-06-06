@@ -280,7 +280,6 @@ fun DetallePlace(
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = bottomNavigationBar
     ) { innerPadding ->
         val dismissError = stringResource(R.string.dismiss)
         LaunchedEffect(state.error) {

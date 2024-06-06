@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.IntentSender
 import android.location.Geocoder
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,11 +23,11 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class LocationState {
     object NoPermission : LocationState()
@@ -49,7 +48,7 @@ class LocationViewModel @Inject constructor() : ViewModel() {
     private val _uiState: MutableStateFlow<MapState> by lazy {
         MutableStateFlow(MapState())
     }
-    val uiState: MutableStateFlow<MapState> = _uiState
+    val uiState: StateFlow<MapState> = _uiState
 
     fun handleEvent(event: AddLocationEvent) {
         when (event) {

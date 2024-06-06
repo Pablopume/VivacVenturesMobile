@@ -47,8 +47,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.domain.modelo.ListFavs
-import com.example.vivacventuresmobile.ui.screens.listplaces.ListPlacesEvent
-import com.example.vivacventuresmobile.ui.screens.map.LoadingAnimation
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -145,7 +143,7 @@ private fun MyListsContent(
         },
         bottomBar = bottomNavigationBar,
         floatingActionButton = {
-            FloatingActionButton(onClick = { createListDialogOpen = true}) {
+            FloatingActionButton(onClick = { createListDialogOpen = true }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.add)
@@ -164,39 +162,39 @@ private fun MyListsContent(
             }
         }
         Column {
-                if (state.list.isEmpty() && !state.firstTime) {
-                    Box(
+            if (state.list.isEmpty() && !state.firstTime) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.you_have_no_lists_yet),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+                SwipeRefresh(state = swipeRefreshState, onRefresh = { getLists() }) {
+                    LazyColumn(
                         modifier = Modifier
+                            .padding(innerPadding)
                             .fillMaxSize()
-                            .padding(innerPadding),
-                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = stringResource(R.string.you_have_no_lists_yet),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                } else {
-                    val swipeRefreshState = rememberSwipeRefreshState(state.loading)
-                    SwipeRefresh(state = swipeRefreshState, onRefresh = { getLists() }) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
-                        ) {
-                            items(
-                                items = state.list,
-                                key = { list -> list.id }
-                            ) { list ->
-                                ListItem(
-                                    list = list,
-                                    onListSelected = onListSelected
-                                )
-                            }
+                        items(
+                            items = state.list,
+                            key = { list -> list.id }
+                        ) { list ->
+                            ListItem(
+                                list = list,
+                                onListSelected = onListSelected
+                            )
                         }
                     }
                 }
+            }
 
         }
 

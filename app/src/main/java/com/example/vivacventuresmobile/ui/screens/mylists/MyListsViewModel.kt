@@ -81,7 +81,7 @@ class MyListsViewModel @Inject constructor(
                             }
 
                             is NetworkResult.Success -> {
-                                result.data?.let { places ->
+                                result.data?.let {
                                     _uiState.update {
                                         it.copy(
                                             error = stringProvider.getString(R.string.list_created),

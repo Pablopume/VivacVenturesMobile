@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class AddFavouriteUseCase @Inject constructor(private var repository: ListsRepository) {
 
-    suspend operator fun invoke(listId: Int, vivacId: Int) =
+    operator fun invoke(listId: Int, vivacId: Int) =
         repository.addFavoriteToList(listId, vivacId)
 }

@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class GetListsUseCase @Inject constructor(private var repository: ListsRepository) {
 
-    suspend operator fun invoke(username: String) =
+    operator fun invoke(username: String) =
         repository.getLists(username)
 }

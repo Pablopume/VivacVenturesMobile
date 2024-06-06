@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import com.example.vivacventuresmobile.R
 import com.example.vivacventuresmobile.data.preferences.AppPreferences
