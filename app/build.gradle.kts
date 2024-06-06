@@ -32,7 +32,7 @@ android {
         }
         create("production") {
             dimension = "env"
-            buildConfigField("String", "API_URL", "\"http://informatica.iesquevedo.es\"")
+            buildConfigField("String", "API_URL", "\"https://informatica.iesquevedo.es\"")
         }
     }
 
