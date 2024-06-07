@@ -37,11 +37,7 @@ class MapViewModel @Inject constructor(
     }
     val uiState: StateFlow<MapState> = _uiState
 
-
-    private val permissions = arrayOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-    )
+    private var isCameraCentered = false
     private lateinit var fusedLocationCLient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
@@ -121,7 +117,7 @@ class MapViewModel @Inject constructor(
                     when (result) {
                         is NetworkResult.Error -> {
                             _uiState.update {
-                                if (result.message == "Relogin") {
+                                if (result.message == stringProvider.getString(R.string.relogin)) {
                                     it.copy(
                                         loading = false,
                                         relogin = true
@@ -177,11 +173,13 @@ class MapViewModel @Inject constructor(
         locationCallback.let {
             fusedLocationCLient.removeLocationUpdates(it)
         }
+
+        isCameraCentered = false
     }
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
-        if (_uiState.value.isLocationEnabled) {
+        if (_uiState.value.isLocationEnabled && !isCameraCentered) {
             locationCallback.let {
                 val locationRequest = LocationRequest.Builder(
                     Priority.PRIORITY_HIGH_ACCURACY, 100
@@ -197,6 +195,7 @@ class MapViewModel @Inject constructor(
                     Looper.getMainLooper()
                 )
             }
+            isCameraCentered = true
         } else {
             locationCallback.let {
                 fusedLocationCLient.removeLocationUpdates(it)
