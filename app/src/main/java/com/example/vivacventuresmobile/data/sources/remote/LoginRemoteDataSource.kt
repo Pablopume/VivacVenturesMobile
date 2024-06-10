@@ -21,7 +21,7 @@ class LoginRemoteDataSource @Inject constructor(
                 NetworkResult.Success(Unit)
             } else {
                 if (response.code() == 409) {
-                    NetworkResult.Error(Constantes.USER_EXISTS)
+                    NetworkResult.Error(stringProvider.getString(R.string.user_exists))
                 } else {
                     return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
                         NetworkResult.Error("${response.code()} ${response.errorBody()}")
@@ -47,9 +47,9 @@ class LoginRemoteDataSource @Inject constructor(
                 }
             } else {
                 if (response.code() == 403) {
-                    NetworkResult.Error(Constantes.USERORPASS_INCORRECT)
-                } else if (response.code() == 401) {
-                    NetworkResult.Error(Constantes.VERIFY_EMAIL)
+                    NetworkResult.Error(stringProvider.getString(R.string.incorrect_user_or_pass))
+                } else if (response.code() == 412) {
+                    NetworkResult.Error(stringProvider.getString(R.string.verify_email))
                 } else {
                     return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
                         NetworkResult.Error("${response.code()} ${response.errorBody()}")

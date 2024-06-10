@@ -35,7 +35,7 @@
     <string name="continuar">Continue</string>
     <string name="back">Back</string>
     <string name="user_or_pass_empty">Empty username or password</string>
-    <string name="user_registered">"User registered."</string>
+    <string name="user_registered">User registered, activate the account in your email.</string>
     <string name="welcome_user">Welcome, %s!</string>
     <string name="place">Place</string>
     <string name="my_places">My places</string>
@@ -152,4 +152,7 @@
     <string name="no_account_for_that_mail">There is no account with that email</string>
     <string name="relogin">Relogin</string>
     <string name="add_images">Add images from the place</string>
+    <string name="user_exists">The username or email already exists</string>
+    <string name="verify_email">Unverified user, please check your email to verify</string>
+    <string name="incorrect_user_or_pass">Incorrect username or password</string>
 </resources>

@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 interface LoginService {
     @POST(Constantes.REGISTER_PATH)
-    suspend fun register(@Body credentials: Credentials): Response<Credentials>
+    suspend fun register(@Body credentials: Credentials): Response<Unit>
 
     @GET(Constantes.LOGIN_PATH)
     suspend fun login(@Query(Constantes.USERNAME) username: String, @Query(Constantes.PASSWORD)password: String): Response<LoginToken>

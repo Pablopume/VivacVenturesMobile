@@ -3,9 +3,6 @@ package com.example.vivacventuresmobile.common
 object Constantes {
     const val AUTHORIZATION = "Authorization"
     const val BEARER = "Bearer "
-    const val USERORPASS_INCORRECT = "Usuario o contraseña incorrectos"
-    const val USER_EXISTS = "El usuario o el email ya existe"
-    const val ERROR_DESCONOCIDO = "Error desconocido"
     const val DATA_STORE = "data_store"
     const val REFRESHTOKEN = "refresh_token"
     const val ACCESS_TOKEN = "access_token"
@@ -15,7 +12,6 @@ object Constantes {
     const val FORGOTPASSWORDPATH = "/vivacventures/auth/forgotPassword"
     const val RESETPASS = "/vivacventures/auth/resetPassword"
     const val TOKEN = "refreshToken"
-    const val VERIFY_EMAIL = "Verify your email"
     const val EMAIL = "email"
     const val PASSWORD = "password"
     const val NEWPASSWORD = "newPassword"

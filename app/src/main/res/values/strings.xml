@@ -34,7 +34,7 @@
     <string name="continuar">Continuar</string>
     <string name="back">Volver</string>
     <string name="user_or_pass_empty">Usuario o contraseña vacíos</string>
-    <string name="user_registered">"Usuario registrado."</string>
+    <string name="user_registered">Usuario registrado, active la cuenta en su correo electrónico.</string>
     <string name="welcome_user">¡Bienvenido %s!</string>
     <string name="place">Place</string>
     <string name="my_places">Mis sitios</string>
@@ -151,5 +151,7 @@
     <string name="no_account_for_that_mail">No existe una cuenta con ese correo</string>
     <string name="relogin">Relogin</string>
     <string name="add_images">Añade Imágenes del lugar</string>
-
+    <string name="user_exists">El usuario o el email ya existe</string>
+    <string name="verify_email">Usuario no verificado, diríjase a su correo para verificarlo</string>
+    <string name="incorrect_user_or_pass">Usuario o contraseña incorrectos</string>
 </resources>
