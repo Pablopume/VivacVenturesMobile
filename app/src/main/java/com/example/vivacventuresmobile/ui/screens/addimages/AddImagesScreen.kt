@@ -125,9 +125,9 @@ fun ImagesPicker2(
     state: AddPlaceState,
     exists: Boolean
 ) {
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> onPicturesChange(uris) }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> uri?.let { onPicturesChange(listOf(it)) } }
     )
 
     Column(
@@ -150,7 +150,7 @@ fun ImagesPicker2(
                     uris = state.uris,
                     images = state.place.images,
                     onImageClick = {
-                        multiplePhotoPickerLauncher.launch(
+                        singlePhotoPickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     }
