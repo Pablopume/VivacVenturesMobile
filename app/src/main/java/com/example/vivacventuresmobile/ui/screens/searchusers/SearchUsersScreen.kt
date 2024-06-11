@@ -190,7 +190,6 @@ fun MyFriendsListItem(
                 text = friend.username,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.weight(1f),
-                color = Color.Black
             )
             Text(
                 text = if (friend.count == 1) {
@@ -200,7 +199,6 @@ fun MyFriendsListItem(
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
-                color = Color.Black
             )
         }
     }

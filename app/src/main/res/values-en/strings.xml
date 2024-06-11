@@ -22,7 +22,7 @@
     <string name="capacity_">Capacity</string>
     <string name="price">PRICE</string>
     <string name="price_">Price</string>
-    <string name="date">DATE:</string>
+    <string name="date">DATE</string>
     <string name="date_">Date</string>
     <string name="select_date">Select a date</string>
     <string name="select_type">Select a place type</string>
@@ -147,6 +147,7 @@
     <string name="map">Map</string>
     <string name="account">Account</string>
     <string name="already_reviewed">You have already rated this place</string>
+    <string name="already_reported">You have already reported this place</string>
     <string name="error_occurred">An error occurred</string>
     <string name="incorrect_temporal_password">The entered temporary password is incorrect</string>
     <string name="no_account_for_that_mail">There is no account with that email</string>

@@ -21,7 +21,7 @@
     <string name="capacity_">Capacidad</string>
     <string name="price">PRECIO</string>
     <string name="price_">Precio</string>
-    <string name="date">FECHA:</string>
+    <string name="date">FECHA</string>
     <string name="date_">Fecha</string>
     <string name="select_date">Selecciona una fecha</string>
     <string name="select_type">Selecciona un tipo de lugar</string>
@@ -115,7 +115,7 @@
     <string name="to_notifications">A notificaciones</string>
     <string name="share">Compartir</string>
     <string name="accept">Aceptar</string>
-    <string name="reject">Reject</string>
+    <string name="reject">Rechazar</string>
     <string name="start_creating_places">Empieza a crear lugares!</string>
     <string name="search_users">Buscar usuarios</string>
     <string name="search_user">Buscar usuario</string>
@@ -146,6 +146,7 @@
     <string name="map">Mapa</string>
     <string name="account">Cuenta</string>
     <string name="already_reviewed">Ya has valorado este lugar</string>
+    <string name="already_reported">Ya has reportado este lugar</string>
     <string name="error_occurred">An error occurred</string>
     <string name="incorrect_temporal_password">La contraseña temporal introducida es incorrecta</string>
     <string name="no_account_for_that_mail">No existe una cuenta con ese correo</string>

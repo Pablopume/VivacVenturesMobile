@@ -22,7 +22,7 @@
     <string name="capacity_">Capacidade</string>
     <string name="price">PREÇO</string>
     <string name="price_">Preço</string>
-    <string name="date">DATA:</string>
+    <string name="date">DATA</string>
     <string name="date_">Data</string>
     <string name="select_date">Selecione uma data</string>
     <string name="select_type">Selecione um tipo de lugar</string>
@@ -147,6 +147,7 @@
     <string name="map">Mapa</string>
     <string name="account">Conta</string>
     <string name="already_reviewed">Você já avaliou este lugar</string>
+    <string name="already_reported">Você já denunciou este lugar</string>
     <string name="error_occurred">Ocorreu um erro</string>
     <string name="incorrect_temporal_password">A senha temporária inserida está incorreta</string>
     <string name="no_account_for_that_mail">Não existe uma conta com esse email</string>

@@ -21,7 +21,11 @@ class ReportsRemoteDataSource @Inject constructor(
                 return if (BuildConfig.FLAVOR == Constantes.DEVELOPMENT) {
                     NetworkResult.Error("${response.code()} ${response.errorBody()}")
                 } else {
-                    NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                    if (response.code() == 400) {
+                        NetworkResult.Error(stringProvider.getString(R.string.already_reported))
+                    } else {
+                        NetworkResult.Error(stringProvider.getString(R.string.error_occurred))
+                    }
                 }
             }
         } catch (e: Exception) {

@@ -175,8 +175,10 @@ fun AddPlace(
                     Text(text = stringResource(id = R.string.capacity))
                     CapacityField(state.place.capacity, onCapacityChange)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    Text(text = stringResource(id = R.string.price))
-                    PriceField(state.place.price, onPriceChange)
+                    if (state.place.type != stringResource(R.string.vivac) && state.place.type != stringResource(R.string.refuge) && state.place.type.isNotEmpty()){
+                        Text(text = stringResource(id = R.string.price))
+                        PriceField(state.place.price, onPriceChange)
+                    }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Column(
@@ -197,7 +199,6 @@ fun AddPlace(
 @Composable
 fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
     val openDialog = remember { mutableStateOf(false) }
-    //Text con on click que pone el openDialog a true
     Text(
         text = if (date == LocalDate.MIN) stringResource(id = R.string.select_date) else date.toString(),
         modifier = Modifier.clickable { openDialog.value = true }
@@ -365,12 +366,9 @@ fun ContinueButton(
 @Composable
 fun AddButton(
     onAddPlaceClick: () -> Unit,
-//              onViewDetalle: (VivacPlace) -> Unit,
-//              place: VivacPlace
 ) {
     FloatingActionButton(onClick = {
         onAddPlaceClick()
-//        onViewDetalle(place)
     }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
