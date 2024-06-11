@@ -197,6 +197,11 @@ class AddPlaceViewModel @Inject constructor(
             updateVivacPlace()
             return
         }
+        if (uiState.value.exists && imageUris.isEmpty()) {
+            saveVivacPlace()
+            return
+        }
+
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMAN)
         val imageUrls = mutableListOf<String>()
 
