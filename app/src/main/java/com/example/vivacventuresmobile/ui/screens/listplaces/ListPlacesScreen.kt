@@ -138,9 +138,10 @@ fun ListPlaces(
                         },
                         label = { Text(stringResource(R.string.searcher)) },
                         modifier = Modifier
-                            .align(Alignment.CenterVertically),
+                            .align(Alignment.CenterVertically)
+                            .weight(0.7f),
                     )
-                    Box(modifier = Modifier.align(Alignment.CenterVertically)) {
+                    Box(modifier = Modifier.align(Alignment.CenterVertically).weight(0.3f)) {
                         DropDown(onGetVivacPlacesByType = onGetVivacPlacesByType)
                     }
                 }

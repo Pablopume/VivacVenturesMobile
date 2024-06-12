@@ -123,7 +123,6 @@ fun DetallePlaceScreen(
         state.value,
         { viewModel.handleEvent(DetallePlaceEvent.ErrorVisto) },
         { viewModel.handleEvent(DetallePlaceEvent.GetDetalle(it)) },
-        bottomNavigationBar,
         { viewModel.handleEvent(DetallePlaceEvent.AddFavourite(it)) },
         { viewModel.handleEvent(DetallePlaceEvent.DeleteFavourite(it)) },
         { viewModel.handleEvent(DetallePlaceEvent.DeletePlace()) },
@@ -150,7 +149,6 @@ fun DetallePlace(
     state: DetallePlaceState,
     errorVisto: () -> Unit,
     getDetalle: (Int) -> Unit,
-    bottomNavigationBar: @Composable () -> Unit,
     favourite: (Int) -> Unit,
     unfavourite: (Int) -> Unit,
     delete: () -> Unit,
@@ -234,30 +232,39 @@ fun DetallePlace(
                     IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
+                            contentDescription = stringResource(R.string.back),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
-                title = { Text(text = state.vivacPlace?.type?.uppercase() ?: "") },
+                title = {
+                    Text(
+                        text = state.vivacPlace?.type?.uppercase() ?: "",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 actions = {
                     if (state.vivacPlace?.username?.lowercase() == state.username.lowercase()) {
                         IconButton(onClick = { delete() }) {
                             Icon(
                                 Icons.Filled.Delete,
-                                contentDescription = stringResource(R.string.delete)
+                                contentDescription = stringResource(R.string.delete),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         IconButton(onClick = { onUpdatePlace(state.vivacPlace.id) }) {
                             Icon(
                                 Icons.Filled.Edit,
-                                contentDescription = stringResource(R.string.edit)
+                                contentDescription = stringResource(R.string.edit),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     } else {
                         IconButton(onClick = { reportDialogOpen = true }) {
                             Icon(
                                 Icons.Filled.Report,
-                                contentDescription = stringResource(R.string.report)
+                                contentDescription = stringResource(R.string.report),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -265,14 +272,16 @@ fun DetallePlace(
                         IconButton(onClick = { favsDialogOpen = true }) {
                             Icon(
                                 Icons.Filled.Favorite,
-                                contentDescription = stringResource(R.string.unfavorite)
+                                contentDescription = stringResource(R.string.unfavorite),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     } else {
                         IconButton(onClick = { favsDialogOpen = true }) {
                             Icon(
                                 Icons.Filled.FavoriteBorder,
-                                contentDescription = stringResource(R.string.favorite)
+                                contentDescription = stringResource(R.string.favorite),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -313,11 +322,13 @@ fun DetallePlace(
                     ImageCarousel(images = state.vivacPlace?.images ?: emptyList())
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     TextDescription(description = state.vivacPlace?.description ?: "")
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
-                    MapLocation(
-                        lat = state.vivacPlace?.lat ?: 0.0,
-                        lon = state.vivacPlace?.lon ?: 0.0
-                    )
+                    if (state.vivacPlace?.lat != 0.0 && state.vivacPlace?.lon != 0.0 && state.vivacPlace?.lat != null && state.vivacPlace?.lon != null) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
+                        MapLocation(
+                            lat = state.vivacPlace?.lat ?: 0.0,
+                            lon = state.vivacPlace?.lon ?: 0.0
+                        )
+                    }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.medium_padding)))
                     InfoTable(
                         price = state.vivacPlace?.price ?: 0.0,
@@ -384,7 +395,11 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.AttachMoney, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Icon(
+                    Icons.Filled.AttachMoney,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
                 Text(
                     text = stringResource(R.string.price_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -400,7 +415,11 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.People, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Icon(
+                    Icons.Filled.People,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
                 Text(
                     text = stringResource(R.string.capacity_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -416,7 +435,11 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Icon(
+                    Icons.Filled.DateRange,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
                 Text(
                     text = stringResource(R.string.date_),
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -434,7 +457,11 @@ fun InfoTable(price: Double, capacity: Int, date: String, valorations: List<Valo
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                     Text(
                         text = stringResource(R.string.average_rating),
                         modifier = Modifier.padding(start = dimensionResource(R.dimen.small_padding))
@@ -754,7 +781,8 @@ fun MapLocation(lat: Double, lon: Double) {
         uiSettings = uiSettings,
         cameraPositionState = CameraPositionState(cameraPosition.value),
         onMapClick = {
-            val gmmIntentUri = Uri.parse("geo:$lat,$lon?q=$lat,$lon")
+            val gmmIntentUri =
+                Uri.parse("geo:$lat,$lon?q=$lat,$lon")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             if (mapIntent.resolveActivity(context.packageManager) != null) {
