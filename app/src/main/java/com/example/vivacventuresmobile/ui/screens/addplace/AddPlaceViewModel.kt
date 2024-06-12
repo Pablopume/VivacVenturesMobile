@@ -205,7 +205,7 @@ class AddPlaceViewModel @Inject constructor(
             return
         }
 
-        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.GERMAN) // SSS for milliseconds
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.GERMAN)
         val imageUrls = mutableListOf<String>()
         val uploadTasks = mutableListOf<Task<Uri>>()
 
@@ -354,8 +354,6 @@ class AddPlaceViewModel @Inject constructor(
             val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(image)
             storageReference.delete().addOnSuccessListener {
                 imagesDeleted++
-
-//                _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
 
                 if (imagesDeleted == totalImages) {
                     uploadImages(_uiState.value.uris)
