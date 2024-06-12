@@ -16,7 +16,7 @@ sealed class AddPlaceEvent {
     class OnLocationChange(val location: LatLng) : AddPlaceEvent()
     class AddUsername(val userName: String , val int : Int) : AddPlaceEvent()
     class AddUri(val pictures: List<Uri>) : AddPlaceEvent()
-    class DeleteUri(val num: Int, val imagen : Boolean) : AddPlaceEvent()
+    class DeleteUri(val stringimage: String, val imagen : Boolean) : AddPlaceEvent()
     class DetailsCompleted() : AddPlaceEvent()
     class LocationCompleted() : AddPlaceEvent()
     class Vuelta() : AddPlaceEvent()

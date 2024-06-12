@@ -55,7 +55,7 @@ fun AddImages(
     onAddDone: () -> Unit,
     onUpdateDone: () -> Unit,
     addUri: (List<Uri>) -> Unit,
-    deleteUri: (Int, Boolean) -> Unit,
+    deleteUri: (String, Boolean) -> Unit,
     addPlace: () -> Unit,
     updatePlace: () -> Unit,
     vuelta: () -> Unit,
@@ -98,7 +98,7 @@ fun AddImages(
                     .fillMaxSize()
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween // Distributes space evenly
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 ImagesPicker2(
                     addUri,
@@ -118,7 +118,7 @@ fun AddImages(
 @Composable
 fun ImagesPicker2(
     onPicturesChange: (List<Uri>) -> Unit,
-    deleteUri: (Int, Boolean) -> Unit,
+    deleteUri: (String, Boolean) -> Unit,
     vuelta: () -> Unit,
     addPlace: () -> Unit,
     updatePlace: () -> Unit,
@@ -129,6 +129,11 @@ fun ImagesPicker2(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> uri?.let { onPicturesChange(listOf(it)) } }
     )
+
+    val combinedList = mutableListOf<Pair<String, Boolean>>().apply {
+        addAll(state.place.images.map { it to true })
+        addAll(state.uris.map { it.toString() to false })
+    }
 
     Column(
         modifier = Modifier
@@ -146,9 +151,8 @@ fun ImagesPicker2(
             repeat(3) { index ->
                 ImageN(
                     index = index,
-                    onDelete = { idx, isImage -> deleteUri(idx, isImage) },
-                    uris = state.uris,
-                    images = state.place.images,
+                    onDelete = { idx , isImage -> deleteUri(idx, isImage) },
+                    combinedList = combinedList,
                     onImageClick = {
                         singlePhotoPickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -177,20 +181,17 @@ fun ImagesPicker2(
 @Composable
 fun ImageN(
     index: Int,
-    onDelete: (Int, Boolean) -> Unit,
-    uris: List<Uri>,
-    images: List<String>,
+    onDelete: (String, Boolean) -> Unit,
+    combinedList: List<Pair<String, Boolean>>,
     onImageClick: () -> Unit
 ) {
-    val imageUrl = if (images.size > index) {
-        images[index]
+    val defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2FAddImage2.png?alt=media&token=445adaff-d0d1-4ddd-8d41-aa293b632f5f"
+    val (imageUrl, isImageStored) = if (index < combinedList.size) {
+        combinedList[index]
     } else {
-        if (uris.size > index) {
-            uris[index].toString()
-        } else {
-            "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2FAddImage2.png?alt=media&token=445adaff-d0d1-4ddd-8d41-aa293b632f5f"
-        }
+        defaultImageUrl to false
     }
+
 
     val image: Painter = rememberAsyncImagePainter(imageUrl)
 
@@ -212,12 +213,7 @@ fun ImageN(
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.medium_padding)))
         Button(onClick = {
-            if (images.size > index) {
-                onDelete(index, true)
-            } else {
-                onDelete(index, false)
-            }
-        }) {
+            onDelete(imageUrl, isImageStored) }) {
             Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete))
         }
     }

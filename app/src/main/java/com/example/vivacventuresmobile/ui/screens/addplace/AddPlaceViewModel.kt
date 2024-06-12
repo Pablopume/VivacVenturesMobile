@@ -9,6 +9,8 @@ import com.example.vivacventuresmobile.domain.usecases.GetVivacPlaceUseCase
 import com.example.vivacventuresmobile.domain.usecases.UpdatePlaceUseCase
 import com.example.vivacventuresmobile.utils.NetworkResult
 import com.example.vivacventuresmobile.utils.StringProvider
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.logging.Logger
 import javax.inject.Inject
 
 
@@ -95,7 +98,7 @@ class AddPlaceViewModel @Inject constructor(
             }
 
             is AddPlaceEvent.DeleteUri -> {
-                deleteUri(event.num, event.imagen)
+                deleteUri(event.stringimage, event.imagen)
             }
 
             is AddPlaceEvent.DetailsCompleted -> {
@@ -193,42 +196,51 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     private fun uploadImages(imageUris: List<Uri>) {
-        if (uiState.value.exists && uiState.value.uris.isEmpty()) {
+        if (uiState.value.exists && imageUris.isEmpty()) {
             updateVivacPlace()
             return
         }
-        if (uiState.value.exists && imageUris.isEmpty()) {
+        if (!uiState.value.exists && imageUris.isEmpty()) {
             saveVivacPlace()
             return
         }
 
-        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMAN)
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.GERMAN) // SSS for milliseconds
         val imageUrls = mutableListOf<String>()
+        val uploadTasks = mutableListOf<Task<Uri>>()
 
-        for ((index, uri) in imageUris.withIndex()) {
+        for (uri in imageUris) {
             val now = Date()
             val fileName: String = formatter.format(now)
             val storageReference =
                 FirebaseStorage.getInstance()
-                    .getReference("images/${uiState.value.place.username}" + "_" + fileName)
+                    .getReference("images/${uiState.value.place.username}_${fileName}_${System.currentTimeMillis()}")
 
-            storageReference.putFile(uri).addOnSuccessListener { taskSnapshot ->
-                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+            val uploadTask = storageReference.putFile(uri)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let { throw it }
+                    }
+                    storageReference.downloadUrl
+                }
+                .addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
                     imageUrls.add(downloadUrl)
-                    _uiState.update { it.copy(place = it.place.copy(images = it.place.images + imageUrls)) }
-
-
-                    if (index == imageUris.size - 1) {
-                        if (uiState.value.exists) updateVivacPlace()
-                        else saveVivacPlace()
-                    }
-                }.addOnFailureListener {
+                    _uiState.update { it.copy(place = it.place.copy(images = it.place.images + downloadUrl)) }
+                }
+                .addOnFailureListener {
                     _uiState.update {
                         it.copy(error = stringProvider.getString(R.string.error_uploading_image))
                     }
                 }
-            }
+
+            uploadTasks.add(uploadTask)
+        }
+
+        Tasks.whenAllComplete(uploadTasks).addOnCompleteListener {
+            Logger.getLogger("Victor").info("Guardar " + uiState.value.place.images)
+            if (uiState.value.exists) updateVivacPlace()
+            else saveVivacPlace()
         }
     }
 
@@ -285,10 +297,9 @@ class AddPlaceViewModel @Inject constructor(
         _uiState.update { it.copy(loading = true) }
         if (_uiState.value.imagesToDelete.isNotEmpty()) {
             deleteImages(_uiState.value.imagesToDelete)
-            return
+        } else {
+            uploadImages(_uiState.value.uris)
         }
-        uploadImages(_uiState.value.uris)
-
     }
 
     private fun updateVivacPlace() {
@@ -344,7 +355,7 @@ class AddPlaceViewModel @Inject constructor(
             storageReference.delete().addOnSuccessListener {
                 imagesDeleted++
 
-                _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
+//                _uiState.update { it.copy(error = stringProvider.getString(R.string.image_deleted_correctly)) }
 
                 if (imagesDeleted == totalImages) {
                     uploadImages(_uiState.value.uris)
@@ -355,40 +366,37 @@ class AddPlaceViewModel @Inject constructor(
         }
     }
 
-
-    private fun deleteUri(num: Int, imagen: Boolean) {
-        if (imagen) {
-            val imageUrl = uiState.value.place.images[num]
-            _uiState.update { it.copy(place = it.place.copy(images = it.place.images - imageUrl)) }
-            _uiState.update { it.copy(imagesToDelete = it.imagesToDelete + imageUrl) }
-        } else {
-            _uiState.update { currentState ->
-                val updatedUris = currentState.uris.toMutableList()
-                if (num >= 0 && num < updatedUris.size) {
-                    updatedUris.removeAt(num)
+    private fun deleteUri(uriOrImageUrl: String, isImageStored: Boolean) {
+        if (uriOrImageUrl != "https://firebasestorage.googleapis.com/v0/b/vivacventures-b3fae.appspot.com/o/images%2FAddImage2.png?alt=media&token=445adaff-d0d1-4ddd-8d41-aa293b632f5f"){
+            if (isImageStored) {
+                _uiState.update {
+                    val updatedImages = it.place.images.toMutableList().apply { remove(uriOrImageUrl) }
+                    it.copy(
+                        place = it.place.copy(images = updatedImages),
+                        imagesToDelete = it.imagesToDelete + uriOrImageUrl
+                    )
                 }
-                currentState.copy(uris = updatedUris)
+            } else {
+                _uiState.update { currentState ->
+                    val updatedUris = currentState.uris.toMutableList()
+                    val num = updatedUris.indexOfFirst { it.toString() == uriOrImageUrl }
+                    updatedUris.removeAt(num)
+                    currentState.copy(uris = updatedUris)
+                }
             }
         }
     }
 
     private fun addUri(pictures: List<Uri>) {
-        if (uiState.value.exists) {
-            if (uiState.value.uris.size + uiState.value.place.images.size < 3) {
-                for (uri in pictures) {
-                    _uiState.update { it.copy(uris = it.uris + uri) }
-                }
-            } else {
-                _uiState.update { it.copy(error = stringProvider.getString(R.string.only_three_images)) }
+
+        Logger.getLogger("Victor").info("Victor Add uri" + uiState.value.uris)
+
+        if (uiState.value.uris.size + uiState.value.place.images.size < 3) {
+            for (uri in pictures) {
+                _uiState.update { it.copy(uris = it.uris + uri) }
             }
         } else {
-            if (uiState.value.uris.size < 3) {
-                for (uri in pictures) {
-                    _uiState.update { it.copy(uris = it.uris + uri) }
-                }
-            } else {
-                _uiState.update { it.copy(error = stringProvider.getString(R.string.only_three_images)) }
-            }
+            _uiState.update { it.copy(error = stringProvider.getString(R.string.only_three_images)) }
         }
 
     }
