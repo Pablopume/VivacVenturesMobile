@@ -228,7 +228,7 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
                     },
                     enabled = confirmEnabled.value
                 ) {
-                    Text(stringResource(R.string.ok), color = Color.White)
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
@@ -237,7 +237,7 @@ fun DatePickerField(date: LocalDate, onDateChange: (LocalDate) -> Unit) {
                         openDialog.value = false
                     }
                 ) {
-                    Text(stringResource(R.string.cancel), color = Color.White)
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {

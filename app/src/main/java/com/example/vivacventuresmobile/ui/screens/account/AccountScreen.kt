@@ -140,14 +140,14 @@ fun PantallaAccount(
                                     showDialog.value = false
                                 }
                             ) {
-                                Text(stringResource(R.string.yes), color = Color.White)
+                                Text(stringResource(R.string.yes))
                             }
                         },
                         dismissButton = {
                             TextButton(
                                 onClick = { showDialog.value = false },
                             ) {
-                                Text(stringResource(R.string.no), color = Color.White)
+                                Text(stringResource(R.string.no))
                             }
                         }
                     )

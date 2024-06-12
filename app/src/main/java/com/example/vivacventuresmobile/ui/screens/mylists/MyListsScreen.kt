@@ -161,26 +161,25 @@ private fun MyListsContent(
                 errorVisto()
             }
         }
-        Column {
-            if (state.list.isEmpty() && !state.firstTime) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.you_have_no_lists_yet),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            } else {
-                val swipeRefreshState = rememberSwipeRefreshState(state.loading)
-                SwipeRefresh(state = swipeRefreshState, onRefresh = { getLists() }) {
+        Column(modifier = Modifier.padding(innerPadding)) {
+            val swipeRefreshState = rememberSwipeRefreshState(state.loading)
+            SwipeRefresh(state = swipeRefreshState, onRefresh = { getLists() }) {
+                if (state.list.isEmpty() && !state.firstTime) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(dimensionResource(id = R.dimen.medium_padding)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.you_have_no_lists_yet),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                } else {
                     LazyColumn(
                         modifier = Modifier
-                            .padding(innerPadding)
                             .fillMaxSize()
                     ) {
                         items(
@@ -194,6 +193,8 @@ private fun MyListsContent(
                         }
                     }
                 }
+
+
             }
 
         }

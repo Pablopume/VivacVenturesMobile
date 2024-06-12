@@ -32,7 +32,7 @@ class MyListsViewModel @Inject constructor(
     init {
         _uiState.value = MyListsState(
             error = null,
-            loading = false
+            loading = true
         )
     }
 
@@ -115,49 +115,51 @@ class MyListsViewModel @Inject constructor(
 
     private fun getLists() {
         _uiState.update { it.copy(loading = true) }
-        viewModelScope.launch {
-            getListsUseCase(_uiState.value.username)
-                .catch(action = { cause ->
-                    _uiState.update {
-                        it.copy(
-                            error = cause.message,
-                            loading = false
-                        )
-                    }
-                })
-                .collect { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    error = result.message,
-                                    loading = false,
-                                    firstTime = false
-                                )
-                            }
+        if (_uiState.value.username.isNotEmpty()) {
+            viewModelScope.launch {
+                getListsUseCase(_uiState.value.username)
+                    .catch(action = { cause ->
+                        _uiState.update {
+                            it.copy(
+                                error = cause.message,
+                                loading = false
+                            )
                         }
-
-                        is NetworkResult.Success -> {
-                            result.data?.let { places ->
+                    })
+                    .collect { result ->
+                        when (result) {
+                            is NetworkResult.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        list = places,
+                                        error = result.message,
                                         loading = false,
                                         firstTime = false
                                     )
                                 }
                             }
-                        }
 
-                        is NetworkResult.Loading -> {
-                            _uiState.update {
-                                it.copy(
-                                    loading = true
-                                )
+                            is NetworkResult.Success -> {
+                                result.data?.let { places ->
+                                    _uiState.update {
+                                        it.copy(
+                                            list = places,
+                                            loading = false,
+                                            firstTime = false
+                                        )
+                                    }
+                                }
+                            }
+
+                            is NetworkResult.Loading -> {
+                                _uiState.update {
+                                    it.copy(
+                                        loading = true
+                                    )
+                                }
                             }
                         }
                     }
-                }
+            }
         }
     }
 }

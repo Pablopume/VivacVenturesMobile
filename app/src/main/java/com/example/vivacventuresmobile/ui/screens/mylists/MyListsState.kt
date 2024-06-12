@@ -8,5 +8,5 @@ data class MyListsState(
     val nameList: String = "",
     val firstTime: Boolean = true,
     val error: String? = null,
-    val loading: Boolean = false,
+    val loading: Boolean = true,
 )
